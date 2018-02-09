@@ -9,7 +9,7 @@ import java.awt.geom.GeneralPath;
 
 import javax.swing.JPanel;
 
-public class MapPanel extends JPanel implements MouseListener {
+public class MapPanel extends JPanel {
 
 	private boolean drawing, creating;
 	private MouseHandler mousehandler = new MouseHandler();
@@ -26,6 +26,9 @@ public class MapPanel extends JPanel implements MouseListener {
 
 	public void clear() {
 		creating = false;
+		drawing = false;
+		path = null;
+		repaint();
 	}
 
 	public void paintComponent(Graphics g) {
@@ -48,48 +51,19 @@ public class MapPanel extends JPanel implements MouseListener {
 		}
 	}
 
-	@Override
-	public void mouseClicked(MouseEvent e) {
-		repaint();
-	}
-
-	@Override
-	public void mousePressed(MouseEvent e) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void mouseReleased(MouseEvent e) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void mouseEntered(MouseEvent e) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void mouseExited(MouseEvent e) {
-		// TODO Auto-generated method stub
-
-	}
-
 	private class MouseHandler extends MouseAdapter {
 		@Override
 		public void mousePressed(MouseEvent e) {
-			if(creating) {
-			Point p = e.getPoint();
-			if (!drawing) {
-				path = new GeneralPath();
-				path.moveTo(p.x, p.y);
-				drawing = true;
-			} else {
-				path.lineTo(p.x, p.y);
-			}
-			repaint();
+			if (creating) {
+				Point p = e.getPoint();
+				if (!drawing) {
+					path = new GeneralPath();
+					path.moveTo(p.x, p.y);
+					drawing = true;
+				} else {
+					path.lineTo(p.x, p.y);
+				}
+				repaint();
 			}
 		}
 	}
