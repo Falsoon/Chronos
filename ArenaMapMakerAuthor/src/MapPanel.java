@@ -14,7 +14,8 @@ public class MapPanel extends JPanel {
 	private boolean drawing, creating;
 	private MouseHandler mousehandler = new MouseHandler();
 	public GeneralPath path;
-
+	public Point start;
+	
 	public MapPanel() {
 		addMouseListener(mousehandler);
 		addMouseMotionListener(mousehandler);
@@ -40,7 +41,7 @@ public class MapPanel extends JPanel {
 				g.drawLine(10 * (i + 1), 10 * (j + 1), 10 * (i + 1), 10 * (j + 1));
 			}
 		}
-		if (creating) {
+		if (creating||drawing) {
 			Graphics2D g2d = (Graphics2D) g;
 			g2d.setColor(Color.BLACK);
 			g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -56,15 +57,21 @@ public class MapPanel extends JPanel {
 		public void mousePressed(MouseEvent e) {
 			if (creating) {
 				Point p = e.getPoint();
+				boolean first = !drawing;
 				if (!drawing) {
 					path = new GeneralPath();
-					path.moveTo(p.x, p.y);
+					path.moveTo(Math.round(p.x/10)*10,Math.round(p.y/10)*10);
+					start = p;
 					drawing = true;
 				} else {
-					path.lineTo(p.x, p.y);
+					path.lineTo(Math.round(p.x/10)*10,Math.round(p.y/10)*10);
 				}
 				repaint();
+				if(!first&& Math.round(p.x/10)*10 == Math.round(start.x/10)*10&&Math.round(p.y/10)*10 == Math.round(start.y/10)*10) {
+					creating = false;
+				}
 			}
+			
 		}
 	}
 }
