@@ -2,8 +2,8 @@ import java.awt.Point;
 import java.util.ArrayList;
 
 public class Room {
-	private ArrayList<Point> points;
-	
+	public ArrayList<Point> points;
+
 	public Room(Point p) {
 		points = new ArrayList<Point>();
 		points.add(p);
@@ -11,5 +11,11 @@ public class Room {
 
 	public void add(Point p) {
 		points.add(p);
+	}
+
+	public void removeLast() {
+		if (!points.isEmpty()) {
+			points.remove(points.size() - 1);
+		}
 	}
 }

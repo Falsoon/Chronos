@@ -8,3 +8,14 @@
 /Room.class
 /Grid.class
 /RoomGrid.class
+/MapPanel$1.class
+/MapPanel$UndoManagerHelper$RedoAction.class
+/MapPanel$UndoManagerHelper$UndoAction.class
+/MapPanel$UndoManagerHelper$UndoRedoAction.class
+/MapPanel$UndoManagerHelper.class
+/UndoManagerHelper$RedoAction.class
+/UndoManagerHelper$UndoAction.class
+/UndoManagerHelper$UndoRedoAction.class
+/UndoManagerHelper.class
+/MapPanel$2.class
+/AuthorWindow$4.class

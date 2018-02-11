@@ -62,7 +62,6 @@ public class AuthorWindow extends JPanel implements ActionListener {
 		authorPanel.add(btnAddRooms);
 		
 		JButton clrButton = new JButton("Clear");
-		
 		clrButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -70,6 +69,15 @@ public class AuthorWindow extends JPanel implements ActionListener {
 			}
 		});
 		authorPanel.add(clrButton);
+		
+		JButton undoButton = new JButton("Undo");
+		undoButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				mapPanel.undo();
+			}
+		});
+		authorPanel.add(undoButton);
 		
 		mapPanel = new MapPanel();
 		
