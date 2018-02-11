@@ -52,7 +52,7 @@ public class AuthorWindow extends JPanel implements ActionListener {
 		authorPanel = new AuthorPanel();
 		splitPane.setLeftComponent(authorPanel);
 		
-		JButton btnAddRooms = new JButton("Add basic Rooms");
+		JButton btnAddRooms = new JButton("Draw Map Outline");
 		btnAddRooms.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {

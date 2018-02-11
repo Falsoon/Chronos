@@ -6,3 +6,5 @@
 /MapPanel.class
 /MapPanel$MouseHandler.class
 /Room.class
+/Grid.class
+/RoomGrid.class
