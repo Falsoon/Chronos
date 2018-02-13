@@ -20,7 +20,7 @@ import javax.swing.undo.UndoableEditSupport;
 public class MapPanel extends JPanel implements StateEditable, KeyListener {
 
 	private static final Object MAP_KEY = "MapKey";
-	private boolean drawing, creating, undid=false;
+	private boolean drawing, creating;
 	public GeneralPath path = new GeneralPath();
 	public Point start;
 	public Room room;
@@ -52,7 +52,7 @@ public class MapPanel extends JPanel implements StateEditable, KeyListener {
 					repaint();
 					stateEdit.end();
 					manager.addEdit(stateEdit);
-					
+
 					repaint();
 				}
 			}
@@ -104,7 +104,7 @@ public class MapPanel extends JPanel implements StateEditable, KeyListener {
 
 	private GeneralPath getPath() {
 		GeneralPath returnValue = new GeneralPath();
-		if (room != null&&!room.points.isEmpty()) {
+		if (room != null && !room.points.isEmpty()) {
 			ArrayList<Point> pts = room.points;
 			returnValue.moveTo(pts.get(0).x, pts.get(0).y);
 			for (int i = 1; pts.size() > i; i++) {
@@ -117,11 +117,13 @@ public class MapPanel extends JPanel implements StateEditable, KeyListener {
 	public void restoreState(Hashtable state) {
 		GeneralPath newP = (GeneralPath) state.get(MAP_KEY);
 		if (newP != null) {
-			if(newP.getCurrentPoint()==null) {
+			if (newP.getCurrentPoint() == null) {
 				drawing = false;
 			}
-			if(path.getCurrentPoint().equals(start)) {
-				creating = true;
+			if (path != null) {
+				if (path.getCurrentPoint().equals(start)) {
+					creating = true;
+				}
 			}
 			path = newP;
 		}
@@ -151,7 +153,7 @@ public class MapPanel extends JPanel implements StateEditable, KeyListener {
 		if (manager.canUndo()) {
 			manager.undo();
 			room.removeLast();
-		}else {
+		} else {
 			JOptionPane.showMessageDialog(this, "Cannot Undo");
 		}
 		repaint();
