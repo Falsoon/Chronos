@@ -14,6 +14,7 @@ public class AuthorWindow extends JPanel implements ActionListener {
 	private AuthorPanel authorPanel;
 	private MapPanel mapPanel;
 	
+	
 	/**
 	 * Launch the application.
 	 */
@@ -52,7 +53,7 @@ public class AuthorWindow extends JPanel implements ActionListener {
 		authorPanel = new AuthorPanel();
 		splitPane.setLeftComponent(authorPanel);
 		
-		JButton btnAddRooms = new JButton("Draw Map Outline");
+		JButton btnAddRooms = new JButton("Solid Wall");
 		btnAddRooms.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -60,6 +61,15 @@ public class AuthorWindow extends JPanel implements ActionListener {
 			}
 		});
 		authorPanel.add(btnAddRooms);
+		
+		JButton wallButton = new JButton("Transparent Wall");
+		wallButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				mapPanel.paintWalls();
+			}
+		});
+		authorPanel.add(wallButton);
 		
 		JButton clrButton = new JButton("Clear");
 		clrButton.addActionListener(new ActionListener() {
@@ -78,6 +88,8 @@ public class AuthorWindow extends JPanel implements ActionListener {
 			}
 		});
 		authorPanel.add(undoButton);
+		
+		
 		
 		mapPanel = new MapPanel();
 		

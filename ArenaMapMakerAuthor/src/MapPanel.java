@@ -3,7 +3,9 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.RenderingHints;
+import java.awt.Stroke;
 import java.awt.event.*;
 import java.awt.geom.GeneralPath;
 import java.util.ArrayList;
@@ -20,7 +22,7 @@ import javax.swing.undo.UndoableEditSupport;
 public class MapPanel extends JPanel implements StateEditable, KeyListener {
 
 	private static final Object MAP_KEY = "MapKey";
-	private boolean drawing, creating;
+	private boolean drawing, creating, creatingWalls;
 	public GeneralPath path = new GeneralPath();
 	public Point start;
 	public Room room;
@@ -32,7 +34,7 @@ public class MapPanel extends JPanel implements StateEditable, KeyListener {
 			@Override
 			public void mousePressed(MouseEvent e) {
 				StateEdit stateEdit = new StateEdit(MapPanel.this);
-				if (creating) {
+				if (creating || creatingWalls) {
 					Point p = e.getPoint();
 					p.setLocation(Math.round(p.x / 10) * 10, Math.round(p.y / 10) * 10);
 					boolean first = !drawing;
@@ -48,6 +50,7 @@ public class MapPanel extends JPanel implements StateEditable, KeyListener {
 					}
 					if (!first && p.equals(start)) {
 						creating = false;
+						creatingWalls = false;
 					}
 					repaint();
 					stateEdit.end();
@@ -64,10 +67,17 @@ public class MapPanel extends JPanel implements StateEditable, KeyListener {
 
 	public void paintRooms() {
 		creating = true;
+		creatingWalls = false;
+	}
+	
+	public void paintWalls() {
+		creatingWalls = true;
+		creating = true;
 	}
 
 	public void clear() {
 		creating = false;
+		creatingWalls = false;
 		drawing = false;
 		path = null;
 		room = null;
@@ -83,7 +93,24 @@ public class MapPanel extends JPanel implements StateEditable, KeyListener {
 				g.drawLine(10 * (i + 1), 10 * (j + 1), 10 * (i + 1), 10 * (j + 1));
 			}
 		}
-		if (creating || drawing) {
+		
+		
+		if (creatingWalls) {
+			Graphics2D g2d = (Graphics2D) g;
+			g2d.setColor(Color.BLACK);
+			Stroke dashed = new BasicStroke(3, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{9}, 0);
+	        g2d.setStroke(dashed);
+	        if (path != null) {
+	        	//currently over riding entire path, need to learn how to split paths into sections
+	        	//only draw added section
+	        	Point p2 = room.removeLast();
+	        	Point p1 = room.removeLast();
+	        	g2d.drawLine(p1.x, p1.y, p2.x, p2.y);
+	        	room.add(p1);
+	        	room.add(p2);
+	        }
+		}
+		else if (creating || drawing) {
 			Graphics2D g2d = (Graphics2D) g;
 			g2d.setColor(Color.BLACK);
 			g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -92,6 +119,7 @@ public class MapPanel extends JPanel implements StateEditable, KeyListener {
 				g2d.draw(path);
 			}
 		}
+	
 	}
 
 	public void addUndoableEditListener(UndoableEditListener undoableEditListener) {

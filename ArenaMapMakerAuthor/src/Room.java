@@ -13,9 +13,11 @@ public class Room {
 		points.add(p);
 	}
 
-	public void removeLast() {
+	public Point removeLast() {
+		Point p = null;
 		if (!points.isEmpty()) {
-			points.remove(points.size() - 1);
+			p = points.remove(points.size() - 1);
 		}
+		return p;
 	}
 }
