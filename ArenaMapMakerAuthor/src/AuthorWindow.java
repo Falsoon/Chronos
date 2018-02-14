@@ -49,37 +49,41 @@ public class AuthorWindow extends JPanel implements ActionListener {
 		JSplitPane splitPane = new JSplitPane();
 		frame.getContentPane().add(splitPane, BorderLayout.CENTER);
 		splitPane.setDividerLocation(300);
-		
+		//Author panel holds the buttons for authors use
 		authorPanel = new AuthorPanel();
 		splitPane.setLeftComponent(authorPanel);
 		
-		JButton btnAddRooms = new JButton("Solid Wall");
-		btnAddRooms.addActionListener(new ActionListener() {
+		//button indicates that the outline of the room is to be drawn
+		JButton btnOutline = new JButton("Draw Map Outline");
+		btnOutline.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				mapPanel.paintRooms();
+				mapPanel.mapOutline();
 			}
 		});
-		authorPanel.add(btnAddRooms);
+		authorPanel.add(btnOutline);
 		
-		JButton wallButton = new JButton("Transparent Wall");
-		wallButton.addActionListener(new ActionListener() {
+		//button indicates that the outline is ready to be split into rooms
+		JButton btnWalls = new JButton("Transparent Wall");
+		btnWalls.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				mapPanel.paintWalls();
+				mapPanel.addWalls();
 			}
 		});
-		authorPanel.add(wallButton);
+		authorPanel.add(btnWalls);
 		
-		JButton clrButton = new JButton("Clear");
-		clrButton.addActionListener(new ActionListener() {
+		//button resets the map
+		JButton btnClear = new JButton("Clear");
+		btnClear.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				mapPanel.clear();
 			}
 		});
-		authorPanel.add(clrButton);
-		
+		authorPanel.add(btnClear);
+		//button allows author to undo last action.
+		//ctrl+z is preferred design
 		JButton undoButton = new JButton("Undo");
 		undoButton.addActionListener(new ActionListener() {
 			@Override
@@ -89,8 +93,7 @@ public class AuthorWindow extends JPanel implements ActionListener {
 		});
 		authorPanel.add(undoButton);
 		
-		
-		
+		//mapPanel holds the graphics of the map
 		mapPanel = new MapPanel();
 		
 		splitPane.setRightComponent(mapPanel);
@@ -102,6 +105,6 @@ public class AuthorWindow extends JPanel implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		e.getSource();
-		mapPanel.paintRooms();
+		mapPanel.mapOutline();
 	}
 }

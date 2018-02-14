@@ -22,61 +22,78 @@ import javax.swing.undo.UndoableEditSupport;
 public class MapPanel extends JPanel implements StateEditable, KeyListener {
 
 	private static final Object MAP_KEY = "MapKey";
-	private boolean drawing, creating, creatingWalls;
+	private final int GRIDDISTANCE = 15;
+	private boolean drawing, outlining, creatingWalls;
 	public GeneralPath path = new GeneralPath();
 	public Point start;
 	public Room room;
 	UndoableEditSupport undoSupport = new UndoableEditSupport(this);
 	UndoManager manager = new UndoManager();
-
+/**
+ * Constructor of MapPanel adds the appropriate action listeners
+ */
 	public MapPanel() {
+		//Anonymous class was used to access MapPanel fields
 		MouseListener mousehandler = new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent e) {
 				StateEdit stateEdit = new StateEdit(MapPanel.this);
-				if (creating || creatingWalls) {
+				//if a point needs to be drawn
+				if (outlining || creatingWalls) {
 					Point p = e.getPoint();
-					p.setLocation(Math.round(p.x / 10) * 10, Math.round(p.y / 10) * 10);
+					//round to nearest grid point
+					p.setLocation(Math.round(((double)p.x) / GRIDDISTANCE) * GRIDDISTANCE, Math.round(((double)p.y) / GRIDDISTANCE) * GRIDDISTANCE);
 					boolean first = !drawing;
+					//at the first point, start a new path
 					if (!drawing) {
 						path = new GeneralPath();
 						path.moveTo(p.x, p.y);
-						start = p;
+						start = p;//save start to compare later
 						drawing = true;
-						room = new Room(p);
+						room = new Room(p);//create room
 					} else {
+						//if not the first point, add to path
 						path.lineTo(p.x, p.y);
 						room.add(p);
 					}
+					//if the path has returned to start, the end outline
 					if (!first && p.equals(start)) {
-						creating = false;
+						outlining = false;
 						creatingWalls = false;
 					}
 					repaint();
+					//stateEdit is used for undo
 					stateEdit.end();
 					manager.addEdit(stateEdit);
-
-					repaint();
 				}
 			}
 		};
+		//add listeners
 		addKeyListener(this);
 		addUndoableEditListener(manager);
 		addMouseListener(mousehandler);
 	}
 
-	public void paintRooms() {
-		creating = true;
+	/**
+	 * Changes state of MapPanel to draw Outline
+	 */
+	public void mapOutline() {
+		outlining = true;
 		creatingWalls = false;
 	}
 	
-	public void paintWalls() {
+	/**
+	 * Changes state of MapPanel to add walls
+	 */
+	public void addWalls() {
 		creatingWalls = true;
-		creating = true;
 	}
 
+	/**
+	 * Resets state of MapPanel
+	 */
 	public void clear() {
-		creating = false;
+		outlining = false;
 		creatingWalls = false;
 		drawing = false;
 		path = null;
@@ -84,20 +101,30 @@ public class MapPanel extends JPanel implements StateEditable, KeyListener {
 		repaint();
 	}
 
+	/**
+	 * This method is inherited by JPanel
+	 * paintComponents will draw on the panel each time repaint() is called
+	 */
 	public void paintComponent(Graphics g) {
+		//Background
 		g.setColor(Color.LIGHT_GRAY);
 		g.fillRect(0, 0, 1200, 1200);
+		//Grid points
 		g.setColor(Color.white);
 		for (int i = 0; i < 600; i++) {
 			for (int j = 0; j < 600; j++) {
-				g.drawLine(10 * (i + 1), 10 * (j + 1), 10 * (i + 1), 10 * (j + 1));
+				g.drawLine(GRIDDISTANCE * (i + 1), GRIDDISTANCE * (j + 1), GRIDDISTANCE * (i + 1), GRIDDISTANCE * (j + 1));
 			}
 		}
-		
 		
 		if (creatingWalls) {
 			Graphics2D g2d = (Graphics2D) g;
 			g2d.setColor(Color.BLACK);
+			g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+			g2d.setStroke(new BasicStroke(8, BasicStroke.CAP_ROUND, BasicStroke.JOIN_BEVEL));
+			if (path != null) {
+				g2d.draw(path);
+			}
 			Stroke dashed = new BasicStroke(3, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{9}, 0);
 	        g2d.setStroke(dashed);
 	        if (path != null) {
@@ -110,7 +137,8 @@ public class MapPanel extends JPanel implements StateEditable, KeyListener {
 	        	room.add(p2);
 	        }
 		}
-		else if (creating || drawing) {
+		//if outlining, then draw the path so far 
+		else if (outlining || drawing) {
 			Graphics2D g2d = (Graphics2D) g;
 			g2d.setColor(Color.BLACK);
 			g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -122,14 +150,27 @@ public class MapPanel extends JPanel implements StateEditable, KeyListener {
 	
 	}
 
+	/**
+	 * Helps with undo support
+	 * 
+	 * @param undoableEditListener
+	 */
 	public void addUndoableEditListener(UndoableEditListener undoableEditListener) {
 		undoSupport.addUndoableEditListener(undoableEditListener);
 	}
 
+	/**
+	 * Required by StateEditable interface for undo support. 
+	 * This method is called when a state edit is created and when an edit ends
+	 */
 	public void storeState(Hashtable state) {
 		state.put(MAP_KEY, getPath());
 	}
 
+	/**
+	 * This method is a helper method to get a copy of the current path rather than a reference to the path itself.
+	 * @return Copy of Path
+	 */
 	private GeneralPath getPath() {
 		GeneralPath returnValue = new GeneralPath();
 		if (room != null && !room.points.isEmpty()) {
@@ -142,6 +183,9 @@ public class MapPanel extends JPanel implements StateEditable, KeyListener {
 		return returnValue;
 	}
 
+	/**
+	 * Called when the UndoMananger needs to undo to get to an earlier state.
+	 */
 	public void restoreState(Hashtable state) {
 		GeneralPath newP = (GeneralPath) state.get(MAP_KEY);
 		if (newP != null) {
@@ -150,7 +194,7 @@ public class MapPanel extends JPanel implements StateEditable, KeyListener {
 			}
 			if (path != null) {
 				if (path.getCurrentPoint().equals(start)) {
-					creating = true;
+					outlining = true;
 				}
 			}
 			path = newP;
@@ -162,7 +206,9 @@ public class MapPanel extends JPanel implements StateEditable, KeyListener {
 		// TODO Auto-generated method stub
 
 	}
-
+/**
+ * ctrl+z for undo is not yet working
+ */
 	@Override
 	public void keyPressed(KeyEvent e) {
 		if (e.isControlDown() && e.getKeyChar() == 'z') {
@@ -177,6 +223,9 @@ public class MapPanel extends JPanel implements StateEditable, KeyListener {
 
 	}
 
+	/**
+	 * performs undo
+	 */
 	public void undo() {
 		if (manager.canUndo()) {
 			manager.undo();
