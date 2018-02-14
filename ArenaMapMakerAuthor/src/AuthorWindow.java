@@ -53,7 +53,7 @@ public class AuthorWindow extends JPanel implements ActionListener {
 		authorPanel = new AuthorPanel();
 		splitPane.setLeftComponent(authorPanel);
 		
-		JButton btnAddRooms = new JButton("Solid Wall");
+		JButton btnAddRooms = new JButton("Draw Outline(Solid Wall)");
 		btnAddRooms.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -62,7 +62,7 @@ public class AuthorWindow extends JPanel implements ActionListener {
 		});
 		authorPanel.add(btnAddRooms);
 		
-		JButton wallButton = new JButton("Transparent Wall");
+		JButton wallButton = new JButton("Split Room(Transparent Wall)");
 		wallButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
