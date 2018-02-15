@@ -40,12 +40,38 @@ public class MapPanel extends JPanel implements StateEditable, KeyListener {
 		MouseListener mousehandler = new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent e) {
-				StateEdit stateEdit = new StateEdit(MapPanel.this);
 				map.mousePressed(e);
+				repaint();
+/*				StateEdit stateEdit = new StateEdit(MapPanel.this);
+				//if a point needs to be drawn
+				if (outlining || creatingWalls) {
+					Point p = e.getPoint();
+					//round to nearest grid point
+					p.setLocation(Math.round(((double)p.x) / GRIDDISTANCE) * GRIDDISTANCE, Math.round(((double)p.y) / GRIDDISTANCE) * GRIDDISTANCE);
+					boolean first = !drawing;
+					//at the first point, start a new path
+					if (!drawing) {
+						path = new GeneralPath();
+						path.moveTo(p.x, p.y);
+						start = p;//save start to compare later
+						drawing = true;
+						room = new Room(p);//create room
+					} else {
+						//if not the first point, add to path
+						path.lineTo(p.x, p.y);
+						room.add(p);
+					}
+					//if the path has returned to start, the end outline
+					if (!first && p.equals(start)) {
+						outlining = false;
+						creatingWalls = false;
+					}
+				}
+				
 				repaint();
 				//stateEdit is used for undo
 				stateEdit.end();
-				manager.addEdit(stateEdit);
+				manager.addEdit(stateEdit);*/
 			}
 		};
 		//add listeners
@@ -88,7 +114,7 @@ public class MapPanel extends JPanel implements StateEditable, KeyListener {
 	 * paintComponents will draw on the panel each time repaint() is called
 	 */
 	public void paintComponent(Graphics g) {
-		//Draw Background
+		//Background
 		g.setColor(Color.LIGHT_GRAY);
 		g.fillRect(0, 0, 1200, 1200);
 		//Grid points
@@ -99,6 +125,7 @@ public class MapPanel extends JPanel implements StateEditable, KeyListener {
 			}
 		}
 		map.draw(g);
+	
 	}
 
 	/**
@@ -115,24 +142,40 @@ public class MapPanel extends JPanel implements StateEditable, KeyListener {
 	 * This method is called when a state edit is created and when an edit ends
 	 */
 	public void storeState(Hashtable state) {
-		state.put(MAP_KEY, getMap());
+		state.put(MAP_KEY, getPath());
 	}
 
 	/**
 	 * This method is a helper method to get a copy of the current path rather than a reference to the path itself.
 	 * @return Copy of Path
 	 */
-	private Map getMap() {
-		return map.copy();
+	private GeneralPath getPath() {
+		GeneralPath returnValue = new GeneralPath();
+		if (room != null && !room.points.isEmpty()) {
+			ArrayList<Point> pts = room.points;
+			returnValue.moveTo(pts.get(0).x, pts.get(0).y);
+			for (int i = 1; pts.size() > i; i++) {
+				returnValue.lineTo(pts.get(i).x, pts.get(i).y);
+			}
+		}
+		return returnValue;
 	}
 
 	/**
 	 * Called when the UndoMananger needs to undo to get to an earlier state.
 	 */
 	public void restoreState(Hashtable state) {
-		Map newP = (Map) state.get(MAP_KEY);
+		GeneralPath newP = (GeneralPath) state.get(MAP_KEY);
 		if (newP != null) {
-			map = newP;
+			if (newP.getCurrentPoint() == null) {
+				drawing = false;
+			}
+			if (path != null) {
+				if (path.getCurrentPoint().equals(start)) {
+					outlining = true;
+				}
+			}
+			path = newP;
 		}
 	}
 
@@ -164,6 +207,7 @@ public class MapPanel extends JPanel implements StateEditable, KeyListener {
 	public void undo() {
 		if (manager.canUndo()) {
 			manager.undo();
+			room.removeLast();
 		} else {
 			JOptionPane.showMessageDialog(this, "Cannot Undo");
 		}
