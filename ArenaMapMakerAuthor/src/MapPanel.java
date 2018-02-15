@@ -94,6 +94,7 @@ public class MapPanel extends JPanel implements StateEditable, KeyListener {
 	 */
 	public void paintWalls() {
 		creatingWalls = true;
+		map.walling();
 	}
 
 	/**
