@@ -72,7 +72,7 @@ public class MapPanel extends JPanel implements StateEditable, KeyListener {
 	
 	public void paintWalls() {
 		creatingWalls = true;
-		creating = true;
+		creating = false;
 	}
 
 	public void clear() {
@@ -96,8 +96,10 @@ public class MapPanel extends JPanel implements StateEditable, KeyListener {
 		
 		
 		if (creatingWalls) {
+			
+			//look into pushing code below to walls class
 			Graphics2D g2d = (Graphics2D) g;
-			g2d.setColor(Color.BLACK);
+			g2d.setColor(Color.BLACK);			
 			Stroke dashed = new BasicStroke(3, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{9}, 0);
 	        g2d.setStroke(dashed);
 	        if (path != null) {
@@ -105,10 +107,12 @@ public class MapPanel extends JPanel implements StateEditable, KeyListener {
 	        	//only draw added section
 	        	Point p2 = room.removeLast();
 	        	Point p1 = room.removeLast();
+	        	//need to check if points are on path, then draw
 	        	g2d.drawLine(p1.x, p1.y, p2.x, p2.y);
 	        	room.add(p1);
 	        	room.add(p2);
 	        }
+	        //end here
 		}
 		else if (creating || drawing) {
 			Graphics2D g2d = (Graphics2D) g;
