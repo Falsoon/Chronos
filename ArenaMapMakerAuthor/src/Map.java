@@ -1,25 +1,22 @@
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
-import java.awt.geom.GeneralPath;
 import java.util.ArrayList;
-import java.util.Stack;
+import javax.swing.undo.UndoManager;
+import javax.swing.undo.UndoableEditSupport;
 
-import javax.swing.undo.StateEdit;
-import javax.swing.undo.StateEditable;
-
-public class Map {
+public class Map{
 	private static final double GRIDDISTANCE = 15;
 	private ArrayList<MapLayer> layers;
 	private boolean outlining;
-	private boolean drawing;
 	private MapLayer mapLayer;
 	private MapLayer mapLayer2;
 	private boolean walling;
+	UndoableEditSupport undoSupport = new UndoableEditSupport(this);
+	UndoManager manager = new UndoManager();
 
 	public Map() {
 		layers = new ArrayList<MapLayer>();
-		drawing = false;
 		outlining = false;
 		mapLayer = new MapOutlineLayer();
 		mapLayer2 = new MapWallingLayer();
@@ -38,7 +35,6 @@ public class Map {
 	}
 
 	public void mousePressed(MouseEvent e) {
-		// StateEdit stateEdit = new StateEdit(this);
 		// if a point needs to be drawn
 		Point p = e.getPoint();
 		// round to nearest grid point
@@ -62,13 +58,18 @@ public class Map {
 				layers.add(mapLayer2);
 			}
 		}
-		
-		// stateEdit is used for undo
-		// stateEdit.end();
-		// manager.addEdit(stateEdit);
 	}
 
 	public void walling() {
 		walling = true;
+	}
+
+	public Map copy() {
+		Map copy = new Map();
+		copy.mapLayer = mapLayer.copy();
+		copy.mapLayer2 = mapLayer.copy();
+		copy.outlining = outlining;
+		copy.walling = walling;
+		return copy;
 	}
 }

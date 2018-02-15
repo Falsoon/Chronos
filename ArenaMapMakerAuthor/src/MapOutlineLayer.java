@@ -23,4 +23,19 @@ public class MapOutlineLayer extends MapLayer {
 		}
 	}
 
+	@Override
+	public MapLayer copy() {
+		MapLayer copy = new MapOutlineLayer();
+		if(copy.pathList==null) {
+			copy.pathList = new ArrayList<GeneralPath>();
+		}
+		if(pathList==null) {
+			pathList = new ArrayList<GeneralPath>();
+		}
+		for(int i=0; i< pathList.size();i++) {
+			copy.pathList.add((GeneralPath)pathList.get(i).clone());
+		}
+		return copy;
+	}
+
 }

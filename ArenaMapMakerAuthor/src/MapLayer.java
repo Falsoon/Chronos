@@ -78,4 +78,6 @@ public abstract class MapLayer {
 		return walling;
 	}
 
+	public abstract MapLayer copy();
+
 }
