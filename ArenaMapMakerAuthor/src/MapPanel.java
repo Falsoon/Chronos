@@ -25,19 +25,24 @@ public class MapPanel extends JPanel implements StateEditable, KeyListener {
 	private final int GRIDDISTANCE = 15;
 	private boolean drawing, outlining, creatingWalls;
 	public GeneralPath path = new GeneralPath();
+	public GeneralPath wallPath = new GeneralPath();
 	public Point start;
 	public Room room;
 	UndoableEditSupport undoSupport = new UndoableEditSupport(this);
 	UndoManager manager = new UndoManager();
+	private Map map;
 /**
  * Constructor of MapPanel adds the appropriate action listeners
  */
 	public MapPanel() {
+		map = new Map();
 		//Anonymous class was used to access MapPanel fields
 		MouseListener mousehandler = new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent e) {
-				StateEdit stateEdit = new StateEdit(MapPanel.this);
+				map.mousePressed(e);
+				repaint();
+/*				StateEdit stateEdit = new StateEdit(MapPanel.this);
 				//if a point needs to be drawn
 				if (outlining || creatingWalls) {
 					Point p = e.getPoint();
@@ -61,11 +66,12 @@ public class MapPanel extends JPanel implements StateEditable, KeyListener {
 						outlining = false;
 						creatingWalls = false;
 					}
-					repaint();
-					//stateEdit is used for undo
-					stateEdit.end();
-					manager.addEdit(stateEdit);
 				}
+				
+				repaint();
+				//stateEdit is used for undo
+				stateEdit.end();
+				manager.addEdit(stateEdit);*/
 			}
 		};
 		//add listeners
@@ -77,15 +83,16 @@ public class MapPanel extends JPanel implements StateEditable, KeyListener {
 	/**
 	 * Changes state of MapPanel to draw Outline
 	 */
-	public void mapOutline() {
+	public void paintRooms() {
 		outlining = true;
 		creatingWalls = false;
+		map.outlining();
 	}
 	
 	/**
 	 * Changes state of MapPanel to add walls
 	 */
-	public void addWalls() {
+	public void paintWalls() {
 		creatingWalls = true;
 	}
 
@@ -116,8 +123,10 @@ public class MapPanel extends JPanel implements StateEditable, KeyListener {
 				g.drawLine(GRIDDISTANCE * (i + 1), GRIDDISTANCE * (j + 1), GRIDDISTANCE * (i + 1), GRIDDISTANCE * (j + 1));
 			}
 		}
+		map.draw(g);
 		
-		if (creatingWalls) {
+		
+		/*if (creatingWalls) {
 			Graphics2D g2d = (Graphics2D) g;
 			g2d.setColor(Color.BLACK);
 			g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -146,7 +155,7 @@ public class MapPanel extends JPanel implements StateEditable, KeyListener {
 			if (path != null) {
 				g2d.draw(path);
 			}
-		}
+		}*/
 	
 	}
 

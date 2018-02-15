@@ -54,24 +54,24 @@ public class AuthorWindow extends JPanel implements ActionListener {
 		splitPane.setLeftComponent(authorPanel);
 		
 		//button indicates that the outline of the room is to be drawn
-		JButton btnOutline = new JButton("Draw Map Outline");
-		btnOutline.addActionListener(new ActionListener() {
+		JButton btnAddRooms = new JButton("Draw Outline(Solid Wall)");
+		btnAddRooms.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				mapPanel.mapOutline();
+				mapPanel.paintRooms();
 			}
 		});
-		authorPanel.add(btnOutline);
+		authorPanel.add(btnAddRooms);
 		
 		//button indicates that the outline is ready to be split into rooms
-		JButton btnWalls = new JButton("Transparent Wall");
-		btnWalls.addActionListener(new ActionListener() {
+		JButton wallButton = new JButton("Split Room(Transparent Wall)");
+		wallButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				mapPanel.addWalls();
+				mapPanel.paintWalls();
 			}
 		});
-		authorPanel.add(btnWalls);
+		authorPanel.add(wallButton);
 		
 		//button resets the map
 		JButton btnClear = new JButton("Clear");
@@ -105,6 +105,6 @@ public class AuthorWindow extends JPanel implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		e.getSource();
-		mapPanel.mapOutline();
+		mapPanel.paintRooms();
 	}
 }
