@@ -89,6 +89,24 @@ public class AuthorWindow extends JPanel implements ActionListener {
 		});
 		authorPanel.add(undoButton);
 		
+		JButton placeStart = new JButton("Place Start Point");
+		placeStart.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				mapPanel.placePlayerStart();
+			}
+		});
+		authorPanel.add(placeStart);
+		
+		JButton start = new JButton("Start/Stop Playing");
+		start.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				mapPanel.startGame();
+			}
+		});
+		authorPanel.add(start);
+		
 		
 		
 		mapPanel = new MapPanel();

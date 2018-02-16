@@ -22,9 +22,10 @@ import javax.swing.undo.UndoableEditSupport;
 public class MapPanel extends JPanel implements StateEditable, KeyListener {
 
 	private static final Object MAP_KEY = "MapKey";
-	private boolean drawing, creating, creatingWalls;
+	private boolean drawing, creating, creatingWalls, isPlaying, placingPlayer;
 	public GeneralPath path = new GeneralPath();
 	public Point start;
+	public Point playerPos;
 	public Room room;
 	UndoableEditSupport undoSupport = new UndoableEditSupport(this);
 	UndoManager manager = new UndoManager();
@@ -57,6 +58,10 @@ public class MapPanel extends JPanel implements StateEditable, KeyListener {
 					manager.addEdit(stateEdit);
 
 					repaint();
+				} else if (placingPlayer) {
+					playerPos = e.getPoint();
+					playerPos.setLocation(Math.round(playerPos.x / 10) * 10, Math.round(playerPos.y / 10) * 10);
+					repaint();
 				}
 			}
 		};
@@ -68,17 +73,20 @@ public class MapPanel extends JPanel implements StateEditable, KeyListener {
 	public void paintRooms() {
 		creating = true;
 		creatingWalls = false;
+		placingPlayer = false;
 	}
 	
 	public void paintWalls() {
 		creatingWalls = true;
 		creating = true;
+		placingPlayer = false;
 	}
 
 	public void clear() {
 		creating = false;
 		creatingWalls = false;
 		drawing = false;
+		placingPlayer = false;
 		path = null;
 		room = null;
 		repaint();
@@ -118,6 +126,12 @@ public class MapPanel extends JPanel implements StateEditable, KeyListener {
 			if (path != null) {
 				g2d.draw(path);
 			}
+		}
+		else if (placingPlayer || isPlaying) {
+			Graphics2D g2d = (Graphics2D) g;
+			g2d.setColor(Color.BLACK);
+			g2d.drawString("¶", playerPos.x, playerPos.y);
+			placingPlayer = false;
 		}
 	
 	}
@@ -169,6 +183,25 @@ public class MapPanel extends JPanel implements StateEditable, KeyListener {
 			manager.undo();
 			repaint();
 		}
+		if (isPlaying) {
+			if (e.getKeyCode() == KeyEvent.VK_UP) {
+				// Move player up
+				playerPos.move(playerPos.x, playerPos.y+10);
+			}
+			if (e.getKeyCode() == KeyEvent.VK_DOWN) {
+				// Move player down
+				playerPos.move(playerPos.x, playerPos.y-10);
+			}
+			if (e.getKeyCode() == KeyEvent.VK_LEFT) {
+				// Move player left
+				playerPos.move(playerPos.x-10, playerPos.y);
+			}
+			if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
+				// Move player right
+				playerPos.move(playerPos.x+10, playerPos.y);
+			}
+			repaint();
+		}
 	}
 
 	@Override
@@ -186,4 +219,14 @@ public class MapPanel extends JPanel implements StateEditable, KeyListener {
 		}
 		repaint();
 	}
+	
+	public void placePlayerStart() {
+		placingPlayer = true;
+	}
+	
+	public void startGame() {
+		isPlaying = !isPlaying;
+	}
+	
+	
 }
