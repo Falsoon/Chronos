@@ -49,7 +49,7 @@ public class MapPanel extends JPanel implements StateEditable, KeyListener {
 				manager.addEdit(stateEdit);
 				if (placingPlayer) {
 					playerPos = e.getPoint();
-					playerPos.setLocation(Math.round(playerPos.x / 10) * 10, Math.round(playerPos.y / 10) * 10);
+					playerPos.setLocation(Math.round(playerPos.x / GRIDDISTANCE) * GRIDDISTANCE, Math.round(playerPos.y / GRIDDISTANCE) * GRIDDISTANCE);
 					repaint();
 				}
 			}
@@ -162,6 +162,7 @@ public class MapPanel extends JPanel implements StateEditable, KeyListener {
  */
 	@Override
 	public void keyPressed(KeyEvent e) {
+		System.out.println("here");
 		if (e.isControlDown() && e.getKeyChar() == 'z') {
 			manager.undo();
 			repaint();
@@ -211,7 +212,38 @@ public class MapPanel extends JPanel implements StateEditable, KeyListener {
 	
 	public void startGame() {
 		isPlaying = !isPlaying;
+		creatingWalls = false;
 	}
+	
+	public void goUp() {
+		if (isPlaying) {
+			playerPos.move(playerPos.x, playerPos.y-GRIDDISTANCE);
+			repaint();
+		}
+	}
+	
+	public void goDown() {
+		if (isPlaying) {
+			playerPos.move(playerPos.x, playerPos.y+GRIDDISTANCE);
+			repaint();
+		}
+	}
+	
+	public void goLeft() {
+		if (isPlaying) {
+			playerPos.move(playerPos.x-GRIDDISTANCE, playerPos.y);
+			repaint();
+		}
+	}
+	
+	public void goRight() {
+		if (isPlaying) {
+			playerPos.move(playerPos.x+GRIDDISTANCE, playerPos.y);
+			repaint();
+		}
+	}
+	
+	
 	
 	
 }
