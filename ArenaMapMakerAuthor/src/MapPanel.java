@@ -17,7 +17,7 @@ import javax.swing.undo.UndoableEditSupport;
 public class MapPanel extends JPanel implements StateEditable, KeyListener {
 
 	private static final Object MAP_KEY = "MapKey";
-	private boolean isPlaying, placingPlayer, outlining, creatingWalls, drawing;
+	private boolean isPlaying, placingPlayer, placedPlayer, outlining, creatingWalls, drawing;
 	private final int GRIDDISTANCE = 15;
 	public GeneralPath path = new GeneralPath();
 	public GeneralPath wallPath = new GeneralPath();
@@ -45,6 +45,10 @@ public class MapPanel extends JPanel implements StateEditable, KeyListener {
 				if (placingPlayer) {
 					playerPos = e.getPoint();
 					playerPos.setLocation(Math.round(playerPos.x / GRIDDISTANCE) * GRIDDISTANCE, Math.round(playerPos.y / GRIDDISTANCE) * GRIDDISTANCE);
+					placedPlayer = true;
+					repaint();
+				} else if (placedPlayer) {
+					placingPlayer = true;
 					repaint();
 				}
 			}
@@ -77,6 +81,9 @@ public class MapPanel extends JPanel implements StateEditable, KeyListener {
 	public void clear() {
 		map = new Map();
 		placingPlayer = false;
+		placedPlayer = false;
+		isPlaying = false;
+		playerPos.move(Integer.MAX_VALUE, Integer.MAX_VALUE);
 		repaint();
 	}
 
@@ -201,8 +208,10 @@ public class MapPanel extends JPanel implements StateEditable, KeyListener {
 	}
 	
 	public void startGame() {
-		isPlaying = !isPlaying;
-		creatingWalls = false;
+		if (placedPlayer) {
+			isPlaying = !isPlaying;
+			creatingWalls = false;
+		}
 	}
 	
 	public void goUp() {
