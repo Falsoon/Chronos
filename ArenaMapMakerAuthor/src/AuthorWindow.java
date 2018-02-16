@@ -49,10 +49,11 @@ public class AuthorWindow extends JPanel implements ActionListener {
 		JSplitPane splitPane = new JSplitPane();
 		frame.getContentPane().add(splitPane, BorderLayout.CENTER);
 		splitPane.setDividerLocation(300);
-		
+		//Author panel holds the buttons for authors use
 		authorPanel = new AuthorPanel();
 		splitPane.setLeftComponent(authorPanel);
 		
+		//button indicates that the outline of the room is to be drawn
 		JButton btnAddRooms = new JButton("Draw Outline(Solid Wall)");
 		btnAddRooms.addActionListener(new ActionListener() {
 			@Override
@@ -62,6 +63,7 @@ public class AuthorWindow extends JPanel implements ActionListener {
 		});
 		authorPanel.add(btnAddRooms);
 		
+		//button indicates that the outline is ready to be split into rooms
 		JButton wallButton = new JButton("Split Room(Transparent Wall)");
 		wallButton.addActionListener(new ActionListener() {
 			@Override
@@ -71,15 +73,17 @@ public class AuthorWindow extends JPanel implements ActionListener {
 		});
 		authorPanel.add(wallButton);
 		
-		JButton clrButton = new JButton("Clear");
-		clrButton.addActionListener(new ActionListener() {
+		//button resets the map
+		JButton btnClear = new JButton("Clear");
+		btnClear.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				mapPanel.clear();
 			}
 		});
-		authorPanel.add(clrButton);
-		
+		authorPanel.add(btnClear);
+		//button allows author to undo last action.
+		//ctrl+z is preferred design
 		JButton undoButton = new JButton("Undo");
 		undoButton.addActionListener(new ActionListener() {
 			@Override
@@ -107,8 +111,7 @@ public class AuthorWindow extends JPanel implements ActionListener {
 		});
 		authorPanel.add(start);
 		
-		
-		
+		//mapPanel holds the graphics of the map
 		mapPanel = new MapPanel();
 		
 		splitPane.setRightComponent(mapPanel);

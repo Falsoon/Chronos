@@ -20,4 +20,9 @@ public class Room {
 		}
 		return p;
 	}
+	
+	public boolean isEmpty() {
+		return points.isEmpty();
+	}
+	
 }
