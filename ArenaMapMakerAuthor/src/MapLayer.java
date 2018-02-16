@@ -18,7 +18,7 @@ import java.util.Stack;
  */
 public abstract class MapLayer {
 	private boolean drawing;
-	private Point start;
+	protected Point start;
 	private boolean outlining;
 	protected ArrayList<GeneralPath> pathList;
 	private GeneralPath path;
@@ -79,5 +79,12 @@ public abstract class MapLayer {
 	}
 
 	public abstract MapLayer copy();
+
+	public void undo() {
+		if(!pathList.isEmpty()) {
+			path = pathList.get(0);
+			drawing = true;
+		}
+	}
 
 }
