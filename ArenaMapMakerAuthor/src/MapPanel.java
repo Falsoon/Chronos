@@ -1,14 +1,9 @@
-import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
-import java.awt.Rectangle;
-import java.awt.RenderingHints;
-import java.awt.Stroke;
 import java.awt.event.*;
 import java.awt.geom.GeneralPath;
-import java.util.ArrayList;
 import java.util.Hashtable;
 
 import javax.swing.JOptionPane;
@@ -22,7 +17,7 @@ import javax.swing.undo.UndoableEditSupport;
 public class MapPanel extends JPanel implements StateEditable, KeyListener {
 
 	private static final Object MAP_KEY = "MapKey";
-	private boolean isPlaying, placingPlayer, outlining, creatingWalls, drawing;
+	private boolean isPlaying, placingPlayer;
 	private final int GRIDDISTANCE = 15;
 	public GeneralPath path = new GeneralPath();
 	public GeneralPath wallPath = new GeneralPath();
@@ -64,8 +59,6 @@ public class MapPanel extends JPanel implements StateEditable, KeyListener {
 	 * Changes state of MapPanel to draw Outline
 	 */
 	public void paintRooms() {
-		outlining = true;
-		creatingWalls = false;
 		placingPlayer = false;
 		map.outlining();
 	}
@@ -74,7 +67,6 @@ public class MapPanel extends JPanel implements StateEditable, KeyListener {
 	 * Changes state of MapPanel to add walls
 	 */
 	public void paintWalls() {
-		creatingWalls = true;
 		placingPlayer = false;
 		map.walling();
 	}
@@ -83,12 +75,8 @@ public class MapPanel extends JPanel implements StateEditable, KeyListener {
 	 * Resets state of MapPanel
 	 */
 	public void clear() {
-		outlining = false;
-		creatingWalls = false;
-		drawing = false;
+		map = new Map();
 		placingPlayer = false;
-		path = null;
-		room = null;
 		repaint();
 	}
 
@@ -199,6 +187,8 @@ public class MapPanel extends JPanel implements StateEditable, KeyListener {
 	public void undo() {
 		if (manager.canUndo()) {
 			manager.undo();
+			map.outlining();
+			map.undo();
 		} else {
 			JOptionPane.showMessageDialog(this, "Cannot Undo");
 		}
@@ -212,6 +202,4 @@ public class MapPanel extends JPanel implements StateEditable, KeyListener {
 	public void startGame() {
 		isPlaying = !isPlaying;
 	}
-	
-	
 }

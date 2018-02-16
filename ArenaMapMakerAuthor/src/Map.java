@@ -72,4 +72,8 @@ public class Map{
 		copy.walling = walling;
 		return copy;
 	}
+
+	public void undo() {
+		mapLayer.undo();
+	}
 }
