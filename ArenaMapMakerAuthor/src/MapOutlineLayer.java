@@ -26,6 +26,7 @@ public class MapOutlineLayer extends MapLayer {
 	@Override
 	public MapLayer copy() {
 		MapLayer copy = new MapOutlineLayer();
+		copy.start = start;
 		if(copy.pathList==null) {
 			copy.pathList = new ArrayList<GeneralPath>();
 		}

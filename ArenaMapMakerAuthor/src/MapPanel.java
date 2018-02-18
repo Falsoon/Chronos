@@ -1,14 +1,9 @@
-import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
-import java.awt.Rectangle;
-import java.awt.RenderingHints;
-import java.awt.Stroke;
 import java.awt.event.*;
 import java.awt.geom.GeneralPath;
-import java.util.ArrayList;
 import java.util.Hashtable;
 
 import javax.swing.JOptionPane;
@@ -22,7 +17,7 @@ import javax.swing.undo.UndoableEditSupport;
 public class MapPanel extends JPanel implements StateEditable, KeyListener {
 
 	private static final Object MAP_KEY = "MapKey";
-	private boolean isPlaying, placingPlayer, outlining, creatingWalls, drawing;
+	private boolean isPlaying, placingPlayer, placedPlayer, outlining, creatingWalls, drawing;
 	private final int GRIDDISTANCE = 15;
 	public GeneralPath path = new GeneralPath();
 	public GeneralPath wallPath = new GeneralPath();
@@ -49,7 +44,11 @@ public class MapPanel extends JPanel implements StateEditable, KeyListener {
 				manager.addEdit(stateEdit);
 				if (placingPlayer) {
 					playerPos = e.getPoint();
-					playerPos.setLocation(Math.round(playerPos.x / 10) * 10, Math.round(playerPos.y / 10) * 10);
+					playerPos.setLocation(Math.round(playerPos.x / GRIDDISTANCE) * GRIDDISTANCE, Math.round(playerPos.y / GRIDDISTANCE) * GRIDDISTANCE);
+					placedPlayer = true;
+					repaint();
+				} else if (placedPlayer) {
+					placingPlayer = true;
 					repaint();
 				}
 			}
@@ -64,8 +63,6 @@ public class MapPanel extends JPanel implements StateEditable, KeyListener {
 	 * Changes state of MapPanel to draw Outline
 	 */
 	public void paintRooms() {
-		outlining = true;
-		creatingWalls = false;
 		placingPlayer = false;
 		map.outlining();
 	}
@@ -74,7 +71,6 @@ public class MapPanel extends JPanel implements StateEditable, KeyListener {
 	 * Changes state of MapPanel to add walls
 	 */
 	public void paintWalls() {
-		creatingWalls = true;
 		placingPlayer = false;
 		map.walling();
 	}
@@ -83,12 +79,11 @@ public class MapPanel extends JPanel implements StateEditable, KeyListener {
 	 * Resets state of MapPanel
 	 */
 	public void clear() {
-		outlining = false;
-		creatingWalls = false;
-		drawing = false;
+		map = new Map();
 		placingPlayer = false;
-		path = null;
-		//room = null;
+		placedPlayer = false;
+		isPlaying = false;
+		playerPos.move(Integer.MAX_VALUE, Integer.MAX_VALUE);
 		repaint();
 	}
 
@@ -162,6 +157,7 @@ public class MapPanel extends JPanel implements StateEditable, KeyListener {
  */
 	@Override
 	public void keyPressed(KeyEvent e) {
+		System.out.println("here");
 		if (e.isControlDown() && e.getKeyChar() == 'z') {
 			manager.undo();
 			repaint();
@@ -199,6 +195,8 @@ public class MapPanel extends JPanel implements StateEditable, KeyListener {
 	public void undo() {
 		if (manager.canUndo()) {
 			manager.undo();
+			map.outlining();
+			map.undo();
 		} else {
 			JOptionPane.showMessageDialog(this, "Cannot Undo");
 		}
@@ -210,8 +208,41 @@ public class MapPanel extends JPanel implements StateEditable, KeyListener {
 	}
 	
 	public void startGame() {
-		isPlaying = !isPlaying;
+		if (placedPlayer) {
+			isPlaying = !isPlaying;
+			creatingWalls = false;
+		}
 	}
+	
+	public void goUp() {
+		if (isPlaying) {
+			playerPos.move(playerPos.x, playerPos.y-GRIDDISTANCE);
+			repaint();
+		}
+	}
+	
+	public void goDown() {
+		if (isPlaying) {
+			playerPos.move(playerPos.x, playerPos.y+GRIDDISTANCE);
+			repaint();
+		}
+	}
+	
+	public void goLeft() {
+		if (isPlaying) {
+			playerPos.move(playerPos.x-GRIDDISTANCE, playerPos.y);
+			repaint();
+		}
+	}
+	
+	public void goRight() {
+		if (isPlaying) {
+			playerPos.move(playerPos.x+GRIDDISTANCE, playerPos.y);
+			repaint();
+		}
+	}
+	
+	
 	
 	
 }

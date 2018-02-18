@@ -5,8 +5,11 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JSplitPane;
+import javax.swing.SwingConstants;
+
 import java.awt.BorderLayout;
 import javax.swing.JPanel;
+import javax.swing.JSeparator;
 
 public class AuthorWindow extends JPanel implements ActionListener {
 
@@ -110,6 +113,42 @@ public class AuthorWindow extends JPanel implements ActionListener {
 			}
 		});
 		authorPanel.add(start);
+		authorPanel.add(new JSeparator(SwingConstants.HORIZONTAL), "growx, wrap");
+		JButton goUp = new JButton("↑");
+		goUp.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				mapPanel.goUp();
+			}
+		});
+		authorPanel.add(goUp);
+		
+		JButton goDown = new JButton("↓");
+		goDown.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				mapPanel.goDown();
+			}
+		});
+		authorPanel.add(goDown);
+		
+		JButton goLeft = new JButton("←");
+		goLeft.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				mapPanel.goLeft();
+			}
+		});
+		authorPanel.add(goLeft);
+
+		JButton goRight = new JButton("→");
+		goRight.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				mapPanel.goRight();
+			}
+		});
+		authorPanel.add(goRight);
 		
 		//mapPanel holds the graphics of the map
 		mapPanel = new MapPanel();
