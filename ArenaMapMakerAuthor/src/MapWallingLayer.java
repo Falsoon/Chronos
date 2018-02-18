@@ -40,4 +40,10 @@ public class MapWallingLayer extends MapLayer {
 		return copy;
 	}
 
+	@Override
+	public void undo() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

@@ -14,10 +14,10 @@ import javax.swing.undo.StateEditable;
 import javax.swing.undo.UndoManager;
 import javax.swing.undo.UndoableEditSupport;
 
-public class MapPanel extends JPanel implements StateEditable, KeyListener {
+public class MapPanel extends JPanel implements StateEditable {
 
 	private static final Object MAP_KEY = "MapKey";
-	private boolean isPlaying, placingPlayer, outlining, creatingWalls, drawing;
+	private boolean isPlaying, placingPlayer, creating;
 	private final int GRIDDISTANCE = 15;
 	public GeneralPath path = new GeneralPath();
 	public GeneralPath wallPath = new GeneralPath();
@@ -27,30 +27,34 @@ public class MapPanel extends JPanel implements StateEditable, KeyListener {
 	UndoableEditSupport undoSupport = new UndoableEditSupport(this);
 	UndoManager manager = new UndoManager();
 	private Map map;
-/**
- * Constructor of MapPanel adds the appropriate action listeners
- */
+
+	/**
+	 * Constructor of MapPanel adds the appropriate action listeners
+	 */
 	public MapPanel() {
 		map = new Map();
-		//Anonymous class was used to access MapPanel fields
+		// Anonymous class was used to access MapPanel fields
 		MouseListener mousehandler = new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent e) {
-				StateEdit stateEdit = new StateEdit(MapPanel.this);
-				map.mousePressed(e);
-				repaint();
-				//stateEdit is used for undo
-				stateEdit.end();
-				manager.addEdit(stateEdit);
+				if (creating) {
+					StateEdit stateEdit = new StateEdit(MapPanel.this);
+					creating = map.mousePressed(e);
+					repaint();
+					// stateEdit is used for undo
+					stateEdit.end();
+					manager.addEdit(stateEdit);
+				}
 				if (placingPlayer) {
 					playerPos = e.getPoint();
-					playerPos.setLocation(Math.round(playerPos.x / GRIDDISTANCE) * GRIDDISTANCE, Math.round(playerPos.y / GRIDDISTANCE) * GRIDDISTANCE);
+					playerPos.setLocation(Math.round(playerPos.x / GRIDDISTANCE) * GRIDDISTANCE,
+							Math.round(playerPos.y / GRIDDISTANCE) * GRIDDISTANCE);
 					repaint();
 				}
 			}
 		};
-		//add listeners
-		addKeyListener(this);
+		// add listeners
+		//addKeyListener(this);
 		addUndoableEditListener(manager);
 		addMouseListener(mousehandler);
 	}
@@ -61,14 +65,16 @@ public class MapPanel extends JPanel implements StateEditable, KeyListener {
 	public void paintRooms() {
 		placingPlayer = false;
 		map.outlining();
+		creating = true;
 	}
-	
+
 	/**
 	 * Changes state of MapPanel to add walls
 	 */
 	public void paintWalls() {
 		placingPlayer = false;
 		map.walling();
+		creating =true;
 	}
 
 	/**
@@ -78,31 +84,32 @@ public class MapPanel extends JPanel implements StateEditable, KeyListener {
 		map = new Map();
 		placingPlayer = false;
 		repaint();
+		creating = false;
 	}
 
 	/**
-	 * This method is inherited by JPanel
-	 * paintComponents will draw on the panel each time repaint() is called
+	 * This method is inherited by JPanel paintComponents will draw on the panel
+	 * each time repaint() is called
 	 */
 	public void paintComponent(Graphics g) {
-		//Background
+		// Background
 		g.setColor(Color.LIGHT_GRAY);
 		g.fillRect(0, 0, 1200, 1200);
-		//Grid points
+		// Grid points
 		g.setColor(Color.white);
 		for (int i = 0; i < 600; i++) {
 			for (int j = 0; j < 600; j++) {
-				g.drawLine(GRIDDISTANCE * (i + 1), GRIDDISTANCE * (j + 1), GRIDDISTANCE * (i + 1), GRIDDISTANCE * (j + 1));
+				g.drawLine(GRIDDISTANCE * (i + 1), GRIDDISTANCE * (j + 1), GRIDDISTANCE * (i + 1),
+						GRIDDISTANCE * (j + 1));
 			}
 		}
 		map.draw(g);
 		if (placingPlayer || isPlaying) {
 			Graphics2D g2d = (Graphics2D) g;
 			g2d.setColor(Color.BLACK);
-			g2d.drawString("Â¶", playerPos.x, playerPos.y);
+			g2d.drawString("¶", playerPos.x, playerPos.y);
 			placingPlayer = false;
 		}
-	
 	}
 
 	/**
@@ -115,15 +122,17 @@ public class MapPanel extends JPanel implements StateEditable, KeyListener {
 	}
 
 	/**
-	 * Required by StateEditable interface for undo support. 
-	 * This method is called when a state edit is created and when an edit ends
+	 * Required by StateEditable interface for undo support. This method is called
+	 * when a state edit is created and when an edit ends
 	 */
 	public void storeState(Hashtable state) {
 		state.put(MAP_KEY, getMap());
 	}
 
 	/**
-	 * This method is a helper method to get a copy of the current path rather than a reference to the path itself.
+	 * This method is a helper method to get a copy of the current path rather than
+	 * a reference to the path itself.
+	 * 
 	 * @return Copy of Path
 	 */
 	private Map getMap() {
@@ -140,100 +149,54 @@ public class MapPanel extends JPanel implements StateEditable, KeyListener {
 		}
 	}
 
-	@Override
-	public void keyTyped(KeyEvent e) {
-		// TODO Auto-generated method stub
-
-	}
-/**
- * ctrl+z for undo is not yet working
- */
-	@Override
-	public void keyPressed(KeyEvent e) {
-		System.out.println("here");
-		if (e.isControlDown() && e.getKeyChar() == 'z') {
-			manager.undo();
-			repaint();
-		}
-		if (isPlaying) {
-			if (e.getKeyCode() == KeyEvent.VK_UP) {
-				// Move player up
-				playerPos.move(playerPos.x, playerPos.y+10);
-			}
-			if (e.getKeyCode() == KeyEvent.VK_DOWN) {
-				// Move player down
-				playerPos.move(playerPos.x, playerPos.y-10);
-			}
-			if (e.getKeyCode() == KeyEvent.VK_LEFT) {
-				// Move player left
-				playerPos.move(playerPos.x-10, playerPos.y);
-			}
-			if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
-				// Move player right
-				playerPos.move(playerPos.x+10, playerPos.y);
-			}
-			repaint();
-		}
-	}
-
-	@Override
-	public void keyReleased(KeyEvent e) {
-		// TODO Auto-generated method stub
-
-	}
-
 	/**
 	 * performs undo
 	 */
 	public void undo() {
 		if (manager.canUndo()) {
 			manager.undo();
-			map.outlining();
+			creating = true;
 			map.undo();
 		} else {
 			JOptionPane.showMessageDialog(this, "Cannot Undo");
 		}
 		repaint();
 	}
-	
+
 	public void placePlayerStart() {
 		placingPlayer = true;
 	}
-	
+
 	public void startGame() {
 		isPlaying = !isPlaying;
-		creatingWalls = false;
+		creating = false;
 	}
-	
+
 	public void goUp() {
 		if (isPlaying) {
-			playerPos.move(playerPos.x, playerPos.y-GRIDDISTANCE);
+			playerPos.move(playerPos.x, playerPos.y - GRIDDISTANCE);
 			repaint();
 		}
 	}
-	
+
 	public void goDown() {
 		if (isPlaying) {
-			playerPos.move(playerPos.x, playerPos.y+GRIDDISTANCE);
+			playerPos.move(playerPos.x, playerPos.y + GRIDDISTANCE);
 			repaint();
 		}
 	}
-	
+
 	public void goLeft() {
 		if (isPlaying) {
-			playerPos.move(playerPos.x-GRIDDISTANCE, playerPos.y);
+			playerPos.move(playerPos.x - GRIDDISTANCE, playerPos.y);
 			repaint();
 		}
 	}
-	
+
 	public void goRight() {
 		if (isPlaying) {
-			playerPos.move(playerPos.x+GRIDDISTANCE, playerPos.y);
+			playerPos.move(playerPos.x + GRIDDISTANCE, playerPos.y);
 			repaint();
 		}
 	}
-	
-	
-	
-	
 }

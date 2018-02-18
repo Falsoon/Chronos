@@ -7,12 +7,15 @@ import javax.swing.JFrame;
 import javax.swing.JSplitPane;
 import java.awt.BorderLayout;
 import javax.swing.JPanel;
+import java.awt.FlowLayout;
+import javax.swing.JComboBox;
 
 public class AuthorWindow extends JPanel implements ActionListener {
 
 	private JFrame frame;
 	private AuthorPanel authorPanel;
 	private MapPanel mapPanel;
+	private String[] authorActions = {"Click here to start drawing","Draw Outline(Solid Wall)","Split Room(Transparent Wall)"}; 
 	
 	
 	/**
@@ -53,25 +56,10 @@ public class AuthorWindow extends JPanel implements ActionListener {
 		authorPanel = new AuthorPanel();
 		splitPane.setLeftComponent(authorPanel);
 		
-		//button indicates that the outline of the room is to be drawn
-		JButton btnAddRooms = new JButton("Draw Outline(Solid Wall)");
-		btnAddRooms.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				mapPanel.paintRooms();
-			}
-		});
-		authorPanel.add(btnAddRooms);
+		JComboBox<String> comboBox = new JComboBox<String>(authorActions);
+		comboBox.addActionListener(this);
+		authorPanel.add(comboBox);
 		
-		//button indicates that the outline is ready to be split into rooms
-		JButton wallButton = new JButton("Split Room(Transparent Wall)");
-		wallButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				mapPanel.paintWalls();
-			}
-		});
-		authorPanel.add(wallButton);
 		
 		//button resets the map
 		JButton btnClear = new JButton("Clear");
@@ -79,6 +67,7 @@ public class AuthorWindow extends JPanel implements ActionListener {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				mapPanel.clear();
+				comboBox.setSelectedItem(authorActions[0]);
 			}
 		});
 		authorPanel.add(btnClear);
@@ -102,63 +91,44 @@ public class AuthorWindow extends JPanel implements ActionListener {
 		});
 		authorPanel.add(placeStart);
 		
-		JButton start = new JButton("Start/Stop Playing");
+		JButton start = new JButton("Start Playing");
 		start.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				if(mapPanel.playerPos!=null) {
+				EventQueue.invokeLater(new Runnable() {
+					public void run() {
+						try {
+							PlayerWindow window = new PlayerWindow(mapPanel);
+							window.frame.setVisible(true);
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+					}
+				});
 				mapPanel.startGame();
+				frame.setVisible(false);
+				}
 			}
 		});
 		authorPanel.add(start);
 		
-		JButton goUp = new JButton("↑");
-		goUp.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				mapPanel.goUp();
-			}
-		});
-		authorPanel.add(goUp);
-		
-		JButton goDown = new JButton("↓");
-		goDown.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				mapPanel.goDown();
-			}
-		});
-		authorPanel.add(goDown);
-		
-		JButton goLeft = new JButton("←");
-		goLeft.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				mapPanel.goLeft();
-			}
-		});
-		authorPanel.add(goLeft);
-
-		JButton goRight = new JButton("→");
-		goRight.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				mapPanel.goRight();
-			}
-		});
-		authorPanel.add(goRight);
 		
 		//mapPanel holds the graphics of the map
 		mapPanel = new MapPanel();
 		
 		splitPane.setRightComponent(mapPanel);
 		
-		frame.setBounds(200, 200, 650, 450);
+		frame.setBounds(200, 200, 800, 450);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		e.getSource();
-		mapPanel.paintRooms();
+		JComboBox<String> cb = (JComboBox<String>)e.getSource();
+		switch(cb.getSelectedItem().toString()) {
+		case "Draw Outline(Solid Wall)": mapPanel.paintRooms(); break;
+		case "Split Room(Transparent Wall)": mapPanel.paintWalls(); break;
+		}
 	}
 }

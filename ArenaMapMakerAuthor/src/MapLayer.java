@@ -1,14 +1,7 @@
-import java.awt.BasicStroke;
-import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.Point;
-import java.awt.RenderingHints;
-import java.awt.Stroke;
 import java.awt.geom.GeneralPath;
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Stack;
 
 /**
  * Layer of the map
@@ -17,14 +10,14 @@ import java.util.Stack;
  *
  */
 public abstract class MapLayer {
-	private boolean drawing;
+	protected boolean drawing;
 	protected Point start;
 	private boolean outlining;
 	protected ArrayList<GeneralPath> pathList;
-	private GeneralPath path;
+	protected GeneralPath path;
 	private boolean walling;
 
-	public void MapLayer() {
+	public MapLayer() {
 		pathList = new ArrayList<GeneralPath>();
 		drawing = false;
 	}
@@ -80,11 +73,5 @@ public abstract class MapLayer {
 
 	public abstract MapLayer copy();
 
-	public void undo() {
-		if(!pathList.isEmpty()) {
-			path = pathList.get(0);
-			drawing = true;
-		}
-	}
-
+	public abstract void undo(); 
 }

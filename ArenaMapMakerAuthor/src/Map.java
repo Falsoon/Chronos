@@ -8,7 +8,7 @@ import javax.swing.undo.UndoableEditSupport;
 public class Map{
 	private static final double GRIDDISTANCE = 15;
 	private ArrayList<MapLayer> layers;
-	private boolean outlining;
+	boolean outlining;
 	private MapLayer mapLayer;
 	private MapLayer mapLayer2;
 	private boolean walling;
@@ -32,9 +32,12 @@ public class Map{
 
 	public void outlining() {
 		outlining = true;
+		walling = false;
+		mapLayer.start = null;
+		mapLayer.drawing = false;
 	}
 
-	public void mousePressed(MouseEvent e) {
+	public boolean mousePressed(MouseEvent e) {
 		// if a point needs to be drawn
 		Point p = e.getPoint();
 		// round to nearest grid point
@@ -58,16 +61,18 @@ public class Map{
 				layers.add(mapLayer2);
 			}
 		}
+		return outlining||walling;
 	}
 
 	public void walling() {
 		walling = true;
+		outlining = false;
 	}
 
 	public Map copy() {
 		Map copy = new Map();
 		copy.mapLayer = mapLayer.copy();
-		copy.mapLayer2 = mapLayer.copy();
+		copy.mapLayer2 = mapLayer2.copy();
 		copy.outlining = outlining;
 		copy.walling = walling;
 		return copy;
