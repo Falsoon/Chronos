@@ -24,7 +24,7 @@ public abstract class MapLayer {
 	private GeneralPath path;
 	private boolean walling;
 
-	public void MapLayer() {
+	public MapLayer() {
 		pathList = new ArrayList<GeneralPath>();
 		drawing = false;
 	}

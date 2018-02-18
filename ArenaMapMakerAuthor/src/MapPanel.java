@@ -27,8 +27,8 @@ public class MapPanel extends JPanel implements StateEditable, KeyListener {
 	public GeneralPath path = new GeneralPath();
 	public GeneralPath wallPath = new GeneralPath();
 	public Point start;
+	//public Room room;
 	public Point playerPos;
-	public Room room;
 	UndoableEditSupport undoSupport = new UndoableEditSupport(this);
 	UndoManager manager = new UndoManager();
 	private Map map;
@@ -88,7 +88,7 @@ public class MapPanel extends JPanel implements StateEditable, KeyListener {
 		drawing = false;
 		placingPlayer = false;
 		path = null;
-		room = null;
+		//room = null;
 		repaint();
 	}
 
