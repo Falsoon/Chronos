@@ -32,7 +32,7 @@ public class PlayerWindow {
 		frame.setBounds(200, 200, 800, 450);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setTitle("PlayerWindow");
-		
+
 		JSplitPane splitPane = new JSplitPane();
 		frame.getContentPane().add(splitPane, BorderLayout.CENTER);
 		splitPane.setDividerLocation(300);
@@ -45,6 +45,7 @@ public class PlayerWindow {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				mapPanel.goUp();
+				storyPanel.grabFocus();
 			}
 		});
 		storyPanel.add(goUp);
@@ -54,6 +55,7 @@ public class PlayerWindow {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				mapPanel.goDown();
+				storyPanel.grabFocus();
 			}
 		});
 		storyPanel.add(goDown);
@@ -63,6 +65,7 @@ public class PlayerWindow {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				mapPanel.goLeft();
+				storyPanel.grabFocus();
 			}
 		});
 		storyPanel.add(goLeft);
@@ -72,6 +75,7 @@ public class PlayerWindow {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				mapPanel.goRight();
+				storyPanel.grabFocus();
 			}
 		});
 		storyPanel.add(goRight);

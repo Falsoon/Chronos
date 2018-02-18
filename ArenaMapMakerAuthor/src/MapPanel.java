@@ -22,7 +22,7 @@ public class MapPanel extends JPanel implements StateEditable {
 	public GeneralPath path = new GeneralPath();
 	public GeneralPath wallPath = new GeneralPath();
 	public Point start;
-	//public Room room;
+	// public Room room;
 	public Point playerPos;
 	UndoableEditSupport undoSupport = new UndoableEditSupport(this);
 	UndoManager manager = new UndoManager();
@@ -53,8 +53,9 @@ public class MapPanel extends JPanel implements StateEditable {
 				}
 			}
 		};
+
 		// add listeners
-		//addKeyListener(this);
+
 		addUndoableEditListener(manager);
 		addMouseListener(mousehandler);
 	}
@@ -74,7 +75,7 @@ public class MapPanel extends JPanel implements StateEditable {
 	public void paintWalls() {
 		placingPlayer = false;
 		map.walling();
-		creating =true;
+		creating = true;
 	}
 
 	/**
