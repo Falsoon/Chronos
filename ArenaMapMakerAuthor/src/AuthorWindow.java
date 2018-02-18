@@ -7,9 +7,7 @@ import javax.swing.JFrame;
 import javax.swing.JSplitPane;
 import java.awt.BorderLayout;
 import javax.swing.JPanel;
-import java.awt.FlowLayout;
 import javax.swing.JComboBox;
-
 public class AuthorWindow extends JPanel implements ActionListener {
 
 	private JFrame frame;
@@ -112,7 +110,6 @@ public class AuthorWindow extends JPanel implements ActionListener {
 			}
 		});
 		authorPanel.add(start);
-		
 		
 		//mapPanel holds the graphics of the map
 		mapPanel = new MapPanel();

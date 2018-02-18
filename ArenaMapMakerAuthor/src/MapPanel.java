@@ -17,13 +17,13 @@ import javax.swing.undo.UndoableEditSupport;
 public class MapPanel extends JPanel implements StateEditable {
 
 	private static final Object MAP_KEY = "MapKey";
-	private boolean isPlaying, placingPlayer, creating;
+	private boolean isPlaying, placingPlayer, placedPlayer, creating, drawing;
 	private final int GRIDDISTANCE = 15;
 	public GeneralPath path = new GeneralPath();
 	public GeneralPath wallPath = new GeneralPath();
 	public Point start;
+	//public Room room;
 	public Point playerPos;
-	public Room room;
 	UndoableEditSupport undoSupport = new UndoableEditSupport(this);
 	UndoManager manager = new UndoManager();
 	private Map map;
@@ -83,6 +83,9 @@ public class MapPanel extends JPanel implements StateEditable {
 	public void clear() {
 		map = new Map();
 		placingPlayer = false;
+		placedPlayer = false;
+		isPlaying = false;
+		playerPos.move(Integer.MAX_VALUE, Integer.MAX_VALUE);
 		repaint();
 		creating = false;
 	}
