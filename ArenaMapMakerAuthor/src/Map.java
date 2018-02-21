@@ -1,6 +1,7 @@
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
+import java.awt.geom.GeneralPath;
 import java.util.ArrayList;
 import javax.swing.undo.UndoManager;
 import javax.swing.undo.UndoableEditSupport;
@@ -80,5 +81,9 @@ public class Map{
 
 	public void undo() {
 		mapLayer.undo();
+	}
+	
+	public ArrayList<GeneralPath> getMapLayerPaths() {
+		return mapLayer.pathList;
 	}
 }

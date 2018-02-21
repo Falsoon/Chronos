@@ -4,7 +4,9 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.event.*;
 import java.awt.geom.GeneralPath;
+import java.awt.geom.Rectangle2D;
 import java.util.Hashtable;
+import java.util.Iterator;
 
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -111,7 +113,7 @@ public class MapPanel extends JPanel implements StateEditable {
 		if (placingPlayer || isPlaying) {
 			Graphics2D g2d = (Graphics2D) g;
 			g2d.setColor(Color.BLACK);
-			g2d.drawString("¶", playerPos.x, playerPos.y);
+			g2d.drawString("ï¿½", playerPos.x, playerPos.y);
 			placingPlayer = false;
 		}
 	}
@@ -178,28 +180,76 @@ public class MapPanel extends JPanel implements StateEditable {
 
 	public void goUp() {
 		if (isPlaying) {
-			playerPos.move(playerPos.x, playerPos.y - GRIDDISTANCE);
+			boolean inside = false;
+			for (int i = 0; i < GRIDDISTANCE; i++) {
+				playerPos.move(playerPos.x, playerPos.y - 1);
+				Iterator<GeneralPath> itr = map.getMapLayerPaths().iterator();
+				while (itr.hasNext() && !inside) {
+					if (itr.next().contains(playerPos)) {
+						inside = true;
+					}
+				}
+			}
+			if (!inside) {
+				playerPos.move(playerPos.x, playerPos.y + GRIDDISTANCE);
+			}
 			repaint();
 		}
 	}
 
 	public void goDown() {
 		if (isPlaying) {
-			playerPos.move(playerPos.x, playerPos.y + GRIDDISTANCE);
+			boolean inside = false;
+			for (int i = 0; i < GRIDDISTANCE; i++) {
+				playerPos.move(playerPos.x, playerPos.y + 1);
+				Iterator<GeneralPath> itr = map.getMapLayerPaths().iterator();
+				while (itr.hasNext() && !inside) {
+					if (itr.next().contains(playerPos)) {
+						inside = true;
+					}
+				}
+			}
+			if (!inside) {
+				playerPos.move(playerPos.x, playerPos.y - GRIDDISTANCE);
+			}
 			repaint();
 		}
 	}
 
 	public void goLeft() {
 		if (isPlaying) {
-			playerPos.move(playerPos.x - GRIDDISTANCE, playerPos.y);
+			boolean inside = false;
+			for (int i = 0; i < GRIDDISTANCE; i++) {
+				playerPos.move(playerPos.x - 1, playerPos.y);
+				Iterator<GeneralPath> itr = map.getMapLayerPaths().iterator();
+				while (itr.hasNext() && !inside) {
+					if (itr.next().contains(playerPos)) {
+						inside = true;
+					}
+				}
+			}
+			if (!inside) {
+				playerPos.move(playerPos.x + GRIDDISTANCE, playerPos.y);
+			}
 			repaint();
 		}
 	}
 
 	public void goRight() {
 		if (isPlaying) {
-			playerPos.move(playerPos.x + GRIDDISTANCE, playerPos.y);
+			boolean inside = false;
+			for (int i = 0; i < GRIDDISTANCE; i++) {
+				playerPos.move(playerPos.x + 1, playerPos.y);
+				Iterator<GeneralPath> itr = map.getMapLayerPaths().iterator();
+				while (itr.hasNext() && !inside) {
+					if (itr.next().contains(playerPos)) {
+						inside = true;
+					}
+				}
+			}
+			if (!inside) {
+				playerPos.move(playerPos.x - GRIDDISTANCE, playerPos.y);
+			}
 			repaint();
 		}
 	}
