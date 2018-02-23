@@ -110,5 +110,15 @@ public class Player {
 		}
 		return outside;
 	}
+
+	public void rePlace() {
+		Iterator<GeneralPath> itr = mapLayer.pathList.iterator();
+		while (itr.hasNext()) {
+			GeneralPath curr = itr.next();
+			if (curr.contains(position)) {
+				currentRoom = curr;
+			}
+		}
+	}
 	
 }
