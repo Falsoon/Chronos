@@ -26,6 +26,7 @@ public class MapPanel extends JPanel implements StateEditable {
 	public Point start;
 	// public Room room;
 	public Point playerPos;
+	public GeneralPath playerRoom = null;
 	UndoableEditSupport undoSupport = new UndoableEditSupport(this);
 	UndoManager manager = new UndoManager();
 	private Map map;
@@ -51,6 +52,13 @@ public class MapPanel extends JPanel implements StateEditable {
 					playerPos = e.getPoint();
 					playerPos.setLocation(Math.round(playerPos.x / GRIDDISTANCE) * GRIDDISTANCE,
 							Math.round(playerPos.y / GRIDDISTANCE) * GRIDDISTANCE);
+					Iterator<GeneralPath> itr = map.getMapLayerPaths().iterator();
+					while (itr.hasNext()) {
+						GeneralPath curr = itr.next();
+						if (curr.contains(playerPos)) {
+							playerRoom = curr;
+						}
+					}
 					repaint();
 				}
 			}
@@ -113,7 +121,7 @@ public class MapPanel extends JPanel implements StateEditable {
 		if (placingPlayer || isPlaying) {
 			Graphics2D g2d = (Graphics2D) g;
 			g2d.setColor(Color.BLACK);
-			g2d.drawString("�", playerPos.x, playerPos.y);
+			g2d.drawString("P", playerPos.x, playerPos.y);
 			placingPlayer = false;
 		}
 	}
@@ -181,15 +189,14 @@ public class MapPanel extends JPanel implements StateEditable {
 	public void goUp() {
 		if (isPlaying) {
 			boolean inside = false;
-			for (int i = 0; i < GRIDDISTANCE; i++) {
-				playerPos.move(playerPos.x, playerPos.y - 1);
+				playerPos.move(playerPos.x, playerPos.y - GRIDDISTANCE);
 				Iterator<GeneralPath> itr = map.getMapLayerPaths().iterator();
 				while (itr.hasNext() && !inside) {
-					if (itr.next().contains(playerPos)) {
+					GeneralPath curr = itr.next();
+					if (curr.equals(playerRoom) && curr.contains(playerPos.x + GRIDDISTANCE/2, playerPos.y - GRIDDISTANCE/2)) {
 						inside = true;
-					}
+					} 
 				}
-			}
 			if (!inside) {
 				playerPos.move(playerPos.x, playerPos.y + GRIDDISTANCE);
 			}
@@ -200,15 +207,14 @@ public class MapPanel extends JPanel implements StateEditable {
 	public void goDown() {
 		if (isPlaying) {
 			boolean inside = false;
-			for (int i = 0; i < GRIDDISTANCE; i++) {
-				playerPos.move(playerPos.x, playerPos.y + 1);
+				playerPos.move(playerPos.x, playerPos.y + GRIDDISTANCE);
 				Iterator<GeneralPath> itr = map.getMapLayerPaths().iterator();
 				while (itr.hasNext() && !inside) {
-					if (itr.next().contains(playerPos)) {
+					GeneralPath curr = itr.next();
+					if (curr.equals(playerRoom) && curr.contains(playerPos.x + GRIDDISTANCE/2, playerPos.y - GRIDDISTANCE/2)) {
 						inside = true;
-					}
+					} 
 				}
-			}
 			if (!inside) {
 				playerPos.move(playerPos.x, playerPos.y - GRIDDISTANCE);
 			}
@@ -219,15 +225,14 @@ public class MapPanel extends JPanel implements StateEditable {
 	public void goLeft() {
 		if (isPlaying) {
 			boolean inside = false;
-			for (int i = 0; i < GRIDDISTANCE; i++) {
-				playerPos.move(playerPos.x - 1, playerPos.y);
+				playerPos.move(playerPos.x - GRIDDISTANCE, playerPos.y);
 				Iterator<GeneralPath> itr = map.getMapLayerPaths().iterator();
 				while (itr.hasNext() && !inside) {
-					if (itr.next().contains(playerPos)) {
+					GeneralPath curr = itr.next();
+					if (curr.equals(playerRoom) && curr.contains(playerPos.x + GRIDDISTANCE/2, playerPos.y - GRIDDISTANCE/2)) {
 						inside = true;
-					}
+					} 
 				}
-			}
 			if (!inside) {
 				playerPos.move(playerPos.x + GRIDDISTANCE, playerPos.y);
 			}
@@ -238,15 +243,14 @@ public class MapPanel extends JPanel implements StateEditable {
 	public void goRight() {
 		if (isPlaying) {
 			boolean inside = false;
-			for (int i = 0; i < GRIDDISTANCE; i++) {
-				playerPos.move(playerPos.x + 1, playerPos.y);
+				playerPos.move(playerPos.x + GRIDDISTANCE, playerPos.y);
 				Iterator<GeneralPath> itr = map.getMapLayerPaths().iterator();
 				while (itr.hasNext() && !inside) {
-					if (itr.next().contains(playerPos)) {
+					GeneralPath curr = itr.next();
+					if (curr.equals(playerRoom) && curr.contains(playerPos.x + GRIDDISTANCE/2, playerPos.y - GRIDDISTANCE/2)) {
 						inside = true;
-					}
+					} 
 				}
-			}
 			if (!inside) {
 				playerPos.move(playerPos.x - GRIDDISTANCE, playerPos.y);
 			}
