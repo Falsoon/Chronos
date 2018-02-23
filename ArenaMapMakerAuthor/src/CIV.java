@@ -19,18 +19,20 @@ public class CIV {
 		if (map.isCreating()) {
 			map.mousePressed(p);
 		} else {
-			Room room = map.getRoom(p);
-			if (room != null) {
-				EventQueue.invokeLater(new Runnable() {
-					public void run() {
-						try {
-							FormWindow window = new FormWindow(room);
-							window.frame.setVisible(true);
-						} catch (Exception e) {
-							e.printStackTrace();
+			if (!map.getPlayer().isPlaying()) {
+				Room room = map.getRoom(p);
+				if (room != null) {
+					EventQueue.invokeLater(new Runnable() {
+						public void run() {
+							try {
+								FormWindow window = new FormWindow(room);
+								window.frame.setVisible(true);
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
 						}
-					}
-				});
+					});
+				}
 			}
 		}
 	}
@@ -81,6 +83,10 @@ public class CIV {
 
 	public void goRight() {
 		map.getPlayer().goRight();
+	}
+
+	public Room getRoom() {
+		return map.getRoom(map.getPlayer().getPosition());
 	}
 
 }

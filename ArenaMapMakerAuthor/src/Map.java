@@ -142,6 +142,8 @@ public class Map implements StateEditable {
 
 	public void placePlayerStart() {
 		player.startPlacing();
+		outlining = false;
+		walling = false;
 	}
 
 	public void startGame() {

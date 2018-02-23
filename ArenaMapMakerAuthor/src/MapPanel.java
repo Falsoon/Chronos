@@ -16,9 +16,9 @@ import javax.swing.undo.StateEditable;
 import javax.swing.undo.UndoManager;
 import javax.swing.undo.UndoableEditSupport;
 
-public class MapPanel extends JPanel {
+public class MapPanel extends JPanel  {
 
-	private CIV civ;
+	public CIV civ;
 	private final int GRIDDISTANCE = Constants.GRIDDISTANCE;
 	public Point playerPos;
 
@@ -120,5 +120,9 @@ public class MapPanel extends JPanel {
 	public void goRight() {
 		civ.goRight();
 		repaint();
+	}
+
+	public Room getRoom() {
+		return civ.getRoom();
 	}
 }
