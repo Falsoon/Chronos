@@ -2,6 +2,7 @@ import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.geom.GeneralPath;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  * Layer of the map
@@ -73,5 +74,20 @@ public abstract class MapLayer {
 
 	public abstract MapLayer copy();
 
-	public abstract void undo(); 
+	public abstract void undo();
+
+	public Room getRoom(Point p) {
+		GeneralPath curr = null;
+		Iterator<GeneralPath> itr = pathList.iterator();
+		boolean found = false;
+		while (!found &&itr.hasNext()) {
+			curr = itr.next();
+			found = curr.contains(p);
+		}
+		if(found) {
+			return RoomList.getRoom(curr);
+		}else {
+			return null;
+		}
+	} 
 }

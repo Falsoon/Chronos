@@ -47,7 +47,9 @@ public class AuthorWindow extends JPanel implements ActionListener {
 	private void initialize() {
 		frame = new JFrame();
 		frame.getContentPane().setBackground(Color.BLACK);
-
+		frame.setBounds(400, 200, 800, 450);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
 		JSplitPane splitPane = new JSplitPane();
 		frame.getContentPane().add(splitPane, BorderLayout.CENTER);
 		splitPane.setDividerLocation(300);
@@ -76,6 +78,7 @@ public class AuthorWindow extends JPanel implements ActionListener {
 			}
 		});
 		authorPanel.add(btnClear);
+		
 		// button allows author to undo last action.
 		// ctrl+z is preferred design
 		JButton undoButton = new JButton("Undo");
@@ -101,7 +104,7 @@ public class AuthorWindow extends JPanel implements ActionListener {
 		start.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (mapPanel.playerPos != null) {
+				if (mapPanel.placedPlayer()) {
 					EventQueue.invokeLater(new Runnable() {
 						public void run() {
 							try {
@@ -118,8 +121,7 @@ public class AuthorWindow extends JPanel implements ActionListener {
 			}
 		});
 		authorPanel.add(start);
-		frame.setBounds(200, 200, 800, 450);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
 	}
 
 	@Override
@@ -132,6 +134,10 @@ public class AuthorWindow extends JPanel implements ActionListener {
 		case "Split Room(Transparent Wall)":
 			mapPanel.paintWalls();
 			break;
+		case "Click here to start drawing":
+			break;
+		default:
+			System.err.println("ComboBox Error");
 		}
 	}
 }

@@ -40,46 +40,6 @@ public class PlayerWindow {
 
 		StoryPanel storyPanel = new StoryPanel(mapPanel);
 
-		JButton goUp = new JButton("Up");
-		goUp.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				mapPanel.goUp();
-				storyPanel.grabFocus();
-			}
-		});
-		storyPanel.add(goUp);
-
-		JButton goDown = new JButton("Down");
-		goDown.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				mapPanel.goDown();
-				storyPanel.grabFocus();
-			}
-		});
-		storyPanel.add(goDown);
-
-		JButton goLeft = new JButton("Left");
-		goLeft.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				mapPanel.goLeft();
-				storyPanel.grabFocus();
-			}
-		});
-		storyPanel.add(goLeft);
-
-		JButton goRight = new JButton("Right");
-		goRight.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				mapPanel.goRight();
-				storyPanel.grabFocus();
-			}
-		});
-		storyPanel.add(goRight);
-
 		splitPane.setLeftComponent(storyPanel);
 	}
 }

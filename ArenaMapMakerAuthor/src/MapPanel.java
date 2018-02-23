@@ -16,49 +16,25 @@ import javax.swing.undo.StateEditable;
 import javax.swing.undo.UndoManager;
 import javax.swing.undo.UndoableEditSupport;
 
-public class MapPanel extends JPanel implements StateEditable {
+public class MapPanel extends JPanel {
 
-	private static final Object MAP_KEY = "MapKey";
-	private boolean isPlaying, placingPlayer, placedPlayer, creating, drawing;
-	private final int GRIDDISTANCE = 15;
-	public GeneralPath path = new GeneralPath();
-	public GeneralPath wallPath = new GeneralPath();
-	public Point start;
-	// public Room room;
+	private CIV civ;
+	private final int GRIDDISTANCE = Constants.GRIDDISTANCE;
 	public Point playerPos;
-	UndoableEditSupport undoSupport = new UndoableEditSupport(this);
-	UndoManager manager = new UndoManager();
-	private Map map;
 
 	/**
 	 * Constructor of MapPanel adds the appropriate action listeners
 	 */
 	public MapPanel() {
-		map = new Map();
+		civ = new CIV();
 		// Anonymous class was used to access MapPanel fields
 		MouseListener mousehandler = new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent e) {
-				if (creating) {
-					StateEdit stateEdit = new StateEdit(MapPanel.this);
-					creating = map.mousePressed(e);
-					repaint();
-					// stateEdit is used for undo
-					stateEdit.end();
-					manager.addEdit(stateEdit);
-				}
-				if (placingPlayer) {
-					playerPos = e.getPoint();
-					playerPos.setLocation(Math.round(playerPos.x / GRIDDISTANCE) * GRIDDISTANCE,
-							Math.round(playerPos.y / GRIDDISTANCE) * GRIDDISTANCE);
-					repaint();
-				}
+				civ.mousePressed(e);
+				repaint();
 			}
 		};
-
-		// add listeners
-
-		addUndoableEditListener(manager);
 		addMouseListener(mousehandler);
 	}
 
@@ -66,31 +42,22 @@ public class MapPanel extends JPanel implements StateEditable {
 	 * Changes state of MapPanel to draw Outline
 	 */
 	public void paintRooms() {
-		placingPlayer = false;
-		map.outlining();
-		creating = true;
+		civ.outlining();
 	}
 
 	/**
 	 * Changes state of MapPanel to add walls
 	 */
 	public void paintWalls() {
-		placingPlayer = false;
-		map.walling();
-		creating = true;
+		civ.walling();
 	}
 
 	/**
 	 * Resets state of MapPanel
 	 */
 	public void clear() {
-		map = new Map();
-		placingPlayer = false;
-		placedPlayer = false;
-		isPlaying = false;
-		playerPos.move(Integer.MAX_VALUE, Integer.MAX_VALUE);
+		civ.clear();
 		repaint();
-		creating = false;
 	}
 
 	/**
@@ -109,148 +76,50 @@ public class MapPanel extends JPanel implements StateEditable {
 						GRIDDISTANCE * (j + 1));
 			}
 		}
-		map.draw(g);
-		if (placingPlayer || isPlaying) {
-			Graphics2D g2d = (Graphics2D) g;
-			g2d.setColor(Color.BLACK);
-			g2d.drawString("�", playerPos.x, playerPos.y);
-			placingPlayer = false;
-		}
-	}
-
-	/**
-	 * Helps with undo support
-	 * 
-	 * @param undoableEditListener
-	 */
-	public void addUndoableEditListener(UndoableEditListener undoableEditListener) {
-		undoSupport.addUndoableEditListener(undoableEditListener);
-	}
-
-	/**
-	 * Required by StateEditable interface for undo support. This method is called
-	 * when a state edit is created and when an edit ends
-	 */
-	public void storeState(Hashtable state) {
-		state.put(MAP_KEY, getMap());
-	}
-
-	/**
-	 * This method is a helper method to get a copy of the current path rather than
-	 * a reference to the path itself.
-	 * 
-	 * @return Copy of Path
-	 */
-	private Map getMap() {
-		return map.copy();
-	}
-
-	/**
-	 * Called when the UndoMananger needs to undo to get to an earlier state.
-	 */
-	public void restoreState(Hashtable state) {
-		Map newP = (Map) state.get(MAP_KEY);
-		if (newP != null) {
-			map = newP;
-		}
+		civ.draw(g);
 	}
 
 	/**
 	 * performs undo
 	 */
 	public void undo() {
-		if (manager.canUndo()) {
-			manager.undo();
-			creating = true;
-			map.undo();
-		} else {
+		// if undo fails throw dialog
+		if (!civ.undo()) {
 			JOptionPane.showMessageDialog(this, "Cannot Undo");
 		}
 		repaint();
 	}
 
-	public void placePlayerStart() {
-		placingPlayer = true;
+	public void startGame() {
+		civ.startGame();
 	}
 
-	public void startGame() {
-		isPlaying = !isPlaying;
-		creating = false;
+	public void placePlayerStart() {
+		civ.placeStart();
+	}
+
+	public boolean placedPlayer() {
+		return civ.placedPlayer();
 	}
 
 	public void goUp() {
-		if (isPlaying) {
-			boolean inside = false;
-			for (int i = 0; i < GRIDDISTANCE; i++) {
-				playerPos.move(playerPos.x, playerPos.y - 1);
-				Iterator<GeneralPath> itr = map.getMapLayerPaths().iterator();
-				while (itr.hasNext() && !inside) {
-					if (itr.next().contains(playerPos)) {
-						inside = true;
-					}
-				}
-			}
-			if (!inside) {
-				playerPos.move(playerPos.x, playerPos.y + GRIDDISTANCE);
-			}
-			repaint();
-		}
+		civ.goUp();
+		repaint();
 	}
 
 	public void goDown() {
-		if (isPlaying) {
-			boolean inside = false;
-			for (int i = 0; i < GRIDDISTANCE; i++) {
-				playerPos.move(playerPos.x, playerPos.y + 1);
-				Iterator<GeneralPath> itr = map.getMapLayerPaths().iterator();
-				while (itr.hasNext() && !inside) {
-					if (itr.next().contains(playerPos)) {
-						inside = true;
-					}
-				}
-			}
-			if (!inside) {
-				playerPos.move(playerPos.x, playerPos.y - GRIDDISTANCE);
-			}
-			repaint();
-		}
+		civ.goDown();
+		repaint();
 	}
 
 	public void goLeft() {
-		if (isPlaying) {
-			boolean inside = false;
-			for (int i = 0; i < GRIDDISTANCE; i++) {
-				playerPos.move(playerPos.x - 1, playerPos.y);
-				Iterator<GeneralPath> itr = map.getMapLayerPaths().iterator();
-				while (itr.hasNext() && !inside) {
-					if (itr.next().contains(playerPos)) {
-						inside = true;
-					}
-				}
-			}
-			if (!inside) {
-				playerPos.move(playerPos.x + GRIDDISTANCE, playerPos.y);
-			}
-			repaint();
-		}
+		civ.goLeft();
+		repaint();
 	}
 
 	public void goRight() {
-		if (isPlaying) {
-			boolean inside = false;
-			for (int i = 0; i < GRIDDISTANCE; i++) {
-				playerPos.move(playerPos.x + 1, playerPos.y);
-				Iterator<GeneralPath> itr = map.getMapLayerPaths().iterator();
-				while (itr.hasNext() && !inside) {
-					if (itr.next().contains(playerPos)) {
-						inside = true;
-					}
-				}
-			}
-			if (!inside) {
-				playerPos.move(playerPos.x - GRIDDISTANCE, playerPos.y);
-			}
-			repaint();
-		}
+		civ.goRight();
+		repaint();
+
 	}
 }

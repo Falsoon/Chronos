@@ -1,28 +1,14 @@
-import java.awt.Point;
-import java.util.ArrayList;
+import java.awt.geom.GeneralPath;
 
 public class Room {
-	public ArrayList<Point> points;
-
-	public Room(Point p) {
-		points = new ArrayList<Point>();
-		points.add(p);
-	}
-
-	public void add(Point p) {
-		points.add(p);
-	}
-
-	public Point removeLast() {
-		Point p = null;
-		if (!points.isEmpty()) {
-			p = points.remove(points.size() - 1);
-		}
-		return p;
-	}
+	public GeneralPath path;
+	public String desc, title;
+	public final int ROOMID;
+	public static int idCount = 1;
 	
-	public boolean isEmpty() {
-		return points.isEmpty();
+	public Room(GeneralPath p) {
+		path = p;
+		ROOMID = idCount;
+		idCount++;
 	}
-	
 }
