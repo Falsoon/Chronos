@@ -80,6 +80,9 @@ public class Map implements StateEditable {
 		}
 		stateEdit.end();
 		manager.addEdit(stateEdit);
+		if(player.isPlaced()) {
+			player.rePlace();
+		}
 	}
 
 	public void walling() {
