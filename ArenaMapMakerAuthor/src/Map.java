@@ -56,7 +56,7 @@ public class Map{
 			if (mapLayer2 == null) {
 				mapLayer2 = new MapWallingLayer();
 			}
-			walling = mapLayer2.transWalling(p);
+			walling = mapLayer2.transWalling(p, mapLayer);
 			if(!walling) {
 				layers.add(mapLayer2);
 			}
