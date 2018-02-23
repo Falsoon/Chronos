@@ -64,23 +64,23 @@ public class CIV {
 	}
 
 	public boolean placedPlayer() {
-		return map.playerPlaced;
+		return map.getPlayer().isPlaced();
 	}
 
 	public void goUp() {
-		map.goUp();
+		map.getPlayer().goUp();
 	}
 
 	public void goDown() {
-		map.goDown();
+		map.getPlayer().goDown();
 	}
 
 	public void goLeft() {
-		map.goLeft();
+		map.getPlayer().goLeft();
 	}
 
 	public void goRight() {
-		map.goRight();
+		map.getPlayer().goRight();
 	}
 
 }

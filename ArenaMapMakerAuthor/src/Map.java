@@ -2,10 +2,8 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
-import java.awt.geom.GeneralPath;
 import java.util.ArrayList;
 import java.util.Hashtable;
-import java.util.Iterator;
 
 import javax.swing.event.UndoableEditListener;
 import javax.swing.undo.StateEdit;
@@ -14,19 +12,14 @@ import javax.swing.undo.UndoManager;
 import javax.swing.undo.UndoableEditSupport;
 
 public class Map implements StateEditable {
-	private static final int GRIDDISTANCE = Constants.GRIDDISTANCE;
 	private ArrayList<MapLayer> layers;
+	private Player player;
 	private MapLayer mapLayer;
 	private MapLayer mapLayer2;
 	private boolean walling, outlining;
 	UndoableEditSupport undoSupport = new UndoableEditSupport(this);
 	UndoManager manager = new UndoManager();
 	private final Object MAP_KEY = "MAPKEY";
-	private Point playerPos;
-	private boolean placingPlayer;
-	private boolean isPlaying;
-	boolean playerPlaced;
-	private GeneralPath playerRoom;
 
 	public Map() {
 		layers = new ArrayList<MapLayer>();
@@ -34,6 +27,7 @@ public class Map implements StateEditable {
 		mapLayer = new MapOutlineLayer();
 		mapLayer2 = new MapWallingLayer();
 		addUndoableEditListener(manager);
+		player = new Player(mapLayer);
 	}
 
 	public void addUndoableEditListener(UndoableEditListener undoableEditListener) {
@@ -46,11 +40,11 @@ public class Map implements StateEditable {
 		/*
 		 * for (int i = 0; i < layers.size(); i++) { layers.get(i).draw(g); }
 		 */
-		if (playerPlaced) {
+		if (player.isPlaced()) {
 			Graphics2D g2d = (Graphics2D) g;
 			g2d.setColor(Color.BLACK);
-			g2d.drawString("¶", playerPos.x, playerPos.y);
-			placingPlayer = false;
+			g2d.drawString(player.getRepresentation(), player.getPosition().x, player.getPosition().y);
+			player.stopPlacing();
 		}
 	}
 
@@ -81,18 +75,8 @@ public class Map implements StateEditable {
 				layers.add(mapLayer2);
 			}
 		}
-		if (placingPlayer) {
-			playerPos = p;
-			playerPos.setLocation(Math.round(playerPos.x / GRIDDISTANCE) * GRIDDISTANCE,
-					Math.round(playerPos.y / GRIDDISTANCE) * GRIDDISTANCE);
-			playerPlaced = true;
-			Iterator<GeneralPath> itr = mapLayer.pathList.iterator();
-			while (itr.hasNext()) {
-				GeneralPath curr = itr.next();
-				if (curr.contains(playerPos)) {
-					playerRoom = curr;
-				}
-			}
+		if (player.isPlacing()) {
+			player.place(p);
 		}
 		stateEdit.end();
 		manager.addEdit(stateEdit);
@@ -123,7 +107,7 @@ public class Map implements StateEditable {
 	}
 
 	public boolean isCreating() {
-		return walling || outlining || placingPlayer;
+		return walling || outlining || player.isPlacing();
 	}
 
 	@Override
@@ -144,84 +128,21 @@ public class Map implements StateEditable {
 			this.mapLayer2 = newP.mapLayer2;
 			this.outlining = newP.outlining;
 			this.walling = newP.walling;
+			this.player = newP.player;
 			// whatever else matters
 		}
 	}
 
-	public void goUp() {
-		if (isPlaying) {
-			boolean inside = false;
-			playerPos.move(playerPos.x, playerPos.y - GRIDDISTANCE);
-			Iterator<GeneralPath> itr = mapLayer.pathList.iterator();
-			while (itr.hasNext() && !inside) {
-				GeneralPath curr = itr.next();
-				if (curr.equals(playerRoom) && curr.contains(playerPos.x + GRIDDISTANCE/2, playerPos.y - GRIDDISTANCE/2)) {
-					inside = true;
-				} 
-			}
-			if (!inside) {
-				playerPos.move(playerPos.x, playerPos.y + GRIDDISTANCE);
-			}
-		}
-	}
-
-	public void goDown() {
-		if (isPlaying) {
-			boolean inside = false;
-			playerPos.move(playerPos.x, playerPos.y + GRIDDISTANCE);
-			Iterator<GeneralPath> itr = mapLayer.pathList.iterator();
-			while (itr.hasNext() && !inside) {
-				GeneralPath curr = itr.next();
-				if (curr.equals(playerRoom) && curr.contains(playerPos.x + GRIDDISTANCE/2, playerPos.y - GRIDDISTANCE/2)) {
-					inside = true;
-				} 
-			}
-			if (!inside) {
-				playerPos.move(playerPos.x, playerPos.y - GRIDDISTANCE);
-			}
-		}
-	}
-
-	public void goLeft() {
-		if (isPlaying) {
-			boolean inside = false;
-			playerPos.move(playerPos.x - GRIDDISTANCE, playerPos.y);
-			Iterator<GeneralPath> itr = mapLayer.pathList.iterator();
-			while (itr.hasNext() && !inside) {
-				GeneralPath curr = itr.next();
-				if (curr.equals(playerRoom) && curr.contains(playerPos.x + GRIDDISTANCE/2, playerPos.y - GRIDDISTANCE/2)) {
-					inside = true;
-				} 
-			}
-			if (!inside) {
-				playerPos.move(playerPos.x + GRIDDISTANCE, playerPos.y);
-			}
-		}
-	}
-
-	public void goRight() {
-		if (isPlaying) {
-			boolean inside = false;
-			playerPos.move(playerPos.x + GRIDDISTANCE, playerPos.y);
-			Iterator<GeneralPath> itr = mapLayer.pathList.iterator();
-			while (itr.hasNext() && !inside) {
-				GeneralPath curr = itr.next();
-				if (curr.equals(playerRoom) && curr.contains(playerPos.x + GRIDDISTANCE/2, playerPos.y - GRIDDISTANCE/2)) {
-					inside = true;
-				} 
-			}
-			if (!inside) {
-				playerPos.move(playerPos.x - GRIDDISTANCE, playerPos.y);
-			}
-		}
+	public Player getPlayer() {
+		return player;
 	}
 
 	public void placePlayerStart() {
-		placingPlayer = true;
+		player.startPlacing();
 	}
 
 	public void startGame() {
-		isPlaying = !isPlaying;
+		player.startPlaying();
 	}
 
 	public Room getRoom(Point p) {
