@@ -120,6 +120,5 @@ public class MapPanel extends JPanel {
 	public void goRight() {
 		civ.goRight();
 		repaint();
-
 	}
 }
