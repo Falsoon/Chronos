@@ -3,6 +3,7 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.geom.GeneralPath;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  * Layer of the map
@@ -69,8 +70,8 @@ public abstract class MapLayer {
 	 * and whether the previous layer is a outline layer
 	 * before calling this method 
 	 */
-	
-	public boolean transWalling(Point p, MapLayer previousLayer) {
+	//public boolean transWalling(Point p, MapLayer previousLayer)
+	public boolean transWalling(Point p) {
 		walling = true;
 		
 		//below is some logic for snapping transparent wall end point to solid wall
@@ -134,4 +135,19 @@ public abstract class MapLayer {
 	public abstract MapLayer copy();
 
 	public abstract void undo();
+
+	public Room getRoom(Point p) {
+		GeneralPath curr = null;
+		Iterator<GeneralPath> itr = pathList.iterator();
+		boolean found = false;
+		while (!found &&itr.hasNext()) {
+			curr = itr.next();
+			found = curr.contains(p);
+		}
+		if(found) {
+			return RoomList.getRoom(curr);
+		}else {
+			return null;
+		}
+	} 
 }

@@ -1,33 +1,51 @@
+import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Point;
-import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.Hashtable;
+
+import javax.swing.event.UndoableEditListener;
+import javax.swing.undo.StateEdit;
+import javax.swing.undo.StateEditable;
 import javax.swing.undo.UndoManager;
 import javax.swing.undo.UndoableEditSupport;
 
-public class Map{
-	private static final double GRIDDISTANCE = 15;
+public class Map implements StateEditable {
 	private ArrayList<MapLayer> layers;
-	boolean outlining;
+	private Player player;
 	private MapLayer mapLayer;
 	private MapLayer mapLayer2;
-	private boolean walling;
+	private boolean walling, outlining;
 	UndoableEditSupport undoSupport = new UndoableEditSupport(this);
 	UndoManager manager = new UndoManager();
+	private final Object MAP_KEY = "MAPKEY";
 
 	public Map() {
 		layers = new ArrayList<MapLayer>();
 		outlining = false;
 		mapLayer = new MapOutlineLayer();
 		mapLayer2 = new MapWallingLayer();
+		addUndoableEditListener(manager);
+		player = new Player(mapLayer);
+	}
+
+	public void addUndoableEditListener(UndoableEditListener undoableEditListener) {
+		undoSupport.addUndoableEditListener(undoableEditListener);
 	}
 
 	public void draw(Graphics g) {
 		mapLayer.draw(g);
 		mapLayer2.draw(g);
-		/*for (int i = 0; i < layers.size(); i++) {
-			layers.get(i).draw(g);
-		}*/
+		/*
+		 * for (int i = 0; i < layers.size(); i++) { layers.get(i).draw(g); }
+		 */
+		if (player.isPlaced()) {
+			Graphics2D g2d = (Graphics2D) g;
+			g2d.setColor(Color.BLACK);
+			g2d.drawString(player.getRepresentation(), player.getPosition().x, player.getPosition().y);
+			player.stopPlacing();
+		}
 	}
 
 	public void outlining() {
@@ -37,12 +55,8 @@ public class Map{
 		mapLayer.drawing = false;
 	}
 
-	public boolean mousePressed(MouseEvent e) {
-		// if a point needs to be drawn
-		Point p = e.getPoint();
-		// round to nearest grid point
-		p.setLocation(Math.round(((double) p.x) / GRIDDISTANCE) * GRIDDISTANCE,
-				Math.round(((double) p.y) / GRIDDISTANCE) * GRIDDISTANCE);
+	public void mousePressed(Point p) {
+		StateEdit stateEdit = new StateEdit(Map.this);
 		if (outlining) {
 			if (mapLayer == null) {
 				mapLayer = new MapOutlineLayer();
@@ -56,12 +70,19 @@ public class Map{
 			if (mapLayer2 == null) {
 				mapLayer2 = new MapWallingLayer();
 			}
-			walling = mapLayer2.transWalling(p, mapLayer);
-			if(!walling) {
+			walling = mapLayer2.transWalling(p);
+			if (!walling) {
 				layers.add(mapLayer2);
 			}
 		}
-		return outlining||walling;
+		if (player.isPlacing()) {
+			player.place(p);
+		}
+		stateEdit.end();
+		manager.addEdit(stateEdit);
+		if(player.isPlaced()) {
+			player.rePlace();
+		}
 	}
 
 	public void walling() {
@@ -78,7 +99,56 @@ public class Map{
 		return copy;
 	}
 
-	public void undo() {
-		mapLayer.undo();
+	public boolean undo() {
+		boolean undid = false;
+		if (manager.canUndo()) {
+			manager.undo();
+			mapLayer.undo();
+			undid = true;
+		}
+		return undid;
+	}
+
+	public boolean isCreating() {
+		return walling || outlining || player.isPlacing();
+	}
+
+	@Override
+	public void storeState(Hashtable<Object, Object> state) {
+		state.put(MAP_KEY, getMap());
+	}
+
+	private Map getMap() {
+		return this.copy();
+	}
+
+	@Override
+	public void restoreState(Hashtable<?, ?> state) {
+		Map newP = (Map) state.get(MAP_KEY);
+		if (newP != null) {
+			this.layers = newP.layers;
+			this.mapLayer = newP.mapLayer;
+			this.mapLayer2 = newP.mapLayer2;
+			this.outlining = newP.outlining;
+			this.walling = newP.walling;
+			this.player = newP.player;
+			// whatever else matters
+		}
+	}
+
+	public Player getPlayer() {
+		return player;
+	}
+
+	public void placePlayerStart() {
+		player.startPlacing();
+	}
+
+	public void startGame() {
+		player.startPlaying();
+	}
+
+	public Room getRoom(Point p) {
+		return mapLayer.getRoom(p);
 	}
 }
