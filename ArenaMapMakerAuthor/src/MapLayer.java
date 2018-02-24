@@ -117,7 +117,7 @@ public abstract class MapLayer {
 			pathList.add(path);
 		} else {
 			path.lineTo(p.x, p.y);
-			drawing = false;
+			//drawing = false;
 		}
 		return walling;
 	}
