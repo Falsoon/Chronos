@@ -14,8 +14,8 @@ public class AuthorWindow extends JPanel implements ActionListener {
 	private JFrame frame;
 	private AuthorPanel authorPanel;
 	private MapPanel mapPanel;
-	private String[] authorActions = { "Click here to start drawing", "Draw Outline(Solid Wall)",
-			"Split Room(Transparent Wall)" };
+	private String[] authorActions = { "Walls", "Opaque",
+			"Transparent" };
 
 	/**
 	 * Launch the application.
@@ -128,13 +128,13 @@ public class AuthorWindow extends JPanel implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		JComboBox<String> cb = (JComboBox<String>) e.getSource();
 		switch (cb.getSelectedItem().toString()) {
-		case "Draw Outline(Solid Wall)":
+		case "Opaque":
 			mapPanel.paintRooms();
 			break;
-		case "Split Room(Transparent Wall)":
+		case "Transparent":
 			mapPanel.paintWalls();
 			break;
-		case "Click here to start drawing":
+		case "Walls":
 			break;
 		default:
 			System.err.println("ComboBox Error");
