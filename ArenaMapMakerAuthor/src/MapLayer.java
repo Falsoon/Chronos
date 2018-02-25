@@ -70,12 +70,12 @@ public abstract class MapLayer {
 	 * and whether the previous layer is a outline layer
 	 * before calling this method 
 	 */
-	//public boolean transWalling(Point p, MapLayer previousLayer)
-	public boolean transWalling(Point p) {
+	public boolean transWalling(Point p, MapLayer previousLayer) {
+	//public boolean transWalling(Point p) {
 		walling = true;
 		
 		//below is some logic for snapping transparent wall end point to solid wall
-		/*double min = 100000.0;
+		double min = 100000.0;
 		int indexOfMin = 0;
 		GeneralPath layerPath = previousLayer.pathList.get(0);
 		
@@ -107,7 +107,7 @@ public abstract class MapLayer {
 				
 			}
 			
-		}*/
+		}
 		
 		if (!drawing) {
 			path = new GeneralPath();
