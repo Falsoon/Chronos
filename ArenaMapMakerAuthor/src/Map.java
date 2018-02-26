@@ -88,6 +88,8 @@ public class Map implements StateEditable {
 	public void walling() {
 		walling = true;
 		outlining = false;
+		mapLayer2.start = null;
+		mapLayer2.drawing = false;
 	}
 
 	public Map copy() {
@@ -152,5 +154,10 @@ public class Map implements StateEditable {
 
 	public Room getRoom(Point p) {
 		return mapLayer.getRoom(p);
+	}
+
+	public void stopDrawing() {
+		outlining = false;
+		walling = false;
 	}
 }

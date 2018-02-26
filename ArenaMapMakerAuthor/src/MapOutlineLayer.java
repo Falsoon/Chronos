@@ -41,7 +41,7 @@ public class MapOutlineLayer extends MapLayer {
 	@Override
 	public void undo() {
 		if (!pathList.isEmpty()) {
-			path = pathList.get(pathList.size() - 1);
+			guiPath = pathList.get(pathList.size() - 1);
 			drawing = true;
 		}
 	}

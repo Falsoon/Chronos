@@ -43,6 +43,7 @@ public class CIV {
 
 	public void clear() {
 		map = new Map();
+		RoomList.reset();
 	}
 
 	public void draw(Graphics g) {
@@ -87,6 +88,10 @@ public class CIV {
 
 	public Room getRoom() {
 		return map.getRoom(map.getPlayer().getPosition());
+	}
+
+	public void stopDrawing() {
+		map.stopDrawing();
 	}
 
 }

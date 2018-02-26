@@ -135,6 +135,7 @@ public class AuthorWindow extends JPanel implements ActionListener {
 			mapPanel.paintWalls();
 			break;
 		case "Walls":
+			mapPanel.stopDrawing();
 			break;
 		default:
 			System.err.println("ComboBox Error");

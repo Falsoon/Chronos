@@ -125,4 +125,8 @@ public class MapPanel extends JPanel  {
 	public Room getRoom() {
 		return civ.getRoom();
 	}
+
+	public void stopDrawing() {
+		civ.stopDrawing();
+	}
 }
