@@ -16,6 +16,11 @@ import javax.swing.undo.StateEditable;
 import javax.swing.undo.UndoManager;
 import javax.swing.undo.UndoableEditSupport;
 
+/*
+ * the presenter class for the mapWindow
+ * handles updating both data on the map and UI of the map
+ */
+
 public class MapPanel extends JPanel {
 
 	private CIV civ;

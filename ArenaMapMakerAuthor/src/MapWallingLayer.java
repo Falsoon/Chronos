@@ -7,6 +7,9 @@ import java.awt.Stroke;
 import java.awt.geom.GeneralPath;
 import java.util.ArrayList;
 
+/*
+ * Handles the logic behind drawing, coping and undoing a transparent wall
+ */
 public class MapWallingLayer extends MapLayer {
 
 	@Override

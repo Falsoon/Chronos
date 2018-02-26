@@ -7,6 +7,10 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 
+/*
+ * Used for encapsulating the author UI
+ */
+
 public class AuthorPanel extends JPanel {
 	private MapPanel mapPanel;
 	private Action undoAction;

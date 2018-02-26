@@ -1,5 +1,8 @@
 import java.awt.geom.GeneralPath;
 
+/*
+ * encapsulates room data
+ */
 public class Room {
 	public GeneralPath path;
 	public String desc, title;

@@ -2,6 +2,9 @@ import java.awt.Point;
 import java.awt.geom.GeneralPath;
 import java.util.Iterator;
 
+/*
+ * encapsulates player's avatar data
+ */
 public class Player {
 	private static final int GRIDDISTANCE = Constants.GRIDDISTANCE;
 	private Point position;

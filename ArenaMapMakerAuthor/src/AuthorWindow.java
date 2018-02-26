@@ -9,6 +9,10 @@ import java.awt.BorderLayout;
 import javax.swing.JPanel;
 import javax.swing.JComboBox;
 
+/*
+ * UI class for author side of application
+ */
+
 public class AuthorWindow extends JPanel implements ActionListener {
 
 	private JFrame frame;

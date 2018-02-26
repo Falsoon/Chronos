@@ -2,6 +2,10 @@ import java.awt.geom.GeneralPath;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+
+/*
+ * Encapsulates all the rooms into a list
+ */
 public class RoomList {
 	private static ArrayList<Room> list = new ArrayList<Room>();
 
