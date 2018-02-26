@@ -51,6 +51,13 @@ public class MapPanel extends JPanel {
 	public void paintWalls() {
 		civ.walling();
 	}
+	
+	/**
+	 * Changes state of MapPanel to add doors
+	 */
+	public void paintDoors() {
+		civ.dooring();
+	}
 
 	/**
 	 * Resets state of MapPanel

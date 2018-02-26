@@ -16,7 +16,8 @@ public class Map implements StateEditable {
 	private Player player;
 	private MapLayer mapLayer;
 	private MapLayer mapLayer2;
-	private boolean walling, outlining;
+	private MapDoorLayer mapLayer3;
+	private boolean walling, outlining, dooring;
 	UndoableEditSupport undoSupport = new UndoableEditSupport(this);
 	UndoManager manager = new UndoManager();
 	private final Object MAP_KEY = "MAPKEY";
@@ -26,6 +27,7 @@ public class Map implements StateEditable {
 		outlining = false;
 		mapLayer = new MapOutlineLayer();
 		mapLayer2 = new MapWallingLayer();
+		mapLayer3 = new MapDoorLayer();
 		addUndoableEditListener(manager);
 		player = new Player(mapLayer);
 	}
@@ -37,20 +39,17 @@ public class Map implements StateEditable {
 	public void draw(Graphics g) {
 		mapLayer.draw(g);
 		mapLayer2.draw(g);
+		mapLayer3.draw(g);
+		player.draw(g);
 		/*
 		 * for (int i = 0; i < layers.size(); i++) { layers.get(i).draw(g); }
 		 */
-		if (player.isPlaced()) {
-			Graphics2D g2d = (Graphics2D) g;
-			g2d.setColor(Color.BLACK);
-			g2d.drawString(player.getRepresentation(), player.getPosition().x, player.getPosition().y);
-			player.stopPlacing();
-		}
 	}
 
 	public void outlining() {
 		outlining = true;
 		walling = false;
+		dooring = false;
 		mapLayer.start = null;
 		mapLayer.drawing = false;
 	}
@@ -75,6 +74,9 @@ public class Map implements StateEditable {
 				layers.add(mapLayer2);
 			}
 		}
+		if (dooring) {
+			mapLayer3.placeDoor(p);
+		}
 		if (player.isPlacing()) {
 			player.place(p);
 		}
@@ -87,6 +89,13 @@ public class Map implements StateEditable {
 
 	public void walling() {
 		walling = true;
+		outlining = false;
+		dooring = false;
+	}
+	
+	public void dooring() {
+		dooring = true;
+		walling = false;
 		outlining = false;
 	}
 
@@ -110,7 +119,7 @@ public class Map implements StateEditable {
 	}
 
 	public boolean isCreating() {
-		return walling || outlining || player.isPlacing();
+		return walling || outlining || dooring || player.isPlacing();
 	}
 
 	@Override

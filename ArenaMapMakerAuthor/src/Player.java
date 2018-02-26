@@ -1,3 +1,6 @@
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.geom.GeneralPath;
 import java.util.Iterator;
@@ -15,13 +18,13 @@ public class Player {
 		playing = false;
 		placing = false;
 		this.mapLayer = mapLayer;
-		representation = "P";
+		representation = "\u00B6";
 	}
 	
 	public void place(Point pos) {
 		position = pos;
 		position.setLocation(Math.round(position.x / GRIDDISTANCE) * GRIDDISTANCE + 2,
-				Math.round(position.y / GRIDDISTANCE) * GRIDDISTANCE - 2);
+				Math.round(position.y / GRIDDISTANCE) * GRIDDISTANCE - 3);
 		placed = true;
 		placing = false;
 		Iterator<GeneralPath> itr = mapLayer.pathList.iterator();
@@ -103,9 +106,9 @@ public class Player {
 			GeneralPath path = itr.next();
 			if (path.equals(currentRoom) &&
 					path.contains(position.x, position.y - 2) &&
-						path.contains(position.x + GRIDDISTANCE - 4, position.y - GRIDDISTANCE + 2) &&
+						path.contains(position.x + GRIDDISTANCE - 4, position.y - GRIDDISTANCE + 3) &&
 							path.contains(position.x + GRIDDISTANCE - 4, position.y - 2) &&
-								path.contains(position.x, position.y - GRIDDISTANCE + 2))
+								path.contains(position.x, position.y - GRIDDISTANCE + 3))
 									outside = false;
 		}
 		return outside;
@@ -121,4 +124,12 @@ public class Player {
 		}
 	}
 	
+	public void draw(Graphics g) {
+		if (placed) {
+			Graphics2D g2d = (Graphics2D) g;
+			g2d.setColor(Color.BLACK);
+			g2d.drawString(representation, position.x, position.y);
+			placing = false;
+		}
+	}
 }

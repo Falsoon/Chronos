@@ -83,4 +83,9 @@ public class CIV {
 		map.getPlayer().goRight();
 	}
 
+	public void dooring() {
+		map.dooring();
+		
+	}
+
 }
