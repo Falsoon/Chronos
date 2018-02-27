@@ -16,6 +16,7 @@ public class AuthorWindow extends JPanel implements ActionListener {
 	private MapPanel mapPanel;
 	private String[] authorActions = { "Walls", "Opaque",
 			"Transparent" };
+	private String[] portalTypes = { "Portals", "Doors"};
 
 	/**
 	 * Launch the application.
@@ -66,6 +67,10 @@ public class AuthorWindow extends JPanel implements ActionListener {
 		JComboBox<String> comboBox = new JComboBox<String>(authorActions);
 		comboBox.addActionListener(this);
 		authorPanel.add(comboBox);
+		JComboBox<String> portalCombo = new JComboBox<String>(portalTypes);
+		portalCombo.addActionListener(this);
+		authorPanel.add(portalCombo);
+
 
 		// button resets the map
 		JButton btnClear = new JButton("Clear");
@@ -136,6 +141,11 @@ public class AuthorWindow extends JPanel implements ActionListener {
 			break;
 		case "Walls":
 			mapPanel.stopDrawing();
+			break;
+		case "Doors":
+			mapPanel.paintDoors();
+			break;
+		case "Portals":
 			break;
 		default:
 			System.err.println("ComboBox Error");

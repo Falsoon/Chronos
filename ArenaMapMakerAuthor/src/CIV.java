@@ -93,5 +93,8 @@ public class CIV {
 	public void stopDrawing() {
 		map.stopDrawing();
 	}
+	public void dooring() {
+		map.dooring();
+	}
 
 }
