@@ -57,8 +57,8 @@ public class Room {
 		}
 	}
 
-	public Room(ArrayList<Point> newL2) {
-		list = newL2;
+	public Room(ArrayList<Point> l) {
+		list = l;
 		ROOMID = idCount;
 		idCount++;
 		makePath();
@@ -68,7 +68,6 @@ public class Room {
 		if (split.size() < 2) {
 			return null;
 		}
-
 		ArrayList<Point> newL2 = new ArrayList<Point>();
 		boolean forder = false, first = false, last = false;
 		int findex = -1, lindex = -1, index = 0; // for over list
@@ -90,7 +89,6 @@ public class Room {
 			finish = lindex+1;
 			index = split.size() - 1;
 			for (int k = 0; k < split.size(); k++) {
-				// newL.add(split.get(k));
 				newL2.add(split.get(split.size() - 1 - k));
 			}
 		} else {
@@ -99,7 +97,8 @@ public class Room {
 			newL2.addAll(split);
 		}
 		for (int i = start; i < finish; i++) {
-			newL2.add(list.remove(i));
+			newL2.add(list.remove(start));
+			
 			if (index > 0) {
 				index--;
 			}
