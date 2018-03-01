@@ -1,15 +1,12 @@
 import java.awt.Point;
-import java.awt.geom.Area;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.PathIterator;
-import java.awt.geom.Point2D;
 import java.util.ArrayList;
-import java.util.Collection;
 
 public class Room {
 	public GeneralPath path;
 	public ArrayList<Point> list = new ArrayList<Point>();
-	public String desc, title;
+	public String desc="", title="";
 	public final int ROOMID;
 	public static int idCount = 1;
 
@@ -64,6 +61,11 @@ public class Room {
 		makePath();
 	}
 
+	//Do not use for normal rooms
+	public Room() {
+		ROOMID = -1;
+	}
+
 	public Room split(ArrayList<Point> split) {
 		if (split.size() < 2) {
 			return null;
@@ -114,7 +116,7 @@ public class Room {
 	}
 
 	private  ArrayList<Point> reverse(ArrayList<Point> split) {
-		ArrayList ret = new ArrayList<Point>();
+		ArrayList<Point> ret = new ArrayList<Point>();
 		for(int i=0;i<split.size();i++) {
 			ret.add(split.get(split.size()-1-i));
 		}
@@ -136,5 +138,10 @@ public class Room {
 			found = pointBetween(p, list.get(i), list.get(i + 1));
 		}
 		return found;
+	}
+	
+	@Override
+	public String toString() {
+		return "Room#"+ROOMID+" :"+title;
 	}
 }

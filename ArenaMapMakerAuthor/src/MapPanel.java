@@ -1,21 +1,11 @@
 import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.event.*;
-import java.awt.geom.GeneralPath;
-import java.awt.geom.Rectangle2D;
-import java.util.Hashtable;
-import java.util.Iterator;
-
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.event.UndoableEditListener;
-import javax.swing.undo.StateEdit;
-import javax.swing.undo.StateEditable;
-import javax.swing.undo.UndoManager;
-import javax.swing.undo.UndoableEditSupport;
 
+@SuppressWarnings("serial")
 public class MapPanel extends JPanel  {
 
 	public CIV civ;

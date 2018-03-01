@@ -7,7 +7,6 @@ import java.awt.RenderingHints;
 import java.awt.Stroke;
 import java.awt.geom.GeneralPath;
 import java.util.ArrayList;
-import java.util.Iterator;
 
 public class MapDoorLayer extends MapLayer {
 	private ArrayList<GeneralPath> doorList;

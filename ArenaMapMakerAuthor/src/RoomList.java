@@ -1,10 +1,9 @@
 import java.awt.Point;
-import java.awt.geom.GeneralPath;
 import java.util.ArrayList;
 import java.util.Iterator;
 
 public class RoomList {
-	private static ArrayList<Room> list = new ArrayList<Room>();
+	static ArrayList<Room> list = new ArrayList<Room>();
 
 	public static Room getRoom(Point p) {
 		Room room = null;
@@ -26,5 +25,16 @@ public class RoomList {
 
 	public static void reset() {
 		list.clear();
+		Room.idCount =1;
+	}
+
+	public static Room getRoomById(int id) {
+		Room room = null;
+		for(int i=0; i< list.size();i++) {
+			if(list.get(i).ROOMID==id) {
+				room = list.get(i);
+			}
+		}
+		return room;
 	}
 }

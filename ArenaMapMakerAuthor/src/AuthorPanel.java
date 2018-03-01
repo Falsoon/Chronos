@@ -1,30 +1,32 @@
+import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
-
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.JComponent;
+import java.awt.event.ActionListener;
+import javax.swing.JComboBox;
 import javax.swing.JPanel;
-import javax.swing.KeyStroke;
 
-public class AuthorPanel extends JPanel {
-	private MapPanel mapPanel;
-	private Action undoAction;
+@SuppressWarnings("serial")
+public class AuthorPanel extends JPanel implements ActionListener {
 
-/*	public AuthorPanel(MapPanel mp) {
-		mapPanel = mp;
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		int id;
+		JComboBox<Room> cb = (JComboBox<Room>) e.getSource();
+		if (cb.getItemCount() > 1) {
+			Room r = (Room) cb.getSelectedItem();
+			id = r.ROOMID;
 
-		getInputMap().put(KeyStroke.getKeyStroke('Z'), "z");
-		getActionMap().put("z", undoAction);
+			EventQueue.invokeLater(new Runnable() {
+				public void run() {
+					try {
+						// TODO Should not access RoomList
+						FormWindow window = new FormWindow(RoomList.getRoomById(id));
+						window.frame.setVisible(true);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+			});
+		}
 	}
 
-	private class UndoAction extends AbstractAction {
-
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			mapPanel.undo();
-			grabFocus();
-		}
-
-	}*/
 }

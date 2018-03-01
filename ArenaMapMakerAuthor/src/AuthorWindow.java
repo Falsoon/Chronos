@@ -5,8 +5,11 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JSplitPane;
+import javax.swing.Scrollable;
+
 import java.awt.BorderLayout;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JComboBox;
 
 public class AuthorWindow extends JPanel implements ActionListener {
@@ -17,6 +20,7 @@ public class AuthorWindow extends JPanel implements ActionListener {
 	private String[] authorActions = { "Walls", "Opaque",
 			"Transparent" };
 	private String[] portalTypes = { "Portals", "Doors"};
+	JComboBox<Room> Rooms;
 
 	/**
 	 * Launch the application.
@@ -46,6 +50,7 @@ public class AuthorWindow extends JPanel implements ActionListener {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
+		
 		frame = new JFrame();
 		frame.getContentPane().setBackground(Color.BLACK);
 		frame.setBounds(400, 200, 800, 450);
@@ -57,8 +62,9 @@ public class AuthorWindow extends JPanel implements ActionListener {
 
 		// mapPanel holds the graphics of the map
 		mapPanel = new MapPanel();
-
-		splitPane.setRightComponent(mapPanel);
+		JScrollPane sp = new JScrollPane(mapPanel);
+		sp.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+		splitPane.setRightComponent(sp);
 
 		// Author panel holds the buttons for authors use
 		authorPanel = new AuthorPanel();
@@ -95,7 +101,7 @@ public class AuthorWindow extends JPanel implements ActionListener {
 			}
 		});
 		authorPanel.add(undoButton);
-
+		
 		JButton placeStart = new JButton("Place Start Point");
 		placeStart.addActionListener(new ActionListener() {
 			@Override
@@ -127,6 +133,10 @@ public class AuthorWindow extends JPanel implements ActionListener {
 		});
 		authorPanel.add(start);
 		
+		Rooms = new JComboBox<Room>();
+		Rooms.addActionListener(authorPanel);
+		authorPanel.add(Rooms);
+		
 	}
 
 	@Override
@@ -135,20 +145,35 @@ public class AuthorWindow extends JPanel implements ActionListener {
 		switch (cb.getSelectedItem().toString()) {
 		case "Opaque":
 			mapPanel.paintRooms();
+			update();
 			break;
 		case "Transparent":
 			mapPanel.paintWalls();
+			update();
 			break;
 		case "Walls":
 			mapPanel.stopDrawing();
+			update();
 			break;
 		case "Doors":
 			mapPanel.paintDoors();
+			update();
 			break;
 		case "Portals":
+			mapPanel.stopDrawing();
+			update();
 			break;
 		default:
 			System.err.println("ComboBox Error");
+		}
+	}
+
+	private void update() {
+		Rooms.removeAllItems();
+		Rooms.addItem(new SelectRoom());
+		// TODO Should not get Room List Directly
+		for(int i=0;i< RoomList.list.size();i++) {
+			Rooms.addItem(RoomList.list.get(i));
 		}
 	}
 }

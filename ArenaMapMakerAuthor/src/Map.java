@@ -1,6 +1,4 @@
-import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Hashtable;
@@ -143,7 +141,6 @@ public class Map implements StateEditable {
 			this.outlining = newP.outlining;
 			this.walling = newP.walling;
 			this.player = newP.player;
-			// whatever else matters
 		}
 	}
 
@@ -155,6 +152,7 @@ public class Map implements StateEditable {
 		player.startPlacing();
 		outlining = false;
 		walling = false;
+		dooring = false;
 	}
 
 	public void startGame() {

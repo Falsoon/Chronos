@@ -2,8 +2,6 @@
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
-import javax.swing.JEditorPane;
-
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -11,7 +9,7 @@ import javax.swing.JButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
-public class FormWindow {
+public class FormWindow  {
 
 	protected JFrame frame;
 	private JTextField titleText;
@@ -27,6 +25,7 @@ public class FormWindow {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
+		// TODO Should not access Room fields Directly
 		frame = new JFrame();
 		frame.setBounds(100, 200, 300, 450);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -80,6 +79,6 @@ public class FormWindow {
 		textArea.setLineWrap(true);
 		textArea.setText(room.desc);
 		scrollPane.setViewportView(textArea);
-
 	}
+		
 }
