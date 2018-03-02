@@ -19,6 +19,7 @@ public class Map implements StateEditable {
 	UndoableEditSupport undoSupport = new UndoableEditSupport(this);
 	UndoManager manager = new UndoManager();
 	private final Object MAP_KEY = "MAPKEY";
+	private Room room;
 
 	public Map() {
 		layers = new ArrayList<MapLayer>();
@@ -45,6 +46,7 @@ public class Map implements StateEditable {
 	}
 
 	public void outlining() {
+		room = null;
 		outlining = true;
 		walling = false;
 		dooring = false;
@@ -58,7 +60,11 @@ public class Map implements StateEditable {
 			if (mapLayer == null) {
 				mapLayer = new MapOutlineLayer();
 			}
+			if(room==null) {
 			outlining = mapLayer.outline(p);
+			}else {
+				outlining = mapLayer.outline(p, room);
+			}
 			if (!outlining) {
 				layers.add(mapLayer);
 			}
@@ -166,5 +172,18 @@ public class Map implements StateEditable {
 	public void stopDrawing() {
 		outlining = false;
 		walling = false;
+	}
+
+	public void drawRoom(Room r) {
+		room = r;
+		outlining = true;
+		walling = false;
+		dooring = false;
+		mapLayer.start = null;
+		mapLayer.drawing = false;
+	}
+
+	public void setSelectedRoom(Room r) {
+		mapLayer.setSelectedRoom(r);
 	}
 }

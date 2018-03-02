@@ -7,7 +7,7 @@ public class Room {
 	public GeneralPath path;
 	public ArrayList<Point> list = new ArrayList<Point>();
 	public String desc="", title="";
-	public final int ROOMID;
+	public int ROOMID;
 	public static int idCount = 1;
 
 	public Room(GeneralPath p) {
@@ -61,9 +61,10 @@ public class Room {
 		makePath();
 	}
 
-	//Do not use for normal rooms
+
 	public Room() {
-		ROOMID = -1;
+		ROOMID = idCount;
+		idCount++;
 	}
 
 	public Room split(ArrayList<Point> split) {
@@ -131,6 +132,9 @@ public class Room {
 
 	public boolean contains(Point p) {
 		boolean found = false;
+		if(path==null) {
+			return false;
+		}
 		if(path.contains(p)) {
 			return true;
 		}
@@ -143,5 +147,10 @@ public class Room {
 	@Override
 	public String toString() {
 		return "Room#"+ROOMID+" :"+title;
+	}
+
+	public void setPath(GeneralPath clone) {
+		path = clone;
+		makeList(path);
 	}
 }

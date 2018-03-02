@@ -20,6 +20,12 @@ public class MapOutlineLayer extends MapLayer {
 		for (int i = 0; i < pathList.size(); i++) {
 			g2d.draw(pathList.get(i));
 		}
+		if (selectedRoom != null) {
+			g2d.setColor(Color.RED);
+			if (selectedRoom.path != null) {
+				g2d.draw(selectedRoom.path);
+			}
+		}
 	}
 
 	@Override

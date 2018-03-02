@@ -4,6 +4,7 @@ import java.awt.Point;
 import java.awt.event.*;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 
 @SuppressWarnings("serial")
 public class MapPanel extends JPanel  {
@@ -17,10 +18,12 @@ public class MapPanel extends JPanel  {
 	 */
 	public MapPanel() {
 		civ = new CIV();
+		
 		// Anonymous class was used to access MapPanel fields
 		MouseListener mousehandler = new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent e) {
+				
 				civ.mousePressed(e);
 				repaint();
 			}
@@ -125,5 +128,13 @@ public class MapPanel extends JPanel  {
 
 	public void stopDrawing() {
 		civ.stopDrawing();
+	}
+
+	public void drawRoom(Room r) {
+		civ.drawRoom(r);
+	}
+
+	public void setSelectedRoom(Room r) {
+		civ.setSelectedRoom(r);
 	}
 }

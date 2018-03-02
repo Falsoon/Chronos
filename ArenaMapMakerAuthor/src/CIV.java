@@ -25,7 +25,7 @@ public class CIV {
 					EventQueue.invokeLater(new Runnable() {
 						public void run() {
 							try {
-								FormWindow window = new FormWindow(room);
+								FormWindow window = new FormWindow(room, true);
 								window.frame.setVisible(true);
 							} catch (Exception e) {
 								e.printStackTrace();
@@ -95,6 +95,14 @@ public class CIV {
 	}
 	public void dooring() {
 		map.dooring();
+	}
+
+	public void drawRoom(Room r) {
+		map.drawRoom(r);
+	}
+
+	public void setSelectedRoom(Room r) {
+		map.setSelectedRoom(r);
 	}
 
 }
