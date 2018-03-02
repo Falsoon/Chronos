@@ -19,7 +19,7 @@ import javax.swing.JComboBox;
 public class AuthorWindow extends JPanel implements ActionListener {
 
 	private static final Room selectRoom = new SelectRoom();
-	private JFrame frame;
+	private JFrame frame; 
 	private AuthorPanel authorPanel;
 	private MapPanel mapPanel;
 	private String[] wallTypes = { "Walls", "Opaque", "Transparent" };
