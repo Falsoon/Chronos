@@ -29,6 +29,7 @@ public class AuthorWindow extends JPanel implements ActionListener {
 	JComboBox<String> wallCombo, portalCombo;
 	JButton start, placeStart, undoButton, btnClear, addRoombtn1, addRoombtn2;
 	private int modeSelected = 0;
+	private JScrollPane scrollPane;
 
 	/**
 	 * Launch the application.
@@ -62,7 +63,8 @@ public class AuthorWindow extends JPanel implements ActionListener {
 
 		frame = new JFrame();
 		frame.getContentPane().setBackground(Color.BLACK);
-		frame.setBounds(200, 100, 1000, 600);
+		frame.setExtendedState(JFrame.MAXIMIZED_BOTH); 
+		//frame.setBounds(200, 100, 1000, 600);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		JSplitPane splitPane = new JSplitPane();
@@ -71,9 +73,9 @@ public class AuthorWindow extends JPanel implements ActionListener {
 
 		// mapPanel holds the graphics of the map
 		mapPanel = new MapPanel(this);
-		JScrollPane sp = new JScrollPane(mapPanel);
-		sp.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-		splitPane.setRightComponent(sp);
+		scrollPane = new JScrollPane(mapPanel);
+		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+		splitPane.setRightComponent(scrollPane);
 
 		// Author panel holds the buttons for authors use
 		authorPanel = new AuthorPanel();
@@ -199,7 +201,7 @@ public class AuthorWindow extends JPanel implements ActionListener {
 					}else {
 						r = null;
 					}
-					mapPanel.setSelectedRoom(r);
+					mapPanel.setSelectedRoom(r);					
 					mapPanel.repaint();
 				}
 			}

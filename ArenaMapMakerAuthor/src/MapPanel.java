@@ -1,4 +1,5 @@
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.event.*;
@@ -41,6 +42,11 @@ public class MapPanel extends JPanel  {
 	protected void dialog(String message) {
 		JOptionPane.showMessageDialog(this, message);
 	}
+	
+	@Override
+    public Dimension getPreferredSize() {
+        return new Dimension(3000, 3000);
+    }
 
 	/**
 	 * Changes state of MapPanel to draw Outline
@@ -78,7 +84,7 @@ public class MapPanel extends JPanel  {
 	public void paintComponent(Graphics g) {
 		// Background
 		g.setColor(Color.LIGHT_GRAY);
-		g.fillRect(0, 0, 1200, 1200);
+		g.fillRect(0, 0, 3000, 3000);
 		// Grid points
 		g.setColor(Color.white);
 		for (int i = 0; i < 600; i++) {
@@ -147,5 +153,8 @@ public class MapPanel extends JPanel  {
 
 	public void setSelectedRoom(Room r) {
 		civ.setSelectedRoom(r);
+		if(r!=null&&r.path!=null) {
+			this.scrollRectToVisible(r.path.getBounds());
+		}
 	}
 }
