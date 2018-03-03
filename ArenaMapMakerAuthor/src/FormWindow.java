@@ -29,7 +29,6 @@ public class FormWindow  {
 		// TODO Should not access Room fields Directly
 		frame = new JFrame();
 		frame.setBounds(200, 100, 350, 600);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setTitle("Room Description");
 		frame.getContentPane().setLayout(null);
 		

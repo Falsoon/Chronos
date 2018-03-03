@@ -3,6 +3,8 @@ import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 
+import javax.swing.SwingUtilities;
+
 public class CIV {
 	private Map map;
 
@@ -10,28 +12,30 @@ public class CIV {
 		map = new Map();
 	}
 
-	public void mousePressed(MouseEvent e) {
+	public void mousePressed(MouseEvent e) throws Throwable {
 		Point p = e.getPoint();
 		if (!e.isAltDown()) {
 			p.setLocation(Math.round(((double) p.x) / Constants.GRIDDISTANCE) * Constants.GRIDDISTANCE,
 					Math.round(((double) p.y) / Constants.GRIDDISTANCE) * Constants.GRIDDISTANCE);
 		}
-		if (map.isCreating()) {
-			map.mousePressed(p);
-		} else {
-			if (!map.getPlayer().isPlaying()) {
-				Room room = map.getRoom(p);
-				if (room != null) {
-					EventQueue.invokeLater(new Runnable() {
-						public void run() {
-							try {
-								FormWindow window = new FormWindow(room, true);
-								window.frame.setVisible(true);
-							} catch (Exception e) {
-								e.printStackTrace();
+		if (SwingUtilities.isLeftMouseButton(e)) {
+			if (map.isCreating()) {
+				map.mousePressed(p);
+			} else {
+				if (!map.getPlayer().isPlaying()) {
+					Room room = map.getRoom(p);
+					if (room != null) {
+						EventQueue.invokeLater(new Runnable() {
+							public void run() {
+								try {
+									FormWindow window = new FormWindow(room, true);
+									window.frame.setVisible(true);
+								} catch (Exception e) {
+									e.printStackTrace();
+								}
 							}
-						}
-					});
+						});
+					}
 				}
 			}
 		}
@@ -93,6 +97,7 @@ public class CIV {
 	public void stopDrawing() {
 		map.stopDrawing();
 	}
+
 	public void dooring() {
 		map.dooring();
 	}

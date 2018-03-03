@@ -12,23 +12,34 @@ public class MapPanel extends JPanel  {
 	public CIV civ;
 	private final int GRIDDISTANCE = Constants.GRIDDISTANCE;
 	public Point playerPos;
+	private AuthorWindow aw;
 
 	/**
 	 * Constructor of MapPanel adds the appropriate action listeners
+	 * @param authorWindow 
 	 */
-	public MapPanel() {
+	public MapPanel(AuthorWindow authorWindow) {
 		civ = new CIV();
-		
+		aw = authorWindow;
 		// Anonymous class was used to access MapPanel fields
 		MouseListener mousehandler = new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent e) {
 				
-				civ.mousePressed(e);
+				try {
+					civ.mousePressed(e);
+				} catch (Throwable error) {
+					dialog(error.getMessage());
+				}
 				repaint();
+				aw.update();
 			}
 		};
 		addMouseListener(mousehandler);
+	}
+
+	protected void dialog(String message) {
+		JOptionPane.showMessageDialog(this, message);
 	}
 
 	/**

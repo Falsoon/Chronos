@@ -70,7 +70,7 @@ public class AuthorWindow extends JPanel implements ActionListener {
 		splitPane.setDividerLocation(300);
 
 		// mapPanel holds the graphics of the map
-		mapPanel = new MapPanel();
+		mapPanel = new MapPanel(this);
 		JScrollPane sp = new JScrollPane(mapPanel);
 		sp.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 		splitPane.setRightComponent(sp);
@@ -174,7 +174,6 @@ public class AuthorWindow extends JPanel implements ActionListener {
 
 		Rooms = new JComboBox<Room>();
 		Rooms.addActionListener(new ActionListener() {
-
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				int id;
@@ -252,7 +251,6 @@ public class AuthorWindow extends JPanel implements ActionListener {
 		portalCombo.setVisible(true);
 		addRoombtn1.setVisible(false);
 		addRoombtn2.setVisible(true);
-
 	}
 
 	private void setMode1() {
@@ -264,7 +262,6 @@ public class AuthorWindow extends JPanel implements ActionListener {
 		portalCombo.setVisible(false);
 		addRoombtn2.setVisible(false);
 		addRoombtn1.setVisible(true);
-
 	}
 
 	@Override
@@ -273,35 +270,34 @@ public class AuthorWindow extends JPanel implements ActionListener {
 		switch (cb.getSelectedItem().toString()) {
 		case "Opaque":
 			mapPanel.paintRooms();
-			update();
 			break;
 		case "Transparent":
 			mapPanel.paintWalls();
-			update();
 			break;
 		case "Walls":
 			mapPanel.stopDrawing();
-			update();
 			break;
 		case "Doors":
 			mapPanel.paintDoors();
-			update();
 			break;
 		case "Portals":
 			mapPanel.stopDrawing();
-			update();
 			break;
 		default:
 			System.err.println("ComboBox Error");
 		}
+		update();
 	}
 
 	void update() {
+		int index = Rooms.getSelectedIndex();
+		if(index == -1) {index = 0;}
 		Rooms.removeAllItems();
 		Rooms.addItem(selectRoom);
 		// TODO Should not get Room List Directly
 		for (int i = 0; i < RoomList.list.size(); i++) {
 			Rooms.addItem(RoomList.list.get(i));
 		}
+		Rooms.setSelectedIndex(index);
 	}
 }
