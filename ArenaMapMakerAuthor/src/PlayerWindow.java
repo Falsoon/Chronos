@@ -29,7 +29,8 @@ public class PlayerWindow {
 	 */
 	private void initialize() {
 		frame = new JFrame();
-		frame.setBounds(200, 200, 800, 450);
+		//frame.setBounds(200, 200, 800, 450);
+		frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setTitle("PlayerWindow");
 

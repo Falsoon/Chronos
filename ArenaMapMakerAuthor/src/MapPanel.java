@@ -3,6 +3,9 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.event.*;
+
+import javax.swing.JDialog;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
@@ -40,7 +43,10 @@ public class MapPanel extends JPanel  {
 	}
 
 	protected void dialog(String message) {
-		JOptionPane.showMessageDialog(this, message);
+		JOptionPane jop = new JOptionPane(message);
+		final JDialog d = jop.createDialog((JFrame)null, "Error");
+	    d.setLocation(250,250);
+	    d.setVisible(true);
 	}
 	
 	@Override

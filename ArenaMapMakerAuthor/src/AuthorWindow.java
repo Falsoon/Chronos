@@ -121,7 +121,9 @@ public class AuthorWindow extends JPanel implements ActionListener {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				mapPanel.clear();
+				Rooms.setSelectedIndex(0);
 				wallCombo.setSelectedItem(wallTypes[0]);
+				
 				authorPanel.grabFocus();
 			}
 		});
