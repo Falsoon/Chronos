@@ -1,3 +1,4 @@
+package civ;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -9,6 +10,10 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
+
+import hic.AuthorWindow;
+import pdc.Constants;
+import pdc.Room;
 
 /*
  * the presenter class for the mapWindow
@@ -40,7 +45,7 @@ public class MapPanel extends JPanel  {
 					dialog(error.getMessage());
 				}
 				repaint();
-				aw.update();
+				aw.authorPanel.update();
 			}
 		};
 		addMouseListener(mousehandler);

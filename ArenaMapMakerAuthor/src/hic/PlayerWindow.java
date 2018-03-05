@@ -1,3 +1,4 @@
+package hic;
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
@@ -9,12 +10,15 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JSplitPane;
 
+import civ.MapPanel;
+import civ.StoryPanel;
+
 /*
  * handles UI of playing (moving player around) on the map
  */
 public class PlayerWindow {
 
-	JFrame frame;
+	public JFrame frame;
 	private MapPanel mapPanel;
 
 	/**

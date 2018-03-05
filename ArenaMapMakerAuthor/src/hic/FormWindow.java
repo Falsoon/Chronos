@@ -1,7 +1,12 @@
+package hic;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
+
+import pdc.*;
+import civ.*;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -15,7 +20,7 @@ import javax.swing.JTextArea;
 
 public class FormWindow  {
 
-	protected JFrame frame;
+	public JFrame frame;
 	private JTextField roomIdText;
 	private JTextArea textArea, titleText;
 	private Room room;

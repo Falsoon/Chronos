@@ -1,9 +1,13 @@
+package civ;
 import java.awt.EventQueue;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 
 import javax.swing.SwingUtilities;
+
+import pdc.*;
+import hic.*;
 
 public class CIV {
 	private Map map;

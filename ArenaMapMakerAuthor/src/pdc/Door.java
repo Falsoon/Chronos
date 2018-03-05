@@ -1,3 +1,4 @@
+package pdc;
 import java.awt.geom.GeneralPath;
 
 public class Door {
