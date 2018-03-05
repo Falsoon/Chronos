@@ -10,6 +10,7 @@ public class CIV {
 
 	public CIV() {
 		map = new Map();
+		
 	}
 
 	public void mousePressed(MouseEvent e) throws Throwable {

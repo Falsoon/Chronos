@@ -17,7 +17,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JComboBox;
 
 /*
- * UI class for author side of application
+ * UI class for entire window of application
  */
 
 public class AuthorWindow extends JPanel implements ActionListener {
@@ -38,18 +38,9 @@ public class AuthorWindow extends JPanel implements ActionListener {
 	/**
 	 * Launch the application.
 	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					AuthorWindow window = new AuthorWindow();
-					window.frame.setTitle("ArenaMapMaker");
-					window.frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
+	public static void setInitialFrame(AuthorWindow window) {
+		window.frame.setTitle("ArenaMapMaker");
+		window.frame.setVisible(true);
 	}
 
 	/**
