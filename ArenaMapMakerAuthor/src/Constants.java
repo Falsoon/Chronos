@@ -1,4 +1,4 @@
-/*
+/**
  * Encapsulate all the constants
  */
 public class Constants {

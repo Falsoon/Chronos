@@ -16,8 +16,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JComboBox;
 
-/*
- * UI class for author side of application
+/**
+ * UI class for author side of application. Contains main Method
  */
 
 public class AuthorWindow extends JPanel implements ActionListener {

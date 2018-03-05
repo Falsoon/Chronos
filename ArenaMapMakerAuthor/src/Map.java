@@ -9,8 +9,8 @@ import javax.swing.undo.StateEditable;
 import javax.swing.undo.UndoManager;
 import javax.swing.undo.UndoableEditSupport;
 
-/*
- * Handles the data of map overall (not the same as map layer)
+/**
+ * Handles the data of map overall including data of 3 mapLayers
  */
 
 public class Map implements StateEditable {
