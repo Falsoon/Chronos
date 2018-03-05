@@ -9,7 +9,7 @@ import javax.swing.JButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
-/*
+/**
  * Handles UI of form window
  */
 

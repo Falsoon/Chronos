@@ -16,7 +16,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JComboBox;
 
-/*
+/**
  * UI class for entire window of application
  */
 
@@ -116,7 +116,9 @@ public class AuthorWindow extends JPanel implements ActionListener {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				mapPanel.clear();
+				Rooms.setSelectedIndex(0);
 				wallCombo.setSelectedItem(wallTypes[0]);
+				
 				authorPanel.grabFocus();
 			}
 		});
