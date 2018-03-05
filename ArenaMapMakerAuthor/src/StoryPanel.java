@@ -2,6 +2,8 @@ import java.awt.event.ActionEvent;
 
 import javax.swing.AbstractAction;
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 
 /*
@@ -13,6 +15,8 @@ public class StoryPanel extends JPanel {
 	private UpAction upAction = new UpAction();
 	private DownAction downAction = new DownAction();
 	private MapPanel mapPanel;
+	private JTextField title = new JTextField();
+	private JTextArea desc = new JTextArea();
 
 	public StoryPanel(MapPanel mp) {
 		mapPanel = mp;
@@ -25,12 +29,27 @@ public class StoryPanel extends JPanel {
 		this.getActionMap().put("UP", upAction);
 		this.getActionMap().put("DOWN", downAction);
 
+		title.setEditable(false);
+		this.add(title);
+
+		desc.setEditable(false);
+		this.add(desc);
+
+		updateText();
+	}
+
+	private void updateText() {
+		if (mapPanel.getRoom() != null) {
+			desc.setText(mapPanel.getRoom().desc);
+			title.setText(mapPanel.getRoom().title);
+		}
 	}
 
 	private class LeftAction extends AbstractAction {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			mapPanel.goLeft();
+			updateText();
 		}
 	}
 
@@ -38,6 +57,7 @@ public class StoryPanel extends JPanel {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			mapPanel.goRight();
+			updateText();
 		}
 	}
 
@@ -45,6 +65,7 @@ public class StoryPanel extends JPanel {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			mapPanel.goUp();
+			updateText();
 		}
 	}
 
@@ -52,6 +73,7 @@ public class StoryPanel extends JPanel {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			mapPanel.goDown();
+			updateText();
 		}
 	}
 }
