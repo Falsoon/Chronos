@@ -9,6 +9,9 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JSplitPane;
 
+/*
+ * handles UI of playing (moving player around) on the map
+ */
 public class PlayerWindow {
 
 	JFrame frame;

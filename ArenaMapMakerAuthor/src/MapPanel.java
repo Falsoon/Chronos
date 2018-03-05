@@ -10,6 +10,10 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
+/*
+ * the presenter class for the mapWindow
+ * handles updating both data on the map and UI of the map
+ */
 @SuppressWarnings("serial")
 public class MapPanel extends JPanel  {
 

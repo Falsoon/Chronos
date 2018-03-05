@@ -3,6 +3,9 @@ import java.awt.geom.GeneralPath;
 import java.awt.geom.PathIterator;
 import java.util.ArrayList;
 
+/*
+ * encapsulates room data
+ */
 public class Room {
 	public GeneralPath path;
 	public ArrayList<Point> list = new ArrayList<Point>();

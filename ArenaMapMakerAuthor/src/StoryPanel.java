@@ -6,6 +6,9 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 
+/*
+ * Presenter class used to update playerWindow and player data.
+ */
 public class StoryPanel extends JPanel {
 	private LeftAction leftAction = new LeftAction();
 	private RightAction rightAction = new RightAction();
