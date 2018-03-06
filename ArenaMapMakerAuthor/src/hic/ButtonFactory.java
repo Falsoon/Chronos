@@ -1,4 +1,4 @@
-package civ;
+package hic;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -6,13 +6,7 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 
-import hic.AuthorWindow;
-import hic.FormWindow;
-import hic.PlayerWindow;
-import pdc.Room;
-import pdc.RoomList;
-
-
+import civ.FormCiv;
 /**
  * This class is used to encapsulate the creation of buttons and the logic behind
  * action listeners of each button 
@@ -38,6 +32,7 @@ public class ButtonFactory implements ActionListener  {
 				if (authorWindow.modeSelected == 0) {
 					authorModeBox.removeItemAt(0);
 				}
+				@SuppressWarnings("unchecked")
 				JComboBox<String> cb = (JComboBox<String>) e.getSource();
 				switch (cb.getSelectedItem().toString()) {
 				case "Author Room descriptions":
@@ -71,6 +66,7 @@ public class ButtonFactory implements ActionListener  {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				authorWindow.mapPanel.clear();
+				authorWindow.authorPanel.Rooms.setSelectedIndex(0);
 				authorWindow.wallCombo.setSelectedItem(authorWindow.wallTypes[0]);
 				authorWindow.authorPanel.grabFocus();
 			}
@@ -124,25 +120,23 @@ public class ButtonFactory implements ActionListener  {
 		authorWindow.authorPanel.add(start);
 		start.setVisible(false);
 
-		authorWindow.authorPanel.Rooms = new JComboBox<Room>();
+		authorWindow.authorPanel.Rooms = new JComboBox<String>();
 		authorWindow.authorPanel.Rooms.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				int id;
-				JComboBox<Room> cb = (JComboBox<Room>) e.getSource();
+				@SuppressWarnings("unchecked")
+				JComboBox<String> cb = (JComboBox<String>) e.getSource();
 				if (cb.getItemCount() > 1) {
-					Room r = (Room) cb.getSelectedItem();
-					id = r.ROOMID;
+					final String str = (String) cb.getSelectedItem();
 					FormCiv fc = new FormCiv();
-					if (id != -1) {
+					if (!str.equals("Select Room")) {
 						if (authorWindow.modeSelected == 1) {
 							EventQueue.invokeLater(new Runnable() {
 								public void run() {
 									try {
-										// TODO Should not access RoomList
 										FormWindow window = new FormWindow(fc,
-												RoomList.getRoomById(id).path != null);
-										fc.setRoomReference( RoomList.getRoomById(id) );
+												fc.getRoomDrawn(str));
+										fc.setRoomReference(str);
 										window.frame.setVisible(true);
 									} catch (Exception e) {
 										e.printStackTrace();
@@ -150,10 +144,10 @@ public class ButtonFactory implements ActionListener  {
 								}
 							});
 						}
+						authorWindow.mapPanel.setSelectedRoom(str);		
 					}else {
-						r = null;
-					}
-					authorWindow.mapPanel.setSelectedRoom(r);					
+						authorWindow.mapPanel.setSelectedRoom(null);		
+					}			
 					authorWindow.mapPanel.repaint();
 				}
 			}
@@ -185,11 +179,11 @@ public class ButtonFactory implements ActionListener  {
 		addRoombtn2.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				Room r = (Room) authorWindow.authorPanel.Rooms.getSelectedItem();
-				if (r.ROOMID == -1) {
+				String str = (String) authorWindow.authorPanel.Rooms.getSelectedItem();
+				if (str.equals("Select Room")) {
 					authorWindow.mapPanel.paintRooms();
 				} else {
-					authorWindow.mapPanel.drawRoom(r);
+					authorWindow.mapPanel.drawRoom(str);
 				}
 			}
 		});
@@ -197,6 +191,7 @@ public class ButtonFactory implements ActionListener  {
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {
+		@SuppressWarnings("unchecked")
 		JComboBox<String> cb = (JComboBox<String>) e.getSource();
 		switch (cb.getSelectedItem().toString()) {
 		case "Opaque":

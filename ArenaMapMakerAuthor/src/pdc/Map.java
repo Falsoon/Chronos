@@ -186,8 +186,8 @@ public class Map implements StateEditable {
 		walling = false;
 	}
 
-	public void drawRoom(Room r) {
-		room = r;
+	public void drawRoom(String str) {
+		room = RoomList.getRoomByStr(str);
 		outlining = true;
 		walling = false;
 		dooring = false;
@@ -195,8 +195,8 @@ public class Map implements StateEditable {
 		mapLayer.drawing = false;
 	}
 
-	public void setSelectedRoom(Room r) {
-		mapLayer.setSelectedRoom(r);
+	public void setSelectedRoom(String str) {
+		mapLayer.setSelectedRoom(RoomList.getRoomByStr(str));
 	}
 
 	public void pauseDrawing() {

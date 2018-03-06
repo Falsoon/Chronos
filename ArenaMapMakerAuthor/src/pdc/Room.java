@@ -169,4 +169,13 @@ public class Room {
 		}
 		return found;
 	}
+
+	public boolean isDrawn() {
+		return path!=null;
+	}
+
+	public String[] getStrings() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

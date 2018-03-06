@@ -18,8 +18,10 @@ import javax.swing.JComboBox;
  * UI class for entire application
  */
 
+@SuppressWarnings("serial")
 public class AuthorWindow extends JPanel {
 
+	public static CIV civ;
 	public JFrame frame; 
 	public AuthorPanel authorPanel;
 	public MapPanel mapPanel;
@@ -52,6 +54,7 @@ public class AuthorWindow extends JPanel {
 	 * Create the application.
 	 */
 	public AuthorWindow() {
+		civ = new CIV();
 		initialize();
 	}
 
@@ -78,23 +81,9 @@ public class AuthorWindow extends JPanel {
 
 		// Author panel holds the buttons for authors use
 		authorPanel = new AuthorPanel();
-		//call the factory class
-		ButtonFactory bFactory = new ButtonFactory(this);
+		new ButtonFactory(this);
 		splitPane.setLeftComponent(authorPanel);
 		authorPanel.update();
 
 	}
-
-
-	/*public void update() {
-		int index = Rooms.getSelectedIndex();
-		if(index == -1) {index = 0;}
-		Rooms.removeAllItems();
-		Rooms.addItem(selectRoom);
-		// TODO Should not get Room List Directly
-		for (int i = 0; i < RoomList.list.size(); i++) {
-			Rooms.addItem(RoomList.list.get(i));
-		}
-		Rooms.setSelectedIndex(index);
-	}*/
 }

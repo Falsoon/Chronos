@@ -1,11 +1,9 @@
 package pdc;
 import java.awt.Graphics;
 import java.awt.Point;
-import java.awt.Rectangle;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.PathIterator;
 import java.util.ArrayList;
-import java.util.Iterator;
 
 /**
  * Layer of the map
@@ -89,10 +87,6 @@ public abstract class MapLayer {
 			pathList.add(path);
 		}
 		return path;
-	}
-
-	private void setStart(GeneralPath path) {
-		
 	}
 
 	/**

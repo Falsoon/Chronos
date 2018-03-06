@@ -42,4 +42,16 @@ public class RoomList {
 		}
 		return room;
 	}
+
+	public static Room getRoomByStr(String str) {
+		boolean found = false;
+		Room r = null;
+		for(int i=0;i<list.size()&&!found;i++) {
+			if(list.get(i).toString().equals(str)) {
+				r = list.get(i);
+				found = true;
+			}
+		}
+		return r;
+	}
 }

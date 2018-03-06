@@ -1,18 +1,19 @@
 package civ;
+
 import java.awt.EventQueue;
 import java.awt.Graphics;
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 
 import javax.swing.SwingUtilities;
 
 import pdc.*;
 import hic.*;
 
-
 /**
- *  This class is used as the civ/presenter class
- *  for map
+ * This class is used as the civ/presenter class for map
  */
 public class CIV {
 	private Map map;
@@ -21,7 +22,7 @@ public class CIV {
 	public CIV() {
 		map = new Map();
 		formCiv = new FormCiv();
-		
+
 	}
 
 	public void mousePressed(MouseEvent e) throws Throwable {
@@ -35,14 +36,13 @@ public class CIV {
 				map.mousePressed(p);
 			} else {
 				if (!map.getPlayer().isPlaying()) {
-					Room room = map.getRoom(p);
+					Room room = RoomList.getRoom(p);
 					if (room != null) {
 						EventQueue.invokeLater(new Runnable() {
 							public void run() {
 								try {
-									formCiv.setRoomReference(room);
+									formCiv.setRoomReference(room.toString());
 									FormWindow window = new FormWindow(formCiv, true);
-									
 									window.frame.setVisible(true);
 								} catch (Exception e) {
 									e.printStackTrace();
@@ -104,8 +104,8 @@ public class CIV {
 		map.getPlayer().goRight();
 	}
 
-	public Room getRoom() {
-		return map.getRoom(map.getPlayer().getPosition());
+	public String[] getRoom() {
+		return RoomList.getRoom(map.getPlayer().getPosition()).getStrings();
 	}
 
 	public void stopDrawing() {
@@ -116,12 +116,29 @@ public class CIV {
 		map.dooring();
 	}
 
-	public void drawRoom(Room r) {
-		map.drawRoom(r);
+	public void drawRoom(String str) {
+		map.drawRoom(str);
 	}
 
-	public void setSelectedRoom(Room r) {
-		map.setSelectedRoom(r);
+	public void setSelectedRoom(String str) {
+		map.setSelectedRoom(str);
+	}
+
+	public ArrayList<String> getRoomList() {
+		ArrayList<String> rList = new ArrayList<String>();
+		for (int i = 0; i < RoomList.list.size(); i++) {
+			rList.add(RoomList.list.get(i).toString());
+		}
+		return rList;
+	}
+
+	public Rectangle getRoomBounds(String str) {
+		Room r = RoomList.getRoomByStr(str);
+		if (r == null || r.path == null) {
+			return null;
+		} else {
+			return r.path.getBounds();
+		}
 	}
 
 }

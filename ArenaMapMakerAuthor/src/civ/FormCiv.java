@@ -14,8 +14,8 @@ public class FormCiv {
 		
 	}
 	
-	public void setRoomReference(Room r) {
-		room = r;
+	public void setRoomReference(String str) {
+		room = RoomList.getRoomByStr(str);
 	}
 	
 	public String getRoomTitle(){
@@ -39,6 +39,9 @@ public class FormCiv {
 		RoomList.add(room);
 	}
 
-	
-
+	public boolean getRoomDrawn(String str) {
+		Room r = RoomList.getRoomByStr(str);
+		if(r ==null) {return false;}
+		return r.isDrawn();
+	}
 }

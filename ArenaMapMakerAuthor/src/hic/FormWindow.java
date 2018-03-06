@@ -36,7 +36,6 @@ public class FormWindow  {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
-		// TODO Should not access Room fields Directly, formCiv should do this work
 		frame = new JFrame();
 		frame.setBounds(200, 100, 350, 600);
 		frame.setTitle("Room Description");
@@ -75,8 +74,6 @@ public class FormWindow  {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				//room.title = titleText.getText();
-				//room.desc = textArea.getText();
 				formCiv.adjustRoomTitleAndDesc(titleText.getText(), textArea.getText() );
 				frame.setVisible(false);
 				if(!drawnRoom) {
