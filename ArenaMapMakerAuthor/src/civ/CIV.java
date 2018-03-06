@@ -4,10 +4,7 @@ import java.awt.EventQueue;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Rectangle;
-import java.awt.event.MouseEvent;
 import java.util.ArrayList;
-
-import javax.swing.SwingUtilities;
 
 import pdc.*;
 import hic.*;
@@ -25,18 +22,17 @@ public class CIV {
 
 	}
 
-	public void mousePressed(MouseEvent e) throws Throwable {
-		Point p = e.getPoint();
-		if (!e.isAltDown()) {
-			p.setLocation(Math.round(((double) p.x) / Constants.GRIDDISTANCE) * Constants.GRIDDISTANCE,
-					Math.round(((double) p.y) / Constants.GRIDDISTANCE) * Constants.GRIDDISTANCE);
+	public void mousePressed(Point point,boolean isAltDown, boolean isLeftButton) throws Throwable {
+		if (!isAltDown) {
+			point.setLocation(Math.round(((double) point.x) / Constants.GRIDDISTANCE) * Constants.GRIDDISTANCE,
+					Math.round(((double) point.y) / Constants.GRIDDISTANCE) * Constants.GRIDDISTANCE);
 		}
-		if (SwingUtilities.isLeftMouseButton(e)) {
+		if (isLeftButton) {
 			if (map.isCreating()) {
-				map.mousePressed(p);
+				map.mousePressed(point);
 			} else {
 				if (!map.getPlayer().isPlaying()) {
-					Room room = RoomList.getRoom(p);
+					Room room = RoomList.getRoom(point);
 					if (room != null) {
 						EventQueue.invokeLater(new Runnable() {
 							public void run() {
@@ -140,5 +136,4 @@ public class CIV {
 			return r.path.getBounds();
 		}
 	}
-
 }

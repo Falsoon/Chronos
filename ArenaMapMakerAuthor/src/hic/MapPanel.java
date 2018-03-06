@@ -1,23 +1,27 @@
 package hic;
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.event.*;
 
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
+
 import civ.CIV;
 import pdc.Constants;
 
 /**
- * the presenter class for the mapWindow
- * handles updating both data on the map and UI of the map
+ * the presenter class for the mapWindow handles updating both data on the map
+ * and UI of the map
  */
 @SuppressWarnings("serial")
-public class MapPanel extends JPanel  {
+public class MapPanel extends JPanel {
 
 	public CIV civ;
 	private final int GRIDDISTANCE = Constants.GRIDDISTANCE;
@@ -26,7 +30,8 @@ public class MapPanel extends JPanel  {
 
 	/**
 	 * Constructor of MapPanel adds the appropriate action listeners
-	 * @param authorWindow 
+	 * 
+	 * @param authorWindow
 	 */
 	public MapPanel(AuthorWindow authorWindow) {
 		civ = new CIV();
@@ -35,9 +40,9 @@ public class MapPanel extends JPanel  {
 		MouseListener mousehandler = new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent e) {
-				
+
 				try {
-					civ.mousePressed(e);
+					civ.mousePressed(e.getPoint(), e.isAltDown(), SwingUtilities.isLeftMouseButton(e));
 				} catch (Throwable error) {
 					dialog(error.getMessage());
 				}
@@ -50,15 +55,15 @@ public class MapPanel extends JPanel  {
 
 	protected void dialog(String message) {
 		JOptionPane jop = new JOptionPane(message);
-		final JDialog d = jop.createDialog((JFrame)null, "Error");
-	    d.setLocation(250,250);
-	    d.setVisible(true);
+		final JDialog d = jop.createDialog((JFrame) null, "Error");
+		d.setLocation(250, 250);
+		d.setVisible(true);
 	}
-	
+
 	@Override
-    public Dimension getPreferredSize() {
-        return new Dimension(3000, 3000);
-    }
+	public Dimension getPreferredSize() {
+		return new Dimension(3000, 3000);
+	}
 
 	/**
 	 * Changes state of MapPanel to draw Outline
@@ -73,7 +78,7 @@ public class MapPanel extends JPanel  {
 	public void paintWalls() {
 		civ.walling();
 	}
-	
+
 	/**
 	 * Changes state of MapPanel to add doors
 	 */
@@ -165,8 +170,11 @@ public class MapPanel extends JPanel  {
 
 	public void setSelectedRoom(String str) {
 		civ.setSelectedRoom(str);
-		if(str!=null) {
-			this.scrollRectToVisible(civ.getRoomBounds(str));
+		if (str != null) {
+			Rectangle rect = civ.getRoomBounds(str);
+			if(rect!=null) {
+				this.scrollRectToVisible(rect);
+			}
 		}
 	}
 }

@@ -134,9 +134,9 @@ public class ButtonFactory implements ActionListener  {
 							EventQueue.invokeLater(new Runnable() {
 								public void run() {
 									try {
+										fc.setRoomReference(str);
 										FormWindow window = new FormWindow(fc,
 												fc.getRoomDrawn(str));
-										fc.setRoomReference(str);
 										window.frame.setVisible(true);
 									} catch (Exception e) {
 										e.printStackTrace();

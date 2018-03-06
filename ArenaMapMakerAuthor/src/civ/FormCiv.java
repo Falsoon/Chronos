@@ -15,27 +15,47 @@ public class FormCiv {
 	}
 	
 	public void setRoomReference(String str) {
-		room = RoomList.getRoomByStr(str);
+		Room r = RoomList.getRoomByStr(str);
+		if(r==null) {
+			room = new Room();
+		}else {
+			room = r;
+		}
 	}
 	
 	public String getRoomTitle(){
+		if(room ==null) {
+			room = new Room();
+		}
 		return room.title;
 	}
 	
 	public int getRoomID() {
+		if(room ==null) {
+			room = new Room();
+		}
 		return room.ROOMID;
 	}
 	
 	public String getRoomDesc() {
+		if(room ==null) {
+			room = new Room();
+		}
 		return room.desc;
 	}
 	
 	public void adjustRoomTitleAndDesc(String title, String desc) {
+		if(room ==null) {
+			room = new Room();
+		}
 		room.title = title;
 		room.desc = desc;
 	}
 	
 	public void addRoomToRoomList() {
+		if(room ==null) {
+			room = new Room();
+		}
 		RoomList.add(room);
 	}
 

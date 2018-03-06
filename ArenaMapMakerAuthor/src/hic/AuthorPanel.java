@@ -1,4 +1,5 @@
 package hic;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 import javax.swing.JComboBox;
@@ -22,6 +23,15 @@ public class AuthorPanel extends JPanel {
 		for (int i = 0; i < roomList.size();i++) {
 			Rooms.addItem(roomList.get(i));
 		}
+		//temporarily remove action listeners
+		ActionListener[] al = Rooms.getActionListeners();
+		Rooms.removeActionListener(al[0]);
 		Rooms.setSelectedIndex(index);
+		Rooms.addActionListener(al[0]);
+	}
+
+
+	public void reset() {
+		
 	}
 }
