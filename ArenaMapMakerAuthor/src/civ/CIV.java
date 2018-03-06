@@ -9,11 +9,18 @@ import javax.swing.SwingUtilities;
 import pdc.*;
 import hic.*;
 
+
+/**
+ *  This class is used as the civ/presenter class
+ *  for map
+ */
 public class CIV {
 	private Map map;
+	private FormCiv formCiv;
 
 	public CIV() {
 		map = new Map();
+		formCiv = new FormCiv();
 		
 	}
 
@@ -33,7 +40,9 @@ public class CIV {
 						EventQueue.invokeLater(new Runnable() {
 							public void run() {
 								try {
-									FormWindow window = new FormWindow(room, true);
+									formCiv.setRoomReference(room);
+									FormWindow window = new FormWindow(formCiv, true);
+									
 									window.frame.setVisible(true);
 								} catch (Exception e) {
 									e.printStackTrace();

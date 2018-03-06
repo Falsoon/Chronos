@@ -7,7 +7,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 
-/*
+/**
  * Presenter class used to update playerWindow and player data.
  */
 public class StoryPanel extends JPanel {

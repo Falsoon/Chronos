@@ -13,7 +13,7 @@ import javax.swing.JSplitPane;
 import civ.MapPanel;
 import civ.StoryPanel;
 
-/*
+/**
  * handles UI of playing (moving player around) on the map
  */
 public class PlayerWindow {

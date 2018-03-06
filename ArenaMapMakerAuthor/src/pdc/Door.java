@@ -1,6 +1,9 @@
 package pdc;
 import java.awt.geom.GeneralPath;
 
+/**
+ * This class encapsulates all the logic for door objects 
+ */
 public class Door {
 	public GeneralPath path;
 	public int orientation;

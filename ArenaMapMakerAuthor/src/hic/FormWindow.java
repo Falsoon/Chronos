@@ -4,7 +4,6 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 
-import pdc.*;
 import civ.*;
 
 import java.awt.event.ActionEvent;
@@ -23,11 +22,13 @@ public class FormWindow  {
 	public JFrame frame;
 	private JTextField roomIdText;
 	private JTextArea textArea, titleText;
-	private Room room;
+	//private Room room;
 	private boolean drawnRoom;
+	private FormCiv formCiv;
 
-	public FormWindow(Room r, boolean drawn) {
-		room  = r;
+	public FormWindow(FormCiv fc, boolean drawn) {
+		//room  = r;
+		formCiv = fc;
 		drawnRoom = drawn;
 		initialize();
 	}
@@ -35,7 +36,7 @@ public class FormWindow  {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
-		// TODO Should not access Room fields Directly
+		// TODO Should not access Room fields Directly, formCiv should do this work
 		frame = new JFrame();
 		frame.setBounds(200, 100, 350, 600);
 		frame.setTitle("Room Description");
@@ -49,7 +50,7 @@ public class FormWindow  {
 		titleText.setBounds(110, 20, 200, 30);
 		frame.getContentPane().add(titleText);
 		titleText.setColumns(10);
-		titleText.setText(room.title);
+		titleText.setText(formCiv.getRoomTitle());
 		titleText.setLineWrap(true);
 		
 		JLabel lblRoomDescription = new JLabel("Room Description");
@@ -62,7 +63,8 @@ public class FormWindow  {
 		
 		roomIdText = new JTextField();
 		roomIdText.setBounds(115, 50, 90, 20);
-		roomIdText.setText(room.ROOMID+"");
+		
+		roomIdText.setText(formCiv.getRoomID() + "");
 		frame.getContentPane().add(roomIdText);
 		roomIdText.setColumns(10);
 		roomIdText.setEditable(false);
@@ -73,11 +75,12 @@ public class FormWindow  {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				room.title = titleText.getText();
-				room.desc = textArea.getText();
+				//room.title = titleText.getText();
+				//room.desc = textArea.getText();
+				formCiv.adjustRoomTitleAndDesc(titleText.getText(), textArea.getText() );
 				frame.setVisible(false);
 				if(!drawnRoom) {
-					RoomList.add(room);
+					formCiv.addRoomToRoomList();
 				}
 			}
 			
@@ -90,7 +93,7 @@ public class FormWindow  {
 		
 		textArea = new JTextArea();
 		textArea.setLineWrap(true);
-		textArea.setText(room.desc);
+		textArea.setText(formCiv.getRoomDesc());
 		scrollPane.setViewportView(textArea);
 	}
 		

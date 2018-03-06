@@ -15,7 +15,7 @@ import hic.AuthorWindow;
 import pdc.Constants;
 import pdc.Room;
 
-/*
+/**
  * the presenter class for the mapWindow
  * handles updating both data on the map and UI of the map
  */

@@ -1,4 +1,4 @@
-package hic;
+package civ;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -6,10 +6,18 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 
-import civ.AuthorPanel;
+import hic.AuthorWindow;
+import hic.FormWindow;
+import hic.PlayerWindow;
 import pdc.Room;
 import pdc.RoomList;
 
+
+/**
+ * This class is used to encapsulate the creation of buttons and the logic behind
+ * action listeners of each button 
+ * 
+ */
 public class ButtonFactory implements ActionListener  {
 	
 	private AuthorWindow authorWindow;
@@ -125,14 +133,16 @@ public class ButtonFactory implements ActionListener  {
 				if (cb.getItemCount() > 1) {
 					Room r = (Room) cb.getSelectedItem();
 					id = r.ROOMID;
+					FormCiv fc = new FormCiv();
 					if (id != -1) {
 						if (authorWindow.modeSelected == 1) {
 							EventQueue.invokeLater(new Runnable() {
 								public void run() {
 									try {
 										// TODO Should not access RoomList
-										FormWindow window = new FormWindow(RoomList.getRoomById(id),
+										FormWindow window = new FormWindow(fc,
 												RoomList.getRoomById(id).path != null);
+										fc.setRoomReference( RoomList.getRoomById(id) );
 										window.frame.setVisible(true);
 									} catch (Exception e) {
 										e.printStackTrace();
@@ -163,7 +173,7 @@ public class ButtonFactory implements ActionListener  {
 				EventQueue.invokeLater(new Runnable() {
 					public void run() {
 						try {
-							FormWindow window = new FormWindow(new Room(), false);
+							FormWindow window = new FormWindow(new FormCiv(), false);
 							window.frame.setVisible(true);
 						} catch (Exception e) {
 							e.printStackTrace();
