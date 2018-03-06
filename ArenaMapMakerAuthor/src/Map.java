@@ -14,7 +14,7 @@ public class Map implements StateEditable {
 	private Player player;
 	private MapLayer mapLayer;
 	private MapLayer mapLayer2;
-	private MapDoorLayer mapLayer3;
+	private MapLayer mapLayer3;
 	private boolean walling, outlining, dooring;
 	UndoableEditSupport undoSupport = new UndoableEditSupport(this);
 	UndoManager manager = new UndoManager();
@@ -24,6 +24,7 @@ public class Map implements StateEditable {
 	public Map() {
 		layers = new ArrayList<MapLayer>();
 		outlining = false;
+		dooring = false;
 		mapLayer = new MapOutlineLayer();
 		mapLayer2 = new MapWallingLayer();
 		mapLayer3 = new MapDoorLayer();
@@ -109,6 +110,7 @@ public class Map implements StateEditable {
 		Map copy = new Map();
 		copy.mapLayer = mapLayer.copy();
 		copy.mapLayer2 = mapLayer2.copy();
+		copy.mapLayer3 = mapLayer3.copy();
 		copy.outlining = outlining;
 		copy.walling = walling;
 		return copy;
@@ -144,6 +146,7 @@ public class Map implements StateEditable {
 			this.layers = newP.layers;
 			this.mapLayer = newP.mapLayer;
 			this.mapLayer2 = newP.mapLayer2;
+			this.mapLayer3 = newP.mapLayer3;
 			this.outlining = newP.outlining;
 			this.walling = newP.walling;
 			this.player = newP.player;
@@ -172,6 +175,7 @@ public class Map implements StateEditable {
 	public void stopDrawing() {
 		outlining = false;
 		walling = false;
+		dooring = false;
 	}
 
 	public void drawRoom(Room r) {

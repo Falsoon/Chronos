@@ -9,8 +9,6 @@ import java.awt.geom.GeneralPath;
 import java.util.ArrayList;
 
 public class MapDoorLayer extends MapLayer {
-	private ArrayList<GeneralPath> doorList;
-	private final int GRIDDISTANCE = 15;
 	@Override
 	public void draw(Graphics g) {
 		Graphics2D g2d = (Graphics2D) g;
@@ -48,11 +46,6 @@ public class MapDoorLayer extends MapLayer {
 		
 	}
 	
-	public void placeDoor(Point p) {
-		guiPath = new GeneralPath();
-		guiPath.moveTo(p.x, p.y);
-		guiPath.lineTo(p.x + GRIDDISTANCE, p.y);
-		doorList.add(guiPath);
-	}
+
 
 }
