@@ -17,10 +17,10 @@ public abstract class MapLayer {
 	private boolean outlining;
 	protected ArrayList<GeneralPath> pathList;
 	protected ArrayList<Point> pointList;
+	protected ArrayList<GeneralPath> doorList;
 	protected GeneralPath guiPath;
 	private boolean walling;
 	protected Room selectedRoom;
-
 	public MapLayer() {
 		pathList = new ArrayList<GeneralPath>();
 		pointList = new ArrayList<Point>();
@@ -203,5 +203,51 @@ public abstract class MapLayer {
 
 	public void setSelectedRoom(Room r) {
 		selectedRoom = r;
+	}
+	
+		public void placeDoor(Point p) {
+		guiPath = new GeneralPath();
+		/*guiPath.moveTo(p.x, p.y);
+		guiPath.lineTo(p.x + Constants.GRIDDISTANCE, p.y);
+		doorList.add(guiPath);*/
+		//Room r = this.getRoom(p);
+		ArrayList<Room> l = RoomList.list;
+		//if (r != null) {
+		for (int j = 0; j < l.size(); j++) {
+			Room r = l.get(j);
+			ArrayList<Point> list = r.list;
+			for (int i = 0; i < list.size(); i++) {
+				Point a = list.get(i);
+				Point b;
+				if (i == list.size() - 1)
+					b = list.get(0);
+				else 
+					b = list.get(i+1);
+				GeneralPath rect= new GeneralPath();
+				double m;
+				if (b.x != a.x)
+					m = (b.y-a.y) / (b.x - a.x);
+				rect.moveTo(a.x+7, a.y-7);
+				rect.lineTo(a.x-7, a.y-7);
+				rect.lineTo(b.x-7, b.y+7);
+				rect.lineTo(b.x+7, b.y+7);
+				rect.lineTo(a.x+7, a.y-7);
+				rect.closePath();
+				doorList.add(rect);
+				if (rect.contains(p)) {
+					System.out.println("here");
+					if (b.x != a.x) {
+						m = (b.y-a.y) / (b.x - a.x);
+						guiPath.moveTo(p.x, p.y);
+						guiPath.lineTo(p.x+Constants.GRIDDISTANCE*m, p.y+Constants.GRIDDISTANCE*(1/m));
+						doorList.add(guiPath);	
+					} else {
+						guiPath.moveTo(p.x, p.y);
+						guiPath.lineTo(p.x, p.y+Constants.GRIDDISTANCE);
+					}
+				}
+			}
+		}
+
 	}
 }

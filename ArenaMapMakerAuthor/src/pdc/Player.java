@@ -16,6 +16,8 @@ public class Player {
 	private GeneralPath currentRoom;
 	private MapLayer mapLayer;
 	private String representation;
+	private final int XOFFSET = 2;
+	private final int YOFFSET = 4;
 	
 	public Player(MapLayer mapLayer){
 		placed = false;
@@ -27,8 +29,8 @@ public class Player {
 	
 	public void place(Point pos) {
 		position = pos;
-		position.setLocation(Math.round(position.x / GRIDDISTANCE) * GRIDDISTANCE + 2,
-				Math.round(position.y / GRIDDISTANCE) * GRIDDISTANCE - 3);
+		position.setLocation(Math.round(position.x / GRIDDISTANCE) * GRIDDISTANCE + XOFFSET,
+				Math.round(position.y / GRIDDISTANCE) * GRIDDISTANCE - YOFFSET);
 		placed = true;
 		placing = false;
 		Iterator<GeneralPath> itr = mapLayer.pathList.iterator();
@@ -109,10 +111,10 @@ public class Player {
 		while (itr.hasNext() && outside) {
 			GeneralPath path = itr.next();
 			if (path.equals(currentRoom) &&
-					path.contains(position.x, position.y - 2) &&
-						path.contains(position.x + GRIDDISTANCE - 4, position.y - GRIDDISTANCE + 3) &&
-							path.contains(position.x + GRIDDISTANCE - 4, position.y - 2) &&
-								path.contains(position.x, position.y - GRIDDISTANCE + 3))
+					path.contains(position.x, position.y + YOFFSET - 2) &&
+						path.contains(position.x + GRIDDISTANCE - XOFFSET, position.y - GRIDDISTANCE - YOFFSET + 2) &&
+							path.contains(position.x + GRIDDISTANCE - XOFFSET, position.y + YOFFSET - 2) &&
+								path.contains(position.x, position.y - GRIDDISTANCE - YOFFSET + 2))
 									outside = false;
 		}
 		return outside;
