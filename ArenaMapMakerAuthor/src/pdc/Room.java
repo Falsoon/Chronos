@@ -1,8 +1,12 @@
+package pdc;
 import java.awt.Point;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.PathIterator;
 import java.util.ArrayList;
 
+/*
+ * encapsulates room data
+ */
 public class Room {
 	public GeneralPath path;
 	public ArrayList<Point> list = new ArrayList<Point>();
@@ -146,11 +150,32 @@ public class Room {
 	
 	@Override
 	public String toString() {
-		return "Room#"+ROOMID+" :"+title;
+		if(path==null) {
+			return "*Room#"+ROOMID+" :"+title;
+		}else {
+			return "Room#"+ROOMID+" :"+title;
+		}
 	}
 
 	public void setPath(GeneralPath clone) {
 		path = clone;
 		makeList(path);
+	}
+
+	public boolean onBoundary(Point p) {
+		boolean found = false;
+		for(int i =0; !found &&i< list.size()-1;i++) {
+			found = pointBetween(p, list.get(i), list.get(i + 1));
+		}
+		return found;
+	}
+
+	public boolean isDrawn() {
+		return path!=null;
+	}
+
+	public String[] getStrings() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

@@ -1,3 +1,4 @@
+package pdc;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.util.ArrayList;
@@ -8,6 +9,10 @@ import javax.swing.undo.StateEdit;
 import javax.swing.undo.StateEditable;
 import javax.swing.undo.UndoManager;
 import javax.swing.undo.UndoableEditSupport;
+
+/**
+ * Handles the data of map overall including data of 3 mapLayers
+ */
 
 public class Map implements StateEditable {
 	private ArrayList<MapLayer> layers;
@@ -20,6 +25,7 @@ public class Map implements StateEditable {
 	UndoManager manager = new UndoManager();
 	private final Object MAP_KEY = "MAPKEY";
 	private Room room;
+	private boolean paused;
 
 	public Map() {
 		layers = new ArrayList<MapLayer>();
@@ -55,15 +61,15 @@ public class Map implements StateEditable {
 		mapLayer.drawing = false;
 	}
 
-	public void mousePressed(Point p) {
+	public void mousePressed(Point p) throws Throwable {
 		StateEdit stateEdit = new StateEdit(Map.this);
 		if (outlining) {
 			if (mapLayer == null) {
 				mapLayer = new MapOutlineLayer();
 			}
-			if(room==null) {
-			outlining = mapLayer.outline(p);
-			}else {
+			if (room == null) {
+				outlining = mapLayer.outline(p);
+			} else {
 				outlining = mapLayer.outline(p, room);
 			}
 			if (!outlining) {
@@ -71,12 +77,18 @@ public class Map implements StateEditable {
 			}
 		}
 		if (walling) {
-			if (mapLayer2 == null) {
-				mapLayer2 = new MapWallingLayer();
-			}
-			walling = mapLayer2.transWalling(p, mapLayer);
-			if (!walling) {
-				layers.add(mapLayer2);
+			if (getRoom(p) != null) {
+
+				if (mapLayer2 == null) {
+					mapLayer2 = new MapWallingLayer();
+				}
+				walling = mapLayer2.transWalling(p, mapLayer);
+				if (!walling) {
+					layers.add(mapLayer2);
+				}
+			}else {
+				Throwable e = new Throwable("Can only Draw Transparent Walls in a bounded room");
+				throw e;
 			}
 		}
 		if (dooring) {
@@ -87,7 +99,7 @@ public class Map implements StateEditable {
 		}
 		stateEdit.end();
 		manager.addEdit(stateEdit);
-		if(player.isPlaced()) {
+		if (player.isPlaced()) {
 			player.rePlace();
 		}
 	}
@@ -99,7 +111,7 @@ public class Map implements StateEditable {
 		mapLayer2.drawing = false;
 		dooring = false;
 	}
-	
+
 	public void dooring() {
 		dooring = true;
 		walling = false;
@@ -178,8 +190,8 @@ public class Map implements StateEditable {
 		dooring = false;
 	}
 
-	public void drawRoom(Room r) {
-		room = r;
+	public void drawRoom(String str) {
+		room = RoomList.getRoomByStr(str);
 		outlining = true;
 		walling = false;
 		dooring = false;
@@ -187,7 +199,20 @@ public class Map implements StateEditable {
 		mapLayer.drawing = false;
 	}
 
-	public void setSelectedRoom(Room r) {
-		mapLayer.setSelectedRoom(r);
+	public void setSelectedRoom(String str) {
+		mapLayer.setSelectedRoom(RoomList.getRoomByStr(str));
+	}
+
+	public void pauseDrawing() {
+		outlining = false;
+		walling = false;
+		paused = true;
+	}
+
+	public void resumeDrawing() {
+		if(paused) {
+			outlining = true;
+			paused = false;
+		}
 	}
 }

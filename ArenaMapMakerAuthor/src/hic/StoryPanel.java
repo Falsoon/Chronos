@@ -1,3 +1,4 @@
+package hic;
 import java.awt.event.ActionEvent;
 
 import javax.swing.AbstractAction;
@@ -6,6 +7,10 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 
+/**
+ * Presenter class used to update playerWindow and player data.
+ */
+@SuppressWarnings("serial")
 public class StoryPanel extends JPanel {
 	private LeftAction leftAction = new LeftAction();
 	private RightAction rightAction = new RightAction();
@@ -37,8 +42,8 @@ public class StoryPanel extends JPanel {
 
 	private void updateText() {
 		if (mapPanel.getRoom() != null) {
-			desc.setText(mapPanel.getRoom().desc);
-			title.setText(mapPanel.getRoom().title);
+			desc.setText(mapPanel.getRoom()[2]);
+			title.setText(mapPanel.getRoom()[1]);
 		}
 	}
 

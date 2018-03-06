@@ -1,3 +1,4 @@
+package pdc;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
@@ -6,6 +7,10 @@ import java.awt.RenderingHints;
 import java.awt.geom.GeneralPath;
 import java.util.ArrayList;
 
+
+/*
+ * handles the logic behind drawing, coping and undoing an opaque wall
+ */
 public class MapOutlineLayer extends MapLayer {
 
 	@Override

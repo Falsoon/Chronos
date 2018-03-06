@@ -1,35 +1,64 @@
+package hic;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.event.*;
+
+import javax.swing.JDialog;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
+import civ.CIV;
+import pdc.Constants;
 
+/**
+ * the presenter class for the mapWindow
+ * handles updating both data on the map and UI of the map
+ */
 @SuppressWarnings("serial")
 public class MapPanel extends JPanel  {
 
 	public CIV civ;
 	private final int GRIDDISTANCE = Constants.GRIDDISTANCE;
 	public Point playerPos;
+	private AuthorWindow aw;
 
 	/**
 	 * Constructor of MapPanel adds the appropriate action listeners
+	 * @param authorWindow 
 	 */
-	public MapPanel() {
+	public MapPanel(AuthorWindow authorWindow) {
 		civ = new CIV();
-		
+		aw = authorWindow;
 		// Anonymous class was used to access MapPanel fields
 		MouseListener mousehandler = new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent e) {
 				
-				civ.mousePressed(e);
+				try {
+					civ.mousePressed(e);
+				} catch (Throwable error) {
+					dialog(error.getMessage());
+				}
 				repaint();
+				aw.authorPanel.update();
 			}
 		};
 		addMouseListener(mousehandler);
 	}
+
+	protected void dialog(String message) {
+		JOptionPane jop = new JOptionPane(message);
+		final JDialog d = jop.createDialog((JFrame)null, "Error");
+	    d.setLocation(250,250);
+	    d.setVisible(true);
+	}
+	
+	@Override
+    public Dimension getPreferredSize() {
+        return new Dimension(3000, 3000);
+    }
 
 	/**
 	 * Changes state of MapPanel to draw Outline
@@ -67,7 +96,7 @@ public class MapPanel extends JPanel  {
 	public void paintComponent(Graphics g) {
 		// Background
 		g.setColor(Color.LIGHT_GRAY);
-		g.fillRect(0, 0, 1200, 1200);
+		g.fillRect(0, 0, 3000, 3000);
 		// Grid points
 		g.setColor(Color.white);
 		for (int i = 0; i < 600; i++) {
@@ -122,7 +151,7 @@ public class MapPanel extends JPanel  {
 		repaint();
 	}
 
-	public Room getRoom() {
+	public String[] getRoom() {
 		return civ.getRoom();
 	}
 
@@ -130,11 +159,14 @@ public class MapPanel extends JPanel  {
 		civ.stopDrawing();
 	}
 
-	public void drawRoom(Room r) {
-		civ.drawRoom(r);
+	public void drawRoom(String str) {
+		civ.drawRoom(str);
 	}
 
-	public void setSelectedRoom(Room r) {
-		civ.setSelectedRoom(r);
+	public void setSelectedRoom(String str) {
+		civ.setSelectedRoom(str);
+		if(str!=null) {
+			this.scrollRectToVisible(civ.getRoomBounds(str));
+		}
 	}
 }
