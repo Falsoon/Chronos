@@ -1,13 +1,17 @@
 package pdc;
+
+import java.awt.BasicStroke;
 import java.awt.Graphics;
 import java.awt.Point;
+import java.awt.Shape;
+import java.awt.Stroke;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.PathIterator;
 import java.util.ArrayList;
 
 /**
  * Layer of the map
- * 
+ *
  * @author Daniel
  *
  */
@@ -21,21 +25,21 @@ public abstract class MapLayer {
 	protected GeneralPath guiPath;
 	private boolean walling;
 	protected Room selectedRoom;
-	
+
 	public MapLayer() {
-		pathList = new ArrayList<GeneralPath>();
-		pointList = new ArrayList<Point>();
-		drawing = false;
-		selectedRoom = null;
+		this.pathList = new ArrayList<GeneralPath>();
+		this.pointList = new ArrayList<Point>();
+		this.drawing = false;
+		this.selectedRoom = null;
 	}
 
 	public void addPath(GeneralPath guiPath) {
-		pathList.add(guiPath);
+		this.pathList.add(guiPath);
 	}
 
 	public GeneralPath removeLastPath() {
-		if (!pathList.isEmpty()) {
-			return pathList.remove(pathList.size() - 1);
+		if (!this.pathList.isEmpty()) {
+			return this.pathList.remove(this.pathList.size() - 1);
 		} else {
 			return null;
 		}
@@ -44,56 +48,58 @@ public abstract class MapLayer {
 	public abstract void draw(Graphics g);
 
 	public boolean outline(Point p) {
-		outlining = true;
+		this.outlining = true;
 
-		pointList.add(p);
-		boolean first = !drawing;
+		this.pointList.add(p);
+		boolean first = !this.drawing;
 		// at the first point, start a newguiPath
-		if (!drawing) {
-			start = p;// save start to compare later
-			guiPath = getPath(p);// get path with point. sets start
-			if(guiPath.getCurrentPoint()==null) {
-				guiPath.moveTo(p.x, p.y);
+		if (!this.drawing) {
+			this.start = p;// save start to compare later
+			this.guiPath = this.getPath(p);// get path with point. sets start
+			if (this.guiPath.getCurrentPoint() == null) {
+				this.guiPath.moveTo(p.x, p.y);
 			}
-			drawing = true;
+			this.drawing = true;
 		} else {
 			// if not the first point, add toguiPath
-			guiPath.lineTo(p.x, p.y);
+			this.guiPath.lineTo(p.x, p.y);
 		}
 		// if the guiPath has returned to start, the end outline
-		if (!first && p.equals(start)) {
-			outlining = false;
-			guiPath.closePath();
-			RoomList.add(new Room((GeneralPath) guiPath.clone()));
+		if (!first && p.equals(this.start)) {
+			this.outlining = false;
+			this.guiPath.closePath();
+			RoomList.add(new Room((GeneralPath) this.guiPath.clone()));
 		}
-		return outlining;
+		return this.outlining;
 	}
 
 	private GeneralPath getPath(Point p) {
 		int index = 0;
 		boolean found = false;
 		GeneralPath path;
-		for (int i = 0; i < pathList.size() && !found; i++) {
-			found = onPath(pathList.get(i), p);
+		for (int i = 0; i < this.pathList.size() && !found; i++) {
+			found = this.onPath(this.pathList.get(i), p);
 			if (found) {
 				index = i;
 			}
 		}
 		// if point on a path
 		if (found) {
-			path = pathList.get(index);
-			//setStart(path);
+			path = this.pathList.get(index);
+			// setStart(path);
 		} else {
 			path = new GeneralPath();
-			pathList.add(path);
+			this.pathList.add(path);
 		}
 		return path;
 	}
 
 	/**
-	 * 
-	 * @param path - a path to search for the point
-	 * @param p - a point to find on the path
+	 *
+	 * @param path
+	 *            - a path to search for the point
+	 * @param p
+	 *            - a point to find on the path
 	 * @return found - if the point is a part of the path
 	 */
 	private boolean onPath(GeneralPath path, Point p) {
@@ -101,18 +107,18 @@ public abstract class MapLayer {
 		Point point = new Point();
 		double[] coords = new double[6];
 		PathIterator pi = path.getPathIterator(null);
-		if(!pi.isDone()) {
+		if (!pi.isDone()) {
 			pi.currentSegment(coords);
 			point.setLocation((int) coords[0], (int) coords[1]);
 			found = p.equals(point);
 		}
-		if(found) {
-			start.setLocation(path.getCurrentPoint());
+		if (found) {
+			this.start.setLocation(path.getCurrentPoint());
 		}
-		if(!found) {
+		if (!found) {
 			found = p.equals(path.getCurrentPoint());
-			if(found) {
-				start.setLocation(point);
+			if (found) {
+				this.start.setLocation(point);
 			}
 		}
 		return found;
@@ -121,54 +127,44 @@ public abstract class MapLayer {
 	/*
 	 * transWalling is used to encapsulate the logic behind implementing a
 	 * transparent wall.
-	 * 
+	 *
 	 * going forward, we could ID whether the layer is a walling and whether the
 	 * previous layer is a outline layer before calling this method
 	 */
 	public boolean transWalling(Point p, MapLayer previousLayer) {
-		walling = true;
+		this.walling = true;
 		Room r1 = null, r2 = RoomList.getRoom(p);
 		if (r2.onBoundary(p)) {
-			boolean first = pointList.isEmpty();
-			pointList.add(p);
-			if (r2 != null)
-				r1 = r2.split(pointList);
+			boolean first = this.pointList.isEmpty();
+			this.pointList.add(p);
+			if (r2 != null) {
+				r1 = r2.split(this.pointList);
+			}
 			if (r1 != null) {
 				RoomList.add(r1);
 			}
 			if (!first) {
-				walling = false;
-				pointList.clear();
+				this.walling = false;
+				this.pointList.clear();
 			}
 		} else {
-			if (!pointList.isEmpty()) {
-				pointList.add(p);
+			if (!this.pointList.isEmpty()) {
+				this.pointList.add(p);
 			}
 		}
 
-		if (!drawing) {
-			guiPath = new GeneralPath();
-			guiPath.moveTo(p.x, p.y);
-			drawing = true;
+		if (!this.drawing) {
+			this.guiPath = new GeneralPath();
+			this.guiPath.moveTo(p.x, p.y);
+			this.drawing = true;
 			// add logic for pushing to closest call point here
-			pathList.add(guiPath);
+			this.pathList.add(this.guiPath);
 		} else {
-			guiPath.lineTo(p.x, p.y);
+			this.guiPath.lineTo(p.x, p.y);
 			// drawing = false;
 		}
-		return walling;
+		return this.walling;
 	}
-
-	// below are going to be private methods called for snapping transparent wall
-	// end point to solid wall
-	/*
-	 * private void adjustPointToNearestPath(Point p, GeneralPath previousPath) {
-	 * Rectangle bounds = layerPath.getBounds(); }
-	 * 
-	 * private int indexOfMinDistance(Point p, GeneralPath previousPath) {
-	 * 
-	 * return 0; }
-	 */
 
 	public abstract MapLayer copy();
 
@@ -178,42 +174,19 @@ public abstract class MapLayer {
 		return RoomList.getRoom(p);
 	}
 
-	public boolean outline(Point p, Room room) {
-		outlining = true;
-		pointList.add(p);
-		boolean first = !drawing;
-		// at the first point, start a newguiPath
-		if (!drawing) {
-			guiPath = new GeneralPath();
-			guiPath.moveTo(p.x, p.y);
-			start = p;// save start to compare later
-			drawing = true;
-			pathList.add(guiPath);
-		} else {
-			// if not the first point, add toguiPath
-			guiPath.lineTo(p.x, p.y);
-		}
-		// if the guiPath has returned to start, the end outline
-		if (!first && p.equals(start)) {
-			outlining = false;
-			guiPath.closePath();
-			room.setPath((GeneralPath) guiPath.clone());
-		}
-		return outlining;
-	}
-
 	public void setSelectedRoom(Room r) {
 		selectedRoom = r;
 	}
-	
-		public void placeDoor(Point p) {
+
+	public void placeDoor(Point p) {
 		guiPath = new GeneralPath();
-		/*guiPath.moveTo(p.x, p.y);
-		guiPath.lineTo(p.x + Constants.GRIDDISTANCE, p.y);
-		doorList.add(guiPath);*/
-		//Room r = this.getRoom(p);
+		/*
+		 * guiPath.moveTo(p.x, p.y); guiPath.lineTo(p.x + Constants.GRIDDISTANCE, p.y);
+		 * doorList.add(guiPath);
+		 */
+		// Room r = this.getRoom(p);
 		ArrayList<Room> l = RoomList.list;
-		//if (r != null) {
+		// if (r != null) {
 		for (int j = 0; j < l.size(); j++) {
 			Room r = l.get(j);
 			ArrayList<Point> list = r.list;
@@ -222,32 +195,55 @@ public abstract class MapLayer {
 				Point b;
 				if (i == list.size() - 1)
 					b = list.get(0);
-				else 
-					b = list.get(i+1);
-				GeneralPath rect= new GeneralPath();
+				else
+					b = list.get(i + 1);
+				GeneralPath rect = new GeneralPath();
 				double m;
 				if (b.x != a.x)
-					m = (b.y-a.y) / (b.x - a.x);
-				rect.moveTo(a.x+7, a.y-7);
-				rect.lineTo(a.x-7, a.y-7);
-				rect.lineTo(b.x-7, b.y+7);
-				rect.lineTo(b.x+7, b.y+7);
-				rect.lineTo(a.x+7, a.y-7);
+					m = (b.y - a.y) / (b.x - a.x);
+				rect.moveTo(a.x + 7, a.y - 7);
+				rect.lineTo(a.x - 7, a.y - 7);
+				rect.lineTo(b.x - 7, b.y + 7);
+				rect.lineTo(b.x + 7, b.y + 7);
+				rect.lineTo(a.x + 7, a.y - 7);
 				rect.closePath();
 				doorList.add(rect);
 				if (rect.contains(p)) {
 					if (b.x != a.x) {
-						m = (b.y-a.y) / (b.x - a.x);
+						m = (b.y - a.y) / (b.x - a.x);
 						guiPath.moveTo(p.x, p.y);
-						guiPath.lineTo(p.x+Constants.GRIDDISTANCE*m, p.y+Constants.GRIDDISTANCE*(1/m));
-						doorList.add(guiPath);	
+						guiPath.lineTo(p.x + Constants.GRIDDISTANCE * m, p.y + Constants.GRIDDISTANCE * (1 / m));
+						doorList.add(guiPath);
 					} else {
 						guiPath.moveTo(p.x, p.y);
-						guiPath.lineTo(p.x, p.y+Constants.GRIDDISTANCE);
+						guiPath.lineTo(p.x, p.y + Constants.GRIDDISTANCE);
 					}
 				}
 			}
 		}
+	}
 
+	public boolean outline(Point p, Room room) {
+		this.outlining = true;
+		this.pointList.add(p);
+		boolean first = !this.drawing;
+		// at the first point, start a newguiPath
+		if (!this.drawing) {
+			this.guiPath = new GeneralPath();
+			this.guiPath.moveTo(p.x, p.y);
+			this.start = p;// save start to compare later
+			this.drawing = true;
+			this.pathList.add(this.guiPath);
+		} else {
+			// if not the first point, add toguiPath
+			this.guiPath.lineTo(p.x, p.y);
+		}
+		// if the guiPath has returned to start, the end outline
+		if (!first && p.equals(this.start)) {
+			this.outlining = false;
+			this.guiPath.closePath();
+			room.setPath((GeneralPath) this.guiPath.clone());
+		}
+		return this.outlining;
 	}
 }

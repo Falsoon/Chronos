@@ -1,4 +1,5 @@
 package pdc;
+
 import java.awt.Point;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.PathIterator;
@@ -8,174 +9,191 @@ import java.util.ArrayList;
  * encapsulates room data
  */
 public class Room {
-	public GeneralPath path;
-	public ArrayList<Point> list = new ArrayList<Point>();
-	public String desc="", title="";
-	public int ROOMID;
-	public static int idCount = 1;
+    public GeneralPath path;
+    public ArrayList<Point> list = new ArrayList<Point>();
+    public String desc = "", title = "";
+    public int ROOMID;
+    public static int idCount = 1;
+    private int doorCount;
 
-	public Room(GeneralPath p) {
-		path = p;
-		ROOMID = idCount;
-		idCount++;
-		makeList(p);
-	}
+    public Room(GeneralPath p) {
+        this.path = p;
+        this.ROOMID = idCount;
+        idCount++;
+        this.makeList(p);
+        this.doorCount = 0;
+    }
 
-	private void makeList(GeneralPath p) {
-		double[] coords = new double[6];
-		Point point;
-		for (PathIterator pi = p.getPathIterator(null); !pi.isDone(); pi.next()) {
-			pi.currentSegment(coords);
-			point = new Point();
-			point.setLocation(coords[0], coords[1]);
-			list.add(point);
-		}
-	}
+    private void makeList(GeneralPath p) {
+        double[] coords = new double[6];
+        Point point;
+        for (PathIterator pi = p.getPathIterator(null); !pi.isDone(); pi
+                .next()) {
+            pi.currentSegment(coords);
+            point = new Point();
+            point.setLocation(coords[0], coords[1]);
+            this.list.add(point);
+        }
+    }
 
-	public Room(Point p) {
-		list.add(p);
-		ROOMID = idCount;
-		idCount++;
-		makePath();
-	}
+    public Room(Point p) {
+        this.list.add(p);
+        this.ROOMID = idCount;
+        idCount++;
+        this.makePath();
+    }
 
-	private void makePath() {
-		if (path == null) {
-			path = new GeneralPath();
-		}
-		if (path.getCurrentPoint() == null) {
-			path.moveTo(list.get(0).getX(), list.get(0).getY());
-			for (int i = 1; i < list.size(); i++) {
-				path.lineTo(list.get(i).getX(), list.get(i).getY());
-				;
-			}
-		} else {
-			path.reset();
-			path.moveTo(list.get(0).getX(), list.get(0).getY());
-			for (int i = 1; i < list.size(); i++) {
-				path.lineTo(list.get(i).getX(), list.get(i).getY());
-			}
-		}
-	}
+    public void addDoor() {
+        this.doorCount++;
+    }
 
-	public Room(ArrayList<Point> l) {
-		list = l;
-		ROOMID = idCount;
-		idCount++;
-		makePath();
-	}
+    public int getDoorCount() {
+        return this.doorCount;
+    }
 
+    private void makePath() {
+        if (this.path == null) {
+            this.path = new GeneralPath();
+        }
+        if (this.path.getCurrentPoint() == null) {
+            this.path.moveTo(this.list.get(0).getX(), this.list.get(0).getY());
+            for (int i = 1; i < this.list.size(); i++) {
+                this.path.lineTo(this.list.get(i).getX(),
+                        this.list.get(i).getY());
+                ;
+            }
+        } else {
+            this.path.reset();
+            this.path.moveTo(this.list.get(0).getX(), this.list.get(0).getY());
+            for (int i = 1; i < this.list.size(); i++) {
+                this.path.lineTo(this.list.get(i).getX(),
+                        this.list.get(i).getY());
+            }
+        }
+    }
 
-	public Room() {
-		ROOMID = idCount;
-		idCount++;
-	}
+    public Room(ArrayList<Point> l) {
+        this.list = l;
+        this.ROOMID = idCount;
+        idCount++;
+        this.makePath();
+    }
 
-	public Room split(ArrayList<Point> split) {
-		if (split.size() < 2) {
-			return null;
-		}
-		ArrayList<Point> newL2 = new ArrayList<Point>();
-		boolean forder = false, first = false, last = false;
-		int findex = -1, lindex = -1, index = 0; // for over list
-		for (int i = 0; i < list.size() - 1; i++) {
-			// check for intersect at first or last
-			first = pointBetween(split.get(0), list.get(i), list.get(i + 1));
-			last = pointBetween(split.get(split.size() - 1), list.get(i), list.get(i + 1));
-			if (first) {
-				findex = i;
-			}
-			if (last) {
-				lindex = i;
-			}
-		}
-		forder = lindex > findex;
-		int start, finish;
-		if (forder) {
-			start = findex+1;
-			finish = lindex+1;
-			index = split.size() - 1;
-			for (int k = 0; k < split.size(); k++) {
-				newL2.add(split.get(split.size() - 1 - k));
-			}
-		} else {
-			start = lindex+1;
-			finish = findex+1;
-			newL2.addAll(split);
-		}
-		for (int i = start; i < finish; i++) {
-			newL2.add(list.remove(start));
-			
-			if (index > 0) {
-				index--;
-			}
-		}
-		newL2.add(split.get(index));
-		if(forder) {
-			list.addAll(start, split);
-		}else {
-			list.addAll(start, reverse(split));
-		}
-		makePath();
-		return new Room(newL2);
-	}
+    public Room() {
+        this.ROOMID = idCount;
+        idCount++;
+    }
 
-	private  ArrayList<Point> reverse(ArrayList<Point> split) {
-		ArrayList<Point> ret = new ArrayList<Point>();
-		for(int i=0;i<split.size();i++) {
-			ret.add(split.get(split.size()-1-i));
-		}
-		return ret;
-	}
+    public Room split(ArrayList<Point> split) {
+        if (split.size() < 2) {
+            return null;
+        }
+        ArrayList<Point> newL2 = new ArrayList<Point>();
+        boolean forder = false, first = false, last = false;
+        int findex = -1, lindex = -1, index = 0; // for over list
+        for (int i = 0; i < this.list.size() - 1; i++) {
+            // check for intersect at first or last
+            first = this.pointBetween(split.get(0), this.list.get(i),
+                    this.list.get(i + 1));
+            last = this.pointBetween(split.get(split.size() - 1),
+                    this.list.get(i), this.list.get(i + 1));
+            if (first) {
+                findex = i;
+            }
+            if (last) {
+                lindex = i;
+            }
+        }
+        forder = lindex > findex;
+        int start, finish;
+        if (forder) {
+            start = findex + 1;
+            finish = lindex + 1;
+            index = split.size() - 1;
+            for (int k = 0; k < split.size(); k++) {
+                newL2.add(split.get(split.size() - 1 - k));
+            }
+        } else {
+            start = lindex + 1;
+            finish = findex + 1;
+            newL2.addAll(split);
+        }
+        for (int i = start; i < finish; i++) {
+            newL2.add(this.list.remove(start));
 
-	private boolean pointBetween(Point p1, Point p2, Point p3) {
-		return Point.distance(p2.getX(), p2.getY(), p1.getX(), p1.getY())
-				+ Point.distance(p1.getX(), p1.getY(), p3.getX(), p3.getY()) == Point.distance(p2.getX(), p2.getY(),
-						p3.getX(), p3.getY());
-	}
+            if (index > 0) {
+                index--;
+            }
+        }
+        newL2.add(split.get(index));
+        if (forder) {
+            this.list.addAll(start, split);
+        } else {
+            this.list.addAll(start, this.reverse(split));
+        }
+        this.makePath();
+        return new Room(newL2);
+    }
 
-	public boolean contains(Point p) {
-		boolean found = false;
-		if(path==null) {
-			return false;
-		}
-		if(path.contains(p)) {
-			return true;
-		}
-		for(int i =0; !found &&i< list.size()-1;i++) {
-			found = pointBetween(p, list.get(i), list.get(i + 1));
-		}
-		return found;
-	}
-	
-	@Override
-	public String toString() {
-		if(path==null) {
-			return "*Room#"+ROOMID+" :"+title;
-		}else {
-			return "Room#"+ROOMID+" :"+title;
-		}
-	}
+    private ArrayList<Point> reverse(ArrayList<Point> split) {
+        ArrayList<Point> ret = new ArrayList<Point>();
+        for (int i = 0; i < split.size(); i++) {
+            ret.add(split.get(split.size() - 1 - i));
+        }
+        return ret;
+    }
 
-	public void setPath(GeneralPath clone) {
-		path = clone;
-		makeList(path);
-	}
+    private boolean pointBetween(Point p1, Point p2, Point p3) {
+        return Point.distance(p2.getX(), p2.getY(), p1.getX(), p1.getY())
+                + Point.distance(p1.getX(), p1.getY(), p3.getX(),
+                        p3.getY()) == Point.distance(p2.getX(), p2.getY(),
+                                p3.getX(), p3.getY());
+    }
 
-	public boolean onBoundary(Point p) {
-		boolean found = false;
-		for(int i =0; !found &&i< list.size()-1;i++) {
-			found = pointBetween(p, list.get(i), list.get(i + 1));
-		}
-		return found;
-	}
+    public boolean contains(Point p) {
+        boolean found = false;
+        if (this.path == null) {
+            return false;
+        }
+        if (this.path.contains(p)) {
+            return true;
+        }
+        for (int i = 0; !found && i < this.list.size() - 1; i++) {
+            found = this.pointBetween(p, this.list.get(i),
+                    this.list.get(i + 1));
+        }
+        return found;
+    }
 
-	public boolean isDrawn() {
-		return path!=null;
-	}
+    @Override
+    public String toString() {
+        if (this.path == null) {
+            return "*Room#" + this.ROOMID + " :" + this.title;
+        } else {
+            return "Room#" + this.ROOMID + " :" + this.title;
+        }
+    }
 
-	public String[] getStrings() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    public void setPath(GeneralPath clone) {
+        this.path = clone;
+        this.makeList(this.path);
+    }
+
+    public boolean onBoundary(Point p) {
+        boolean found = false;
+        for (int i = 0; !found && i < this.list.size() - 1; i++) {
+            found = this.pointBetween(p, this.list.get(i),
+                    this.list.get(i + 1));
+        }
+        return found;
+    }
+
+    public boolean isDrawn() {
+        return this.path != null;
+    }
+
+    public String[] getStrings() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 }
