@@ -215,18 +215,12 @@ public abstract class MapLayer {
 
     public void placeDoor(Point p) {
         this.guiPath = new GeneralPath();
-        /*
-         * guiPath.moveTo(p.x, p.y); guiPath.lineTo(p.x +
-         * Constants.GRIDDISTANCE, p.y); doorList.add(guiPath);
-         */
-        //Room r = this.getRoom(p);
         ArrayList<Room> l = RoomList.list;
-        //if (r != null) {
-        for (int j = 0; j < l.size(); j++) {
+        for (int j = 0; j < l.size(); j++) { // For each room
             Room r = l.get(j);
-            if (r.getDoorCount() <= 7) {
+            if (r.getDoorCount() < 8) { // Limit to 8 doors per room
                 ArrayList<Point> list = r.list;
-                for (int i = 0; i < list.size(); i++) {
+                for (int i = 0; i < list.size(); i++) { // Iterate over each pair of points
                     Point a = list.get(i);
                     Point b;
                     if (i == list.size() - 1) {
@@ -234,28 +228,38 @@ public abstract class MapLayer {
                     } else {
                         b = list.get(i + 1);
                     }
-                    GeneralPath rect = new GeneralPath();
+                    // Create a shape matching the line between by points a and b
+                    GeneralPath line = new GeneralPath();
                     double m;
-                    rect.moveTo(a.getX(), a.getY());
-                    rect.lineTo(b.getX(), b.getY());
+                    line.moveTo(a.getX(), a.getY());
+                    line.lineTo(b.getX(), b.getY());
                     Stroke s = new BasicStroke(4, BasicStroke.CAP_ROUND,
                             BasicStroke.JOIN_BEVEL);
-                    Shape sh = s.createStrokedShape(rect);
-                    if (sh.contains(p)) {
-                        if (b.getX() != a.getX()) {
+                    Shape sh = s.createStrokedShape(line);
+                    if (sh.contains(p)) { // Point is on the line
+                        if (b.getX() != a.getX()) { // Case the line is not vertical
+                            // M = slope between a and b 
                             m = (b.getY() - a.getY()) / (b.getX() - a.getX());
-                            System.out.println(b.getY());
-                            System.out.println(a.getY());
-                            System.out.println(m);
+                            // Theta = angle between line with slope m and x axis
                             double theta = Math.toDegrees(Math.atan(m));
+                            // Start path at point clicked
                             this.guiPath.moveTo(p.getX(), p.getY());
+                            // TODO: Fix this math
+                            /*
+                             * Idea is to find components of point along line distance n away
+                             * n is GRIDDISTANCE in this case
+                             * x2 = x1 + n * cos(theta)
+                             * y2 = y1 + n * sin(theta)
+                             */
                             this.guiPath.lineTo(
                                     p.getX() - Constants.GRIDDISTANCE
                                             * Math.cos(theta),
                                     p.getY() + Constants.GRIDDISTANCE
                                             * Math.sin(theta));
+                            // Add path to doorList
                             this.doorList.add(this.guiPath);
-                        } else {
+                            //TODO: Make door objects and store them
+                        } else { // Case the line is vertical
                             System.out.println("here");
                             this.guiPath.moveTo(p.getX(), p.getY());
                             this.guiPath.lineTo(p.getX(),
