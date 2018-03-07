@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 
-/*
+/**
  * Encapsulates all the rooms into a list
  */
 public class RoomList {
@@ -52,6 +52,7 @@ public class RoomList {
 				found = true;
 			}
 		}
+		System.out.print(r);
 		return r;
 	}
 }
