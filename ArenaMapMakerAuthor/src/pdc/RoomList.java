@@ -52,7 +52,6 @@ public class RoomList {
 				found = true;
 			}
 		}
-		System.out.print(r);
 		return r;
 	}
 }

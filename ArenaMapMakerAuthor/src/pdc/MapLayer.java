@@ -236,7 +236,6 @@ public abstract class MapLayer {
 				rect.closePath();
 				doorList.add(rect);
 				if (rect.contains(p)) {
-					System.out.println("here");
 					if (b.x != a.x) {
 						m = (b.y-a.y) / (b.x - a.x);
 						guiPath.moveTo(p.x, p.y);

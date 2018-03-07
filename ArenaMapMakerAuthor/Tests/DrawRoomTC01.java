@@ -146,18 +146,67 @@ class DrawRoomTC01 {
 	// TC01-8 User clicks the corners to make an L-shaped room
 	@Test
 	void test01_8() throws Throwable {
-		// TODO
+		civ.outlining();
+		civ.mousePressed(new Point(), false, true);
+		civ.mousePressed(new Point(0,60), false, true);
+		civ.mousePressed(new Point(45,60), false, true);
+		civ.mousePressed(new Point(45,45), false, true);
+		civ.mousePressed(new Point(15,45), false, true);
+		civ.mousePressed(new Point(15,0), false, true);
+		civ.mousePressed(new Point(), false, true);
+		civ.mousePressed(new Point(300, 90), false, true);
+
+		assertEquals(1, civ.getRoomList().size());
+		assertEquals(false, civ.map.isCreating());
+		assertEquals(true, civ.map.mapLayer.pointList.contains(new Point()));
+		assertEquals(true, civ.map.mapLayer.pointList.contains(new Point(45,60)));
+		assertEquals(true, civ.map.mapLayer.pointList.contains(new Point(15,0)));
+		assertEquals(false, civ.map.mapLayer.pointList.contains(new Point(300, 90)));
 	}
 
 	// TC01-9 User clicks the corners to make a +-shaped room
 	@Test
 	void test01_9() throws Throwable {
-		// TODO
+		civ.outlining();
+		civ.mousePressed(new Point(60,60), false, true);
+		civ.mousePressed(new Point(75,60), false, true);
+		civ.mousePressed(new Point(75,90), false, true);
+		civ.mousePressed(new Point(105,90), false, true);
+		civ.mousePressed(new Point(105,105), false, true);
+		civ.mousePressed(new Point(75,105), false, true);
+		civ.mousePressed(new Point(75,135), false, true);
+		civ.mousePressed(new Point(60,135), false, true);
+		civ.mousePressed(new Point(60,105), false, true);
+		civ.mousePressed(new Point(30,105), false, true);
+		civ.mousePressed(new Point(30,90), false, true);
+		civ.mousePressed(new Point(60,90), false, true);
+		civ.mousePressed(new Point(60,60), false, true);
+		civ.mousePressed(new Point(), false, true);
+		civ.mousePressed(new Point(300, 90), false, true);
+
+		assertEquals(1, civ.getRoomList().size());
+		assertEquals(false, civ.map.isCreating());
+		assertEquals(true, civ.map.mapLayer.pointList.contains(new Point(60,60)));
+		assertEquals(true, civ.map.mapLayer.pointList.contains(new Point(75,135)));
+		assertEquals(true, civ.map.mapLayer.pointList.contains(new Point(30,90)));
+		assertEquals(false, civ.map.mapLayer.pointList.contains(new Point(300, 90)));
 	}
 
 	// TC01-10 User clicks the corners to make a triangular room
 	@Test
 	void test01_10() throws Throwable {
-		// TODO
+		civ.outlining();
+		civ.mousePressed(new Point(15, 15), false, true);
+		civ.mousePressed(new Point(15, 45), false, true);
+		civ.mousePressed(new Point(90, 30), false, true);
+		civ.mousePressed(new Point(15, 15), false, true);
+		civ.mousePressed(new Point(300, 90), false, true);
+
+		assertEquals(1, civ.getRoomList().size());
+		assertEquals(false, civ.map.isCreating());
+		assertEquals(true, civ.map.mapLayer.pointList.contains(new Point(15, 15)));
+		assertEquals(true, civ.map.mapLayer.pointList.contains(new Point(15, 45)));
+		assertEquals(true, civ.map.mapLayer.pointList.contains(new Point(90, 30 )));
+		assertEquals(false, civ.map.mapLayer.pointList.contains(new Point(300, 90)));
 	}
 }
