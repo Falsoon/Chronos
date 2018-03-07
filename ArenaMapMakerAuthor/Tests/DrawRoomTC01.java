@@ -148,19 +148,19 @@ class DrawRoomTC01 {
 	void test01_8() throws Throwable {
 		civ.outlining();
 		civ.mousePressed(new Point(), false, true);
-		civ.mousePressed(new Point(0,60), false, true);
-		civ.mousePressed(new Point(45,60), false, true);
-		civ.mousePressed(new Point(45,45), false, true);
-		civ.mousePressed(new Point(15,45), false, true);
-		civ.mousePressed(new Point(15,0), false, true);
+		civ.mousePressed(new Point(0, 60), false, true);
+		civ.mousePressed(new Point(45, 60), false, true);
+		civ.mousePressed(new Point(45, 45), false, true);
+		civ.mousePressed(new Point(15, 45), false, true);
+		civ.mousePressed(new Point(15, 0), false, true);
 		civ.mousePressed(new Point(), false, true);
 		civ.mousePressed(new Point(300, 90), false, true);
 
 		assertEquals(1, civ.getRoomList().size());
 		assertEquals(false, civ.map.isCreating());
 		assertEquals(true, civ.map.mapLayer.pointList.contains(new Point()));
-		assertEquals(true, civ.map.mapLayer.pointList.contains(new Point(45,60)));
-		assertEquals(true, civ.map.mapLayer.pointList.contains(new Point(15,0)));
+		assertEquals(true, civ.map.mapLayer.pointList.contains(new Point(45, 60)));
+		assertEquals(true, civ.map.mapLayer.pointList.contains(new Point(15, 0)));
 		assertEquals(false, civ.map.mapLayer.pointList.contains(new Point(300, 90)));
 	}
 
@@ -168,27 +168,27 @@ class DrawRoomTC01 {
 	@Test
 	void test01_9() throws Throwable {
 		civ.outlining();
-		civ.mousePressed(new Point(60,60), false, true);
-		civ.mousePressed(new Point(75,60), false, true);
-		civ.mousePressed(new Point(75,90), false, true);
-		civ.mousePressed(new Point(105,90), false, true);
-		civ.mousePressed(new Point(105,105), false, true);
-		civ.mousePressed(new Point(75,105), false, true);
-		civ.mousePressed(new Point(75,135), false, true);
-		civ.mousePressed(new Point(60,135), false, true);
-		civ.mousePressed(new Point(60,105), false, true);
-		civ.mousePressed(new Point(30,105), false, true);
-		civ.mousePressed(new Point(30,90), false, true);
-		civ.mousePressed(new Point(60,90), false, true);
-		civ.mousePressed(new Point(60,60), false, true);
+		civ.mousePressed(new Point(60, 60), false, true);
+		civ.mousePressed(new Point(75, 60), false, true);
+		civ.mousePressed(new Point(75, 90), false, true);
+		civ.mousePressed(new Point(105, 90), false, true);
+		civ.mousePressed(new Point(105, 105), false, true);
+		civ.mousePressed(new Point(75, 105), false, true);
+		civ.mousePressed(new Point(75, 135), false, true);
+		civ.mousePressed(new Point(60, 135), false, true);
+		civ.mousePressed(new Point(60, 105), false, true);
+		civ.mousePressed(new Point(30, 105), false, true);
+		civ.mousePressed(new Point(30, 90), false, true);
+		civ.mousePressed(new Point(60, 90), false, true);
+		civ.mousePressed(new Point(60, 60), false, true);
 		civ.mousePressed(new Point(), false, true);
 		civ.mousePressed(new Point(300, 90), false, true);
 
 		assertEquals(1, civ.getRoomList().size());
 		assertEquals(false, civ.map.isCreating());
-		assertEquals(true, civ.map.mapLayer.pointList.contains(new Point(60,60)));
-		assertEquals(true, civ.map.mapLayer.pointList.contains(new Point(75,135)));
-		assertEquals(true, civ.map.mapLayer.pointList.contains(new Point(30,90)));
+		assertEquals(true, civ.map.mapLayer.pointList.contains(new Point(60, 60)));
+		assertEquals(true, civ.map.mapLayer.pointList.contains(new Point(75, 135)));
+		assertEquals(true, civ.map.mapLayer.pointList.contains(new Point(30, 90)));
 		assertEquals(false, civ.map.mapLayer.pointList.contains(new Point(300, 90)));
 	}
 
@@ -206,7 +206,110 @@ class DrawRoomTC01 {
 		assertEquals(false, civ.map.isCreating());
 		assertEquals(true, civ.map.mapLayer.pointList.contains(new Point(15, 15)));
 		assertEquals(true, civ.map.mapLayer.pointList.contains(new Point(15, 45)));
-		assertEquals(true, civ.map.mapLayer.pointList.contains(new Point(90, 30 )));
+		assertEquals(true, civ.map.mapLayer.pointList.contains(new Point(90, 30)));
 		assertEquals(false, civ.map.mapLayer.pointList.contains(new Point(300, 90)));
 	}
+
+	// TC01-11 User draws on to an uncompleted room
+	@Test
+	void test01_11() throws Throwable {
+		civ.outlining();
+		civ.mousePressed(new Point(15, 15), false, true);
+		civ.mousePressed(new Point(15, 45), false, true);
+		civ.mousePressed(new Point(90, 30), false, true);
+		// stops without finishing shape
+		civ.stopDrawing();
+		// then continues
+		civ.outlining();
+		civ.mousePressed(new Point(90, 30), false, true);
+		civ.mousePressed(new Point(300, 90), false, true);
+
+		assertEquals(0, civ.getRoomList().size());
+		assertEquals(true, civ.map.isCreating());
+		assertEquals(true, civ.map.mapLayer.pointList.contains(new Point(15, 15)));
+		assertEquals(true, civ.map.mapLayer.pointList.contains(new Point(15, 45)));
+		assertEquals(true, civ.map.mapLayer.pointList.contains(new Point(90, 30)));
+		assertEquals(true, civ.map.mapLayer.pointList.contains(new Point(300, 90)));
+	}
+
+	// TC01-12 User finishes drawing a room
+	@Test
+	void test01_12() throws Throwable {
+		civ.outlining();
+		civ.mousePressed(new Point(15, 15), false, true);
+		civ.mousePressed(new Point(15, 45), false, true);
+		civ.mousePressed(new Point(90, 30), false, true);
+		// stops without finishing shape
+		civ.stopDrawing();
+		// then continues
+		civ.outlining();
+		civ.mousePressed(new Point(90, 30), false, true);
+		civ.mousePressed(new Point(300, 90), false, true);
+		civ.mousePressed(new Point(15,15), 	false, true);
+
+		assertEquals(1, civ.getRoomList().size());
+		assertEquals(false, civ.map.isCreating());
+		assertEquals(true, civ.map.mapLayer.pointList.contains(new Point(15, 15)));
+		assertEquals(true, civ.map.mapLayer.pointList.contains(new Point(15, 45)));
+		assertEquals(true, civ.map.mapLayer.pointList.contains(new Point(90, 30)));
+		assertEquals(true, civ.map.mapLayer.pointList.contains(new Point(300, 90)));
+	}
+	// TC01-13 User draws an unfinished room then draws a complete second room 
+	@Test
+	void test01_13() throws Throwable {
+		civ.outlining();
+		civ.mousePressed(new Point(15, 15), false, true);
+		civ.mousePressed(new Point(15, 45), false, true);
+		civ.mousePressed(new Point(90, 30), false, true);
+		// stops without finishing shape
+		civ.stopDrawing();
+		// then continues
+		civ.outlining();
+		civ.mousePressed(new Point(), false, true);
+		civ.mousePressed(new Point(300, 90), false, true);
+		civ.mousePressed(new Point(100,100), true, true);
+		civ.mousePressed(new Point(), false, true);
+
+		assertEquals(1, civ.getRoomList().size());
+		assertEquals(false, civ.map.isCreating());
+		assertEquals(true, civ.map.mapLayer.pointList.contains(new Point(15, 15)));
+		assertEquals(true, civ.map.mapLayer.pointList.contains(new Point(100, 100)));
+		assertEquals(true, civ.map.mapLayer.pointList.contains(new Point(90, 30)));
+		assertEquals(true, civ.map.mapLayer.pointList.contains(new Point(300, 90)));
+	}
+	// TC01-14 User draws room then draws a second room 
+	@Test
+	void test01_14() throws Throwable {
+		civ.outlining();
+		//completes one shape
+		civ.mousePressed(new Point(15, 15), false, true);
+		civ.mousePressed(new Point(15, 45), false, true);
+		civ.mousePressed(new Point(90, 30), false, true);
+		civ.mousePressed(new Point(15,15), false, true);
+		civ.mousePressed(new Point(1500,1500), false, true);
+		
+		// then continues to draw a second room
+		civ.outlining();
+		civ.mousePressed(new Point(), false, true);
+		civ.mousePressed(new Point(300, 90), false, true);
+		civ.mousePressed(new Point(100,100), true, true);
+		civ.mousePressed(new Point(), false, true);
+
+		assertEquals(2, civ.getRoomList().size());
+		assertEquals(false, civ.map.isCreating());
+		assertEquals(true, civ.map.mapLayer.pointList.contains(new Point(15, 15)));
+		assertEquals(true, civ.map.mapLayer.pointList.contains(new Point(100, 100)));
+		assertEquals(true, civ.map.mapLayer.pointList.contains(new Point(90, 30)));
+		assertEquals(true, civ.map.mapLayer.pointList.contains(new Point(300, 90)));
+		assertEquals(false, civ.map.mapLayer.pointList.contains(new Point(1500,1500)));
+	}
+	/*
+	 * 
+	 * 
+	 * 
+	 *  
+	 * 
+	 * 
+	 * 
+	 */
 }
