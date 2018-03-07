@@ -13,7 +13,7 @@ import hic.*;
  * This class is used as the civ/presenter class for map
  */
 public class CIV {
-	private Map map;
+	public Map map;
 	private FormCiv formCiv;
 
 	public CIV() {

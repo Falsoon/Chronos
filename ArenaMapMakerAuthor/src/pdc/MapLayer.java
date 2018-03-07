@@ -16,11 +16,12 @@ public abstract class MapLayer {
 	protected Point start;
 	private boolean outlining;
 	protected ArrayList<GeneralPath> pathList;
-	protected ArrayList<Point> pointList;
+	public ArrayList<Point> pointList;
 	protected ArrayList<GeneralPath> doorList;
 	protected GeneralPath guiPath;
 	private boolean walling;
 	protected Room selectedRoom;
+	
 	public MapLayer() {
 		pathList = new ArrayList<GeneralPath>();
 		pointList = new ArrayList<Point>();

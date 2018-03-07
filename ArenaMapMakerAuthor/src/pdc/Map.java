@@ -15,17 +15,16 @@ import javax.swing.undo.UndoableEditSupport;
  */
 
 public class Map implements StateEditable {
-	private ArrayList<MapLayer> layers;
-	private Player player;
-	private MapLayer mapLayer;
-	private MapLayer mapLayer2;
-	private MapLayer mapLayer3;
-	private boolean walling, outlining, dooring;
+	public ArrayList<MapLayer> layers;
+	public Player player;
+	public MapLayer mapLayer;
+	public MapLayer mapLayer2;
+	public MapLayer mapLayer3;
+	public boolean walling, outlining, dooring;
 	UndoableEditSupport undoSupport = new UndoableEditSupport(this);
 	UndoManager manager = new UndoManager();
 	private final Object MAP_KEY = "MAPKEY";
 	private Room room;
-	private boolean paused;
 
 	public Map() {
 		layers = new ArrayList<MapLayer>();
@@ -201,18 +200,5 @@ public class Map implements StateEditable {
 
 	public void setSelectedRoom(String str) {
 		mapLayer.setSelectedRoom(RoomList.getRoomByStr(str));
-	}
-
-	public void pauseDrawing() {
-		outlining = false;
-		walling = false;
-		paused = true;
-	}
-
-	public void resumeDrawing() {
-		if(paused) {
-			outlining = true;
-			paused = false;
-		}
 	}
 }

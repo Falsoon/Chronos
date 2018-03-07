@@ -21,8 +21,7 @@ class DescriptionFormTesting {
 		fc.setRoomReference(room.toString());
 		int ans = room.ROOMID;
 		
-		assertEquals(ans, fc.getRoomID() );
-		
+		assertEquals(ans, fc.getRoomID() );		
 	}
 	
 	@Test
