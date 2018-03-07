@@ -174,55 +174,6 @@ public abstract class MapLayer {
 		return RoomList.getRoom(p);
 	}
 
-	public void setSelectedRoom(Room r) {
-		selectedRoom = r;
-	}
-
-	public void placeDoor(Point p) {
-		guiPath = new GeneralPath();
-		/*
-		 * guiPath.moveTo(p.x, p.y); guiPath.lineTo(p.x + Constants.GRIDDISTANCE, p.y);
-		 * doorList.add(guiPath);
-		 */
-		// Room r = this.getRoom(p);
-		ArrayList<Room> l = RoomList.list;
-		// if (r != null) {
-		for (int j = 0; j < l.size(); j++) {
-			Room r = l.get(j);
-			ArrayList<Point> list = r.list;
-			for (int i = 0; i < list.size(); i++) {
-				Point a = list.get(i);
-				Point b;
-				if (i == list.size() - 1)
-					b = list.get(0);
-				else
-					b = list.get(i + 1);
-				GeneralPath rect = new GeneralPath();
-				double m;
-				if (b.x != a.x)
-					m = (b.y - a.y) / (b.x - a.x);
-				rect.moveTo(a.x + 7, a.y - 7);
-				rect.lineTo(a.x - 7, a.y - 7);
-				rect.lineTo(b.x - 7, b.y + 7);
-				rect.lineTo(b.x + 7, b.y + 7);
-				rect.lineTo(a.x + 7, a.y - 7);
-				rect.closePath();
-				doorList.add(rect);
-				if (rect.contains(p)) {
-					if (b.x != a.x) {
-						m = (b.y - a.y) / (b.x - a.x);
-						guiPath.moveTo(p.x, p.y);
-						guiPath.lineTo(p.x + Constants.GRIDDISTANCE * m, p.y + Constants.GRIDDISTANCE * (1 / m));
-						doorList.add(guiPath);
-					} else {
-						guiPath.moveTo(p.x, p.y);
-						guiPath.lineTo(p.x, p.y + Constants.GRIDDISTANCE);
-					}
-				}
-			}
-		}
-	}
-
 	public boolean outline(Point p, Room room) {
 		this.outlining = true;
 		this.pointList.add(p);
@@ -246,4 +197,72 @@ public abstract class MapLayer {
 		}
 		return this.outlining;
 	}
+
+    public void setSelectedRoom(Room r) {
+        this.selectedRoom = r;
+    }
+
+    public void placeDoor(Point p) throws Throwable {
+        this.guiPath = new GeneralPath();
+        ArrayList<Room> l = RoomList.list;
+        for (int j = 0; j < l.size(); j++) { // For each room
+            Room r = l.get(j);
+            if (r.getDoorCount() < 8) { // Limit to 8 doors per room
+                ArrayList<Point> list = r.list;
+                if(list.contains(p)) {
+                	throw new Throwable("Door must be placed on a wall");
+                }
+                for (int i = 0; i < list.size(); i++) { // Iterate over each pair of points
+                    Point a = list.get(i);
+                    Point b;
+                    if (i == list.size() - 1) {
+                        b = list.get(0);
+                    } else {
+                        b = list.get(i + 1);
+                    }
+                    // Create a shape matching the line between by points a and b
+                    GeneralPath line = new GeneralPath();
+                    double m;
+                    line.moveTo(a.x, a.y);
+                    line.lineTo(b.x, b.y);
+                    Stroke s = new BasicStroke(4, BasicStroke.CAP_ROUND,
+                            BasicStroke.JOIN_BEVEL);
+                    Shape sh = s.createStrokedShape(line);
+                    if (sh.contains(p)) { // Point is on the line
+                        if (b.x != a.x) { // Case the line is not vertical
+                            // M = slope between a and b 
+                            m = ((double)b.y - a.y) / ((double)b.x - a.x);
+                            // Theta = angle between line with slope m and x axis
+                            double theta = Math.toDegrees(Math.atan(m));
+                            // Start path at point clicked
+                            this.guiPath.moveTo(p.x, p.y);
+                            // TODO: Fix this math
+                            /*
+                             * Idea is to find components of point along line distance n away
+                             * n is GRIDDISTANCE in this case
+                             * x2 = x1 + n * cos(theta)
+                             * y2 = y1 + n * sin(theta)
+                             */
+                            this.guiPath.lineTo(
+                                    p.x + Constants.GRIDDISTANCE
+                                            * Math.cos(Math.toRadians(theta)),
+                                    p.y + Constants.GRIDDISTANCE
+                                            * Math.sin(Math.toRadians(theta)));
+                            // Add path to doorList
+                            this.doorList.add(this.guiPath);
+                            //TODO: Make door objects and store them
+                        } else { // Case the line is vertical
+                            System.out.println("here");
+                            this.guiPath.moveTo(p.x, p.y);
+                            this.guiPath.lineTo(p.x,
+                                    p.y + Constants.GRIDDISTANCE);
+                            this.doorList.add(this.guiPath);
+                        }
+                        r.addDoor();
+                    }
+                }
+            }
+        }
+
+    }
 }
