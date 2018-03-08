@@ -1,3 +1,4 @@
+package test.junit;
 import static org.junit.Assert.assertEquals;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -16,7 +17,7 @@ import hic.FormWindow;
 import pdc.Room;
 import pdc.RoomList;
 
-class DescriptionFormTesting {
+class DescriptionFormTC05 {
 
 	
 	private Room room = new Room();
@@ -31,6 +32,47 @@ class DescriptionFormTesting {
 		fc = null;
 		fw = null;
 		RoomList.reset();
+		System.out.print("yo i done");
+	}
+	
+	@Test
+	void testAuthorSelectsDescriptionMode() {
+		
+	}
+	
+	@Test
+	void testAuthorSelectsDrawingMode() {
+		
+	}
+	
+	@Test
+	void testCreateRoomViaForm() {
+		
+	}
+	
+	@Test
+	void testClosesFormBeforeSubmit() {
+		//the room title and room description should not save
+	}
+	
+	@Test
+	void testStrangeCharacterEntry() {
+		
+	}
+	
+	@Test
+	void testFormPopUpViaDrawMode() {
+		//author brings up form by clicking room in drawing mode
+	}
+	
+	@Test
+	void testFormEditingViaDrawMode() {
+		//author can edit room desc and title when in drawing mode
+	}
+	
+	@Test
+	void testCreateRoomDescThenDrawRoom() {
+		//author creates room description and then draws room
 	}
 	
 	@Test
