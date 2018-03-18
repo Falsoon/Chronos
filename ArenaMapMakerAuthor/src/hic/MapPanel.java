@@ -34,7 +34,7 @@ public class MapPanel extends JPanel {
 	 * @param authorWindow
 	 */
 	public MapPanel(AuthorWindow authorWindow) {
-		civ = new CIV();
+		civ = AuthorWindow.civ;
 		aw = authorWindow;
 		// Anonymous class was used to access MapPanel fields
 		MouseListener mousehandler = new MouseAdapter() {
@@ -154,10 +154,6 @@ public class MapPanel extends JPanel {
 	public void goRight() {
 		civ.goRight();
 		repaint();
-	}
-
-	public String[] getRoom() {
-		return civ.getRoom();
 	}
 
 	public void stopDrawing() {

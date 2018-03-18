@@ -22,7 +22,7 @@ public abstract class MapLayer {
 	protected ArrayList<GeneralPath> pathList;
 	public ArrayList<Point> pointList;
 	protected ArrayList<GeneralPath> doorList;
-	protected GeneralPath guiPath;
+	public GeneralPath guiPath;
 	private boolean walling;
 	protected Room selectedRoom;
 
@@ -152,12 +152,11 @@ public abstract class MapLayer {
 				this.pointList.add(p);
 			}
 		}
-
 		if (!this.drawing) {
 			this.guiPath = new GeneralPath();
 			this.guiPath.moveTo(p.x, p.y);
 			this.drawing = true;
-			// add logic for pushing to closest call point here
+			//TODO add logic for pushing to closest call point here
 			this.pathList.add(this.guiPath);
 		} else {
 			this.guiPath.lineTo(p.x, p.y);

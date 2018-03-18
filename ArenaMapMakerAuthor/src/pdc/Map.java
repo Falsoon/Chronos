@@ -86,7 +86,8 @@ public class Map implements StateEditable {
 					layers.add(mapLayer2);
 				}
 			}else {
-				Throwable e = new Throwable("Can only Draw Transparent Walls in a bounded room");
+				mapLayer2.pointList.clear();
+				Throwable e = new Throwable("Transparent walls must be drawn in bounded rooms");
 				throw e;
 			}
 		}
@@ -132,6 +133,7 @@ public class Map implements StateEditable {
 		if (manager.canUndo()) {
 			manager.undo();
 			mapLayer.undo();
+			RoomList.undo();
 			undid = true;
 		}
 		return undid;

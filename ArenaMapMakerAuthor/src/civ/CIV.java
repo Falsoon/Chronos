@@ -4,6 +4,10 @@ import java.awt.EventQueue;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.PrintStream;
 import java.util.ArrayList;
 
 import pdc.*;
@@ -14,12 +18,11 @@ import hic.*;
  */
 public class CIV {
 	public Map map;
-	private FormCiv formCiv;
+	public FormCiv formCiv;
 
 	public CIV() {
 		map = new Map();
 		formCiv = new FormCiv();
-
 	}
 
 	public void mousePressed(Point point,boolean isAltDown, boolean isLeftButton) throws Throwable {
@@ -100,10 +103,6 @@ public class CIV {
 		map.getPlayer().goRight();
 	}
 
-	public String[] getRoom() {
-		return RoomList.getRoom(map.getPlayer().getPosition()).getStrings();
-	}
-
 	public void stopDrawing() {
 		map.stopDrawing();
 	}
@@ -134,6 +133,21 @@ public class CIV {
 			return null;
 		} else {
 			return r.path.getBounds();
+		}
+	}
+
+	public void outputStory() {
+		File out = new File("INFORM_Source/output.ni");
+		PrintStream output = null;
+		try {
+			output = new PrintStream(out);
+			System.setOut(output);
+			StoryBuilder.build(map);
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			output.close();
 		}
 	}
 }

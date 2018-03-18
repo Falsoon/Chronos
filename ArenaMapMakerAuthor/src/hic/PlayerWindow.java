@@ -33,11 +33,11 @@ public class PlayerWindow {
 
 		JSplitPane splitPane = new JSplitPane();
 		frame.getContentPane().add(splitPane, BorderLayout.CENTER);
-		splitPane.setDividerLocation(300);
+		splitPane.setDividerLocation(800);
 		splitPane.setRightComponent(mapPanel);
-
+		
 		StoryPanel storyPanel = new StoryPanel(mapPanel);
-
+		
 		splitPane.setLeftComponent(storyPanel);
 	}
 }
