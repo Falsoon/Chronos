@@ -76,8 +76,8 @@ public class Map implements StateEditable {
 			}
 		}
 		if (walling) {
-			if (getRoom(p) != null) {
-
+			/*if (getRoom(p) != null) {
+*/
 				if (mapLayer2 == null) {
 					mapLayer2 = new MapWallingLayer();
 				}
@@ -85,11 +85,11 @@ public class Map implements StateEditable {
 				if (!walling) {
 					layers.add(mapLayer2);
 				}
-			}else {
+			/*}else {
 				mapLayer2.pointList.clear();
 				Throwable e = new Throwable("Transparent walls must be drawn in bounded rooms");
 				throw e;
-			}
+			}*/
 		}
 		if (dooring) {
 			mapLayer3.placeDoor(p);
