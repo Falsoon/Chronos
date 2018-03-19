@@ -15,7 +15,7 @@ import civ.FormCiv;
 public class ButtonFactory implements ActionListener  {
 	
 	private AuthorWindow authorWindow;
-	private JButton start, placeStart, undoButton, btnClear, addRoombtn1, addRoombtn2;
+	public JButton start, placeStart, undoButton, btnClear, addRoombtn1, addRoombtn2;
 	
 	public ButtonFactory(AuthorWindow aw) {
 		this.authorWindow = aw;
@@ -218,7 +218,7 @@ public class ButtonFactory implements ActionListener  {
 		authorWindow.authorPanel.update();
 	}
 	
-	private void setMode2() {
+	public void setMode2() {
 		start.setVisible(true);
 		placeStart.setVisible(true);
 		undoButton.setVisible(true);
@@ -229,7 +229,7 @@ public class ButtonFactory implements ActionListener  {
 		addRoombtn2.setVisible(true);
 	}
 
-	private void setMode1() {
+	public void setMode1() {
 		start.setVisible(false);
 		placeStart.setVisible(false);
 		undoButton.setVisible(false);

@@ -31,7 +31,7 @@ public class FormCiv {
 	}
 	
 	public int getRoomID() {
-		if(room ==null) {
+		if(room == null) {
 			room = new Room();
 		}
 		return room.ROOMID;
