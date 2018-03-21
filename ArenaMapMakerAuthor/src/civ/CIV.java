@@ -25,7 +25,7 @@ public class CIV {
 		formCiv = new FormCiv();
 	}
 
-	public void mousePressed(Point point,boolean isAltDown, boolean isLeftButton) throws Throwable {
+	public void mousePressed(Point point,boolean isAltDown, boolean isLeftButton){
 		if (!isAltDown) {
 			point.setLocation(Math.round(((double) point.x) / Constants.GRIDDISTANCE) * Constants.GRIDDISTANCE,
 					Math.round(((double) point.y) / Constants.GRIDDISTANCE) * Constants.GRIDDISTANCE);
@@ -51,6 +51,8 @@ public class CIV {
 					}
 				}
 			}
+		}else {
+			map.stopDrawing();
 		}
 	}
 

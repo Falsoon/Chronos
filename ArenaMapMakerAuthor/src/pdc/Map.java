@@ -60,7 +60,7 @@ public class Map implements StateEditable {
 		mapLayer.drawing = false;
 	}
 
-	public void mousePressed(Point p) throws Throwable {
+	public void mousePressed(Point p) {
 		StateEdit stateEdit = new StateEdit(Map.this);
 		if (outlining) {
 			if (mapLayer == null) {
@@ -76,8 +76,8 @@ public class Map implements StateEditable {
 			}
 		}
 		if (walling) {
-			if (getRoom(p) != null) {
-
+			/*if (getRoom(p) != null) {
+*/
 				if (mapLayer2 == null) {
 					mapLayer2 = new MapWallingLayer();
 				}
@@ -85,14 +85,19 @@ public class Map implements StateEditable {
 				if (!walling) {
 					layers.add(mapLayer2);
 				}
-			}else {
+			/*}else {
 				mapLayer2.pointList.clear();
 				Throwable e = new Throwable("Transparent walls must be drawn in bounded rooms");
 				throw e;
-			}
+			}*/
 		}
 		if (dooring) {
-			mapLayer3.placeDoor(p);
+			try {
+				mapLayer3.placeDoor(p);
+			} catch (Throwable e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		if (player.isPlacing()) {
 			player.place(p);

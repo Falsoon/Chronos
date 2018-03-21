@@ -45,6 +45,7 @@ public class MapPanel extends JPanel {
 					civ.mousePressed(e.getPoint(), e.isAltDown(), SwingUtilities.isLeftMouseButton(e));
 				} catch (Throwable error) {
 					dialog(error.getMessage());
+					error.printStackTrace();
 				}
 				repaint();
 				aw.authorPanel.update();
