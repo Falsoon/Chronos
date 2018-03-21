@@ -45,9 +45,7 @@ public class MapDoorLayer extends MapLayer {
 	}
 
 	@Override
-	public void undo() {
-		// TODO Auto-generated method stub
-		
+	public void undo() {		
 	}
 	
 

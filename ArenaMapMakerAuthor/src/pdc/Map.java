@@ -118,7 +118,7 @@ public class Map implements StateEditable {
 		outlining = false;
 	}
 	public int numOfDoors() {
-		return mapLayer3.doorList.size();
+		return DoorList.list.size();
 	}
 
 	public Map copy() {
@@ -137,6 +137,7 @@ public class Map implements StateEditable {
 			manager.undo();
 			mapLayer.undo();
 			RoomList.undo();
+			DoorList.undo();
 			undid = true;
 		}
 		return undid;

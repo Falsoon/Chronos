@@ -76,7 +76,7 @@ public class FormWindow  {
 		portalCombo.addItem("Select Door");
 		ArrayList<Door> doorList = formCiv.getRoomDoors();
 		for (int i = 0; i < doorList.size();i++) {
-			portalCombo.addItem(DoorList.list.get(i).title);
+			portalCombo.addItem(DoorList.list.get(i).toString());
 		}
 		portalCombo.setBounds(250, 50, 90, 20);
 		portalCombo.addActionListener(new ActionListener( ) {

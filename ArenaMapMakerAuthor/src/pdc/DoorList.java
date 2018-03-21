@@ -9,10 +9,11 @@ import java.util.Iterator;
  */
 public class DoorList {
 	public static ArrayList<Door> list = new ArrayList<Door>();
-
+	protected static Door mostRecent;
 
 	public static void add(Door d) {
 		list.add(d);
+		mostRecent = d;
 	}
 
 	public static void reset() {
@@ -43,7 +44,7 @@ public class DoorList {
 	}
 
 	public static void undo() {
-		// TODO Auto-generated method stub
+		list.remove(mostRecent);
 		
 	}
 }
