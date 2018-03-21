@@ -58,9 +58,10 @@ public class CIV {
 		return map.undo();
 	}
 
-	public void clear() {
+	public boolean clear() {
 		map = new Map();
 		RoomList.reset();
+		return true;
 	}
 
 	public void draw(Graphics g) {
@@ -109,6 +110,11 @@ public class CIV {
 
 	public void dooring() {
 		map.dooring();
+	}
+	
+	//look into creating door list
+	public int numOfDoors() {
+		return map.numOfDoors();
 	}
 
 	public void drawRoom(String str) {

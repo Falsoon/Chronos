@@ -117,6 +117,9 @@ public class Map implements StateEditable {
 		walling = false;
 		outlining = false;
 	}
+	public int numOfDoors() {
+		return mapLayer3.doorList.size();
+	}
 
 	public Map copy() {
 		Map copy = new Map();
