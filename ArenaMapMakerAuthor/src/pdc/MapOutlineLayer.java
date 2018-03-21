@@ -3,6 +3,7 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.RenderingHints;
 import java.awt.geom.GeneralPath;
 import java.util.ArrayList;
@@ -46,6 +47,10 @@ public class MapOutlineLayer extends MapLayer {
 		for (int i = 0; i < pathList.size(); i++) {
 			copy.pathList.add((GeneralPath) pathList.get(i).clone());
 		}
+		if(!pointList.isEmpty()) {
+			copy.pointList = (ArrayList<Point>) pointList.clone();
+		}
+			
 		return copy;
 	}
 

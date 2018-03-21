@@ -49,7 +49,7 @@ class ClearAndUndoDrawingActionTC04 {
 		assertEquals(true, civ.map.mapLayer.pointList.contains(p0));
 		assertEquals(true, civ.map.mapLayer.pointList.contains(p1));
 		assertEquals(true, civ.map.mapLayer.pointList.contains(p2));
-		assertEquals(false, civ.map.mapLayer.pointList.contains(p3));
+		assertEquals(3, civ.map.mapLayer.pointList.size());
 		
 	}
 	
