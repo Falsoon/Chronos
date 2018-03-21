@@ -3,11 +3,13 @@ package pdc;
 import java.awt.BasicStroke;
 import java.awt.Graphics;
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.Stroke;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.PathIterator;
 import java.util.ArrayList;
+
 
 /**
  * Layer of the map
@@ -21,7 +23,6 @@ public abstract class MapLayer {
 	private boolean outlining;
 	protected ArrayList<GeneralPath> pathList;
 	public ArrayList<Point> pointList;
-	protected ArrayList<GeneralPath> doorList;
 	public GeneralPath guiPath;
 	private boolean walling;
 	protected Room selectedRoom;
@@ -134,7 +135,11 @@ public abstract class MapLayer {
 	public boolean transWalling(Point p, MapLayer previousLayer) {
 		this.walling = true;
 		Room r1 = null, r2 = RoomList.getRoom(p);
-		if (r2.onBoundary(p)) {
+		//if r2 null then just draw
+		if(r2 == null) {
+			//just draw
+		}
+		else if (r2.onBoundary(p)) {
 			boolean first = this.pointList.isEmpty();
 			this.pointList.add(p);
 			if (r2 != null) {
@@ -160,7 +165,36 @@ public abstract class MapLayer {
 			this.pathList.add(this.guiPath);
 		} else {
 			this.guiPath.lineTo(p.x, p.y);
-			// drawing = false;
+			//Calculate for midpoint, removing them in case they cross over another line
+			/*Point p2 = this.pointList.remove(0);
+			Point p1 = this.pointList.remove(1);
+			Point midp = new Point();
+			midp.x = (int) Math.sqrt( (p1.x + p2.x)/2.0);
+			midp.y = (int) Math.sqrt((p2.y + p1.y )/2.0);*/
+			//Get room from midpoint by roomlist
+			//don't have to worry about r being null, we take care of this earlier
+			/*Room r = RoomList.getRoom(midp);
+			if( r != null) {
+				//split room
+			}*/
+			//snap end points of line to 2 wall opaque walls that have been crossed
+				//make the line an infinite line to see if it crosses 2 opaque walls of the room
+			/*double slope = (p2.y - p1.y) / (p2.x - p1.x) * 1.0; */
+			/*while(!r.contains(p2)) {
+				
+			}*/
+				//if so, adjust end points to wall boundary
+			//p1 = newEndPoint1;
+			//p2 = newEndPoint2;
+				//double check that no other transparent walls are being crossed over, 
+			/*boolean onOtherTrans = false;
+			for(int i = 0; this.pathList.size() > 0 ; i++) {
+				GeneralPath exisitingP = this.pathList.get(i);
+				exisitingP.c
+			}*/
+				//if so delete this line, and display error message
+			//add new path to pathlist
+			drawing = false;
 		}
 		return this.walling;
 	}
@@ -206,7 +240,7 @@ public abstract class MapLayer {
         ArrayList<Room> l = RoomList.list;
         for (int j = 0; j < l.size(); j++) { // For each room
             Room r = l.get(j);
-            if (r.getDoorCount() < 8) { // Limit to 8 doors per room
+            if (r.doorCount() < 8) { // Limit to 8 doors per room
                 ArrayList<Point> list = r.list;
                 if(list.contains(p)) {
                 	throw new Throwable("Door must be placed on a wall");
@@ -235,29 +269,24 @@ public abstract class MapLayer {
                             double theta = Math.toDegrees(Math.atan(m));
                             // Start path at point clicked
                             this.guiPath.moveTo(p.x, p.y);
-                            // TODO: Fix this math
-                            /*
-                             * Idea is to find components of point along line distance n away
-                             * n is GRIDDISTANCE in this case
-                             * x2 = x1 + n * cos(theta)
-                             * y2 = y1 + n * sin(theta)
-                             */
                             this.guiPath.lineTo(
                                     p.x + Constants.GRIDDISTANCE
                                             * Math.cos(Math.toRadians(theta)),
                                     p.y + Constants.GRIDDISTANCE
                                             * Math.sin(Math.toRadians(theta)));
                             // Add path to doorList
-                            this.doorList.add(this.guiPath);
-                            //TODO: Make door objects and store them
                         } else { // Case the line is vertical
                             System.out.println("here");
                             this.guiPath.moveTo(p.x, p.y);
                             this.guiPath.lineTo(p.x,
                                     p.y + Constants.GRIDDISTANCE);
-                            this.doorList.add(this.guiPath);
                         }
-                        r.addDoor();
+                        //TODO: Make door objects and store them
+                        Door d = new Door(this.guiPath);
+                        d.room = r;
+                        d.title = "Room Title";
+                        DoorList.add(d);
+                        r.addDoor(d);
                     }
                 }
             }
