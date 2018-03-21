@@ -5,11 +5,15 @@ import javax.swing.JLabel;
 import javax.swing.JTextField;
 
 import civ.*;
+import pdc.Door;
+import pdc.DoorList;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
@@ -22,6 +26,7 @@ public class FormWindow  {
 	public JFrame frame;
 	private JTextField roomIdText;
 	private JTextArea textArea, titleText;
+	private JComboBox<String> portalCombo;
 	//private Room room;
 	private boolean drawnRoom;
 	private FormCiv formCiv;
@@ -67,6 +72,23 @@ public class FormWindow  {
 		frame.getContentPane().add(roomIdText);
 		roomIdText.setColumns(10);
 		roomIdText.setEditable(false);
+		
+		portalCombo.addItem("Select Door");
+		ArrayList<Door> doorList = formCiv.getRoomDoors();
+		for (int i = 0; i < doorList.size();i++) {
+			portalCombo.addItem(DoorList.list.get(i).title);
+		}
+		portalCombo.setBounds(250, 50, 90, 20);
+		portalCombo.addActionListener(new ActionListener( ) {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if(!portalCombo.getSelectedItem().equals("Select Door")) {
+					DoorFormWindow window = new DoorFormWindow(formCiv);
+					formCiv.setDoorReference((String)portalCombo.getSelectedItem());
+					window.frame.setVisible(true);
+				}
+			}
+		});
 		
 		JButton btnSubmit = new JButton("Submit");
 		btnSubmit.setBounds(180, 510, 100, 25);

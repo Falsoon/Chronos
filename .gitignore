@@ -1,2 +1,3 @@
 *.class
 .status
+ArenaMapMakerAuthor/bin/Release/*

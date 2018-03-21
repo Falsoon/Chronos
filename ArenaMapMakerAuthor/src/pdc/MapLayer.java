@@ -21,7 +21,6 @@ public abstract class MapLayer {
 	private boolean outlining;
 	protected ArrayList<GeneralPath> pathList;
 	public ArrayList<Point> pointList;
-	protected ArrayList<GeneralPath> doorList;
 	public GeneralPath guiPath;
 	private boolean walling;
 	protected Room selectedRoom;
@@ -206,7 +205,7 @@ public abstract class MapLayer {
         ArrayList<Room> l = RoomList.list;
         for (int j = 0; j < l.size(); j++) { // For each room
             Room r = l.get(j);
-            if (r.getDoorCount() < 8) { // Limit to 8 doors per room
+            if (r.doorCount() < 8) { // Limit to 8 doors per room
                 ArrayList<Point> list = r.list;
                 if(list.contains(p)) {
                 	throw new Throwable("Door must be placed on a wall");
@@ -235,29 +234,24 @@ public abstract class MapLayer {
                             double theta = Math.toDegrees(Math.atan(m));
                             // Start path at point clicked
                             this.guiPath.moveTo(p.x, p.y);
-                            // TODO: Fix this math
-                            /*
-                             * Idea is to find components of point along line distance n away
-                             * n is GRIDDISTANCE in this case
-                             * x2 = x1 + n * cos(theta)
-                             * y2 = y1 + n * sin(theta)
-                             */
                             this.guiPath.lineTo(
                                     p.x + Constants.GRIDDISTANCE
                                             * Math.cos(Math.toRadians(theta)),
                                     p.y + Constants.GRIDDISTANCE
                                             * Math.sin(Math.toRadians(theta)));
                             // Add path to doorList
-                            this.doorList.add(this.guiPath);
-                            //TODO: Make door objects and store them
                         } else { // Case the line is vertical
                             System.out.println("here");
                             this.guiPath.moveTo(p.x, p.y);
                             this.guiPath.lineTo(p.x,
                                     p.y + Constants.GRIDDISTANCE);
-                            this.doorList.add(this.guiPath);
                         }
-                        r.addDoor();
+                        //TODO: Make door objects and store them
+                        Door d = new Door(this.guiPath);
+                        d.room = r;
+                        d.title = "Room Title";
+                        DoorList.add(d);
+                        r.addDoor(d);
                     }
                 }
             }

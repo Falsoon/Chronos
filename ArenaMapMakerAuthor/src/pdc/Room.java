@@ -16,14 +16,14 @@ public class Room {
 	public String desc = "", title = "";
 	public int ROOMID;
 	public static int idCount = 1;
-	private int doorCount;
+	private ArrayList<Door> doors;
 
 	public Room(GeneralPath p) {
 		this.path = p;
 		this.ROOMID = idCount;
 		idCount++;
 		this.makeList(p);
-		this.doorCount = 0;
+		doors = new ArrayList<Door>();
 	}
 
 	private void makeList(GeneralPath p) {
@@ -44,12 +44,16 @@ public class Room {
 		this.makePath();
 	}
 
-	public void addDoor() {
-		this.doorCount++;
+	public void addDoor(Door d) {
+		this.doors.add(d);
+	}
+	
+	public ArrayList<Door> getDoors() {
+		return this.doors;
 	}
 
-	public int getDoorCount() {
-		return this.doorCount;
+	public int doorCount() {
+		return this.doors.size();
 	}
 
 	private void makePath() {

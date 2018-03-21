@@ -1,5 +1,7 @@
 package civ;
 
+import java.util.ArrayList;
+
 import pdc.*;
 
 /**
@@ -9,6 +11,7 @@ import pdc.*;
 public class FormCiv {
 	
 	private Room room;
+	private Door door;
 	
 	public FormCiv() {
 		
@@ -28,6 +31,13 @@ public class FormCiv {
 			room = new Room();
 		}
 		return room.title;
+	}
+	
+	public ArrayList<Door> getRoomDoors(){
+		if(room ==null) {
+			room = new Room();
+		}
+		return room.getDoors();
 	}
 	
 	public int getRoomID() {
@@ -63,5 +73,36 @@ public class FormCiv {
 		Room r = RoomList.getRoomByStr(str);
 		if(r ==null) {return false;}
 		return r.isDrawn();
+	}
+
+	public String getDoorTitle() {
+		return door.title;
+	}
+
+	public int getDoorID() {
+		return door.DOORID;
+	}
+
+	public String getDoorDesc() {
+		return room.desc;
+	}
+
+	public void adjustDoorTitleAndDesc(String title, String desc) {
+		door.title = title;
+		door.desc = desc;
+	}
+
+	public void setDoorReference(String str) {
+		Door d = DoorList.getDoorByStr(str);
+		door = d;
+	}
+
+	public void setDoorOpen(boolean selected) {
+		if(selected) {
+			door.open();
+		} else {
+			door.close();
+		}
+		
 	}
 }
