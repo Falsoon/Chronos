@@ -3,11 +3,13 @@ package pdc;
 import java.awt.BasicStroke;
 import java.awt.Graphics;
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.Stroke;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.PathIterator;
 import java.util.ArrayList;
+
 
 /**
  * Layer of the map
@@ -133,7 +135,11 @@ public abstract class MapLayer {
 	public boolean transWalling(Point p, MapLayer previousLayer) {
 		this.walling = true;
 		Room r1 = null, r2 = RoomList.getRoom(p);
-		if (r2.onBoundary(p)) {
+		//if r2 null then just draw
+		if(r2 == null) {
+			//just draw
+		}
+		else if (r2.onBoundary(p)) {
 			boolean first = this.pointList.isEmpty();
 			this.pointList.add(p);
 			if (r2 != null) {
@@ -159,7 +165,36 @@ public abstract class MapLayer {
 			this.pathList.add(this.guiPath);
 		} else {
 			this.guiPath.lineTo(p.x, p.y);
-			// drawing = false;
+			//Calculate for midpoint, removing them in case they cross over another line
+			/*Point p2 = this.pointList.remove(0);
+			Point p1 = this.pointList.remove(1);
+			Point midp = new Point();
+			midp.x = (int) Math.sqrt( (p1.x + p2.x)/2.0);
+			midp.y = (int) Math.sqrt((p2.y + p1.y )/2.0);*/
+			//Get room from midpoint by roomlist
+			//don't have to worry about r being null, we take care of this earlier
+			/*Room r = RoomList.getRoom(midp);
+			if( r != null) {
+				//split room
+			}*/
+			//snap end points of line to 2 wall opaque walls that have been crossed
+				//make the line an infinite line to see if it crosses 2 opaque walls of the room
+			/*double slope = (p2.y - p1.y) / (p2.x - p1.x) * 1.0; */
+			/*while(!r.contains(p2)) {
+				
+			}*/
+				//if so, adjust end points to wall boundary
+			//p1 = newEndPoint1;
+			//p2 = newEndPoint2;
+				//double check that no other transparent walls are being crossed over, 
+			/*boolean onOtherTrans = false;
+			for(int i = 0; this.pathList.size() > 0 ; i++) {
+				GeneralPath exisitingP = this.pathList.get(i);
+				exisitingP.c
+			}*/
+				//if so delete this line, and display error message
+			//add new path to pathlist
+			drawing = false;
 		}
 		return this.walling;
 	}

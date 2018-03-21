@@ -58,9 +58,10 @@ public class CIV {
 		return map.undo();
 	}
 
-	public void clear() {
+	public boolean clear() {
 		map = new Map();
 		RoomList.reset();
+		return true;
 	}
 
 	public void draw(Graphics g) {
@@ -110,6 +111,11 @@ public class CIV {
 	public void dooring() {
 		map.dooring();
 	}
+	
+	//look into creating door list
+	public int numOfDoors() {
+		return map.numOfDoors();
+	}
 
 	public void drawRoom(String str) {
 		map.drawRoom(str);
@@ -135,7 +141,50 @@ public class CIV {
 			return r.path.getBounds();
 		}
 	}
-
+	public boolean pathIntersection(Point p1, Point p2, Point pA, Point pB) {
+		boolean ans = false;
+		//found from page 1018 and 1017 in Intro to Algorithms book ed 3
+		int d1 = direction(pA, pB, p1);
+		int d2 = direction(pA, pB, p2);
+		int d3 = direction(p1, p2, pA);
+		int d4 = direction(p1, p2, pB);
+		
+		if( ((d1 > 0 && d2 < 0) || (d1 < 0 && d2 > 0))  && ((d3 > 0 && d4 < 0) || (d3 < 0 && d4 > 0))) {
+			ans = true;
+		}
+		else if( d1 == 0 && onSegment(pA, pB, p1) ) {
+			ans = true;
+		}
+		else if( d2 == 0 && onSegment(pA, pB, p2) ) {
+			ans = true;
+		}
+		else if( d3 == 0 && onSegment(p1, p2, pA) ) {
+			ans = true;
+		}
+		else if( d4 == 0 && onSegment(p1, p2, pB) ) {
+			ans = true;
+		}
+		
+		return ans;
+	}
+	
+	public boolean onSegment(Point pi, Point pj, Point pk) {
+		boolean ans = false;
+		
+		if( Math.min(pi.x, pj.x) <= pk.x && Math.max(pi.x, pj.x) >= pk.x ) {
+			if( Math.min(pi.y, pj.y) <= pk.y && Math.max(pi.y, pj.y) >= pk.y ) {
+				ans = true;
+			}
+		}
+		
+		return ans;
+	}
+	
+	public int direction(Point p0, Point p1, Point p2) {
+		
+		return (p1.x - p0.x)*(p2.y - p0.y) - (p2.x - p0.x)*(p1.y - p0.y);
+	}
+	
 	public void outputStory() {
 		File out = new File("INFORM_Source/output.ni");
 		PrintStream output = null;
