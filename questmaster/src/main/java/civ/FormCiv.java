@@ -1,22 +1,22 @@
-package civ;
+package main.java.civ;
 
 import java.util.ArrayList;
 
-import pdc.*;
+import main.java.pdc.*;
 
 /**
  * This class is used to be the civ component/presenter
  * class for the author description form window
  */
 public class FormCiv {
-	
+
 	private Room room;
 	private Door door;
-	
+
 	public FormCiv() {
-		
+
 	}
-	
+
 	public void setRoomReference(String str) {
 		Room r = RoomList.getRoomByStr(str);
 		if(r==null) {
@@ -25,35 +25,35 @@ public class FormCiv {
 			room = r;
 		}
 	}
-	
+
 	public String getRoomTitle(){
 		if(room ==null) {
 			room = new Room();
 		}
 		return room.title;
 	}
-	
+
 	public ArrayList<Door> getRoomDoors(){
 		if(room ==null) {
 			room = new Room();
 		}
 		return room.getDoors();
 	}
-	
+
 	public int getRoomID() {
 		if(room == null) {
 			room = new Room();
 		}
 		return room.ROOMID;
 	}
-	
+
 	public String getRoomDesc() {
 		if(room ==null) {
 			room = new Room();
 		}
 		return room.desc;
 	}
-	
+
 	public void adjustRoomTitleAndDesc(String title, String desc) {
 		if(room ==null) {
 			room = new Room();
@@ -61,7 +61,7 @@ public class FormCiv {
 		room.title = title;
 		room.desc = desc;
 	}
-	
+
 	public void addRoomToRoomList() {
 		if(room ==null) {
 			room = new Room();
@@ -103,6 +103,6 @@ public class FormCiv {
 		} else {
 			door.close();
 		}
-		
+
 	}
 }

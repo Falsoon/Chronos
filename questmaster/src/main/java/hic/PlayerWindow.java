@@ -1,4 +1,4 @@
-package hic;
+package main.java.hic;
 import java.awt.BorderLayout;
 import javax.swing.JFrame;
 import javax.swing.JSplitPane;
@@ -13,7 +13,7 @@ public class PlayerWindow {
 
 	/**
 	 * Create the application.
-	 * 
+	 *
 	 * @param mapPanel
 	 */
 	public PlayerWindow(MapPanel mp) {
@@ -35,9 +35,9 @@ public class PlayerWindow {
 		frame.getContentPane().add(splitPane, BorderLayout.CENTER);
 		splitPane.setDividerLocation(800);
 		splitPane.setRightComponent(mapPanel);
-		
+
 		StoryPanel storyPanel = new StoryPanel(mapPanel);
-		
+
 		splitPane.setLeftComponent(storyPanel);
 	}
 }

@@ -1,4 +1,4 @@
-package pdc;
+package main.java.pdc;
 /**
  * Encapsulate all the constants
  */

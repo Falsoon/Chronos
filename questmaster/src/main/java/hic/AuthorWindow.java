@@ -1,4 +1,4 @@
-package hic;
+package main.java.hic;
 import java.awt.Color;
 import java.awt.EventQueue;
 
@@ -6,8 +6,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JSplitPane;
 
-
-import civ.*;
+import main.java.civ.*;
 
 import java.awt.BorderLayout;
 import javax.swing.JPanel;
@@ -22,7 +21,7 @@ import javax.swing.JComboBox;
 public class AuthorWindow extends JPanel {
 
 	public static CIV civ;
-	public JFrame frame; 
+	public JFrame frame;
 	public AuthorPanel authorPanel;
 	public MapPanel mapPanel;
 	public String[] wallTypes = { "Walls", "Opaque", "Transparent" };
@@ -65,7 +64,7 @@ public class AuthorWindow extends JPanel {
 
 		frame = new JFrame();
 		frame.getContentPane().setBackground(Color.BLACK);
-		frame.setExtendedState(JFrame.MAXIMIZED_BOTH); 
+		frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
 		//frame.setBounds(200, 100, 1000, 600);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 

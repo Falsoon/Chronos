@@ -1,4 +1,4 @@
-package pdc;
+package main.java.pdc;
 
 import java.awt.BasicStroke;
 import java.awt.Graphics;
@@ -181,12 +181,12 @@ public abstract class MapLayer {
 				//make the line an infinite line to see if it crosses 2 opaque walls of the room
 			/*double slope = (p2.y - p1.y) / (p2.x - p1.x) * 1.0; */
 			/*while(!r.contains(p2)) {
-				
+
 			}*/
 				//if so, adjust end points to wall boundary
 			//p1 = newEndPoint1;
 			//p2 = newEndPoint2;
-				//double check that no other transparent walls are being crossed over, 
+				//double check that no other transparent walls are being crossed over,
 			/*boolean onOtherTrans = false;
 			for(int i = 0; this.pathList.size() > 0 ; i++) {
 				GeneralPath exisitingP = this.pathList.get(i);
@@ -263,7 +263,7 @@ public abstract class MapLayer {
                     Shape sh = s.createStrokedShape(line);
                     if (sh.contains(p)) { // Point is on the line
                         if (b.x != a.x) { // Case the line is not vertical
-                            // M = slope between a and b 
+                            // M = slope between a and b
                             m = ((double)b.y - a.y) / ((double)b.x - a.x);
                             // Theta = angle between line with slope m and x axis
                             double theta = Math.toDegrees(Math.atan(m));

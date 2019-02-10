@@ -1,4 +1,4 @@
-package hic;
+package main.java.hic;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -13,8 +13,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
-import civ.CIV;
-import pdc.Constants;
+import main.java.civ.CIV;
+import main.java.pdc.Constants;
 
 /**
  * the presenter class for the mapWindow handles updating both data on the map
@@ -30,7 +30,7 @@ public class MapPanel extends JPanel {
 
 	/**
 	 * Constructor of MapPanel adds the appropriate action listeners
-	 * 
+	 *
 	 * @param authorWindow
 	 */
 	public MapPanel(AuthorWindow authorWindow) {
@@ -56,7 +56,7 @@ public class MapPanel extends JPanel {
 
 	protected void dialog(String message) {
 		JOptionPane jop = new JOptionPane(message);
-		final JDialog d = jop.createDialog((JFrame) null, "Error");
+		final JDialog d = jop.createDialog(null, "Error");
 		d.setLocation(250, 250);
 		d.setVisible(true);
 	}

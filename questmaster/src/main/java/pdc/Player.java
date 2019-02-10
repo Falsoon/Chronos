@@ -1,4 +1,4 @@
-package pdc;
+package main.java.pdc;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -18,7 +18,7 @@ public class Player {
 	private String representation;
 	private final int XOFFSET = 2;
 	private final int YOFFSET = 4;
-	
+
 	public Player(MapLayer mapLayer){
 		placed = false;
 		playing = false;
@@ -26,7 +26,7 @@ public class Player {
 		this.mapLayer = mapLayer;
 		representation = "\u00B6";
 	}
-	
+
 	public void place(Point pos) {
 		position = pos;
 		position.setLocation(Math.round(position.x / GRIDDISTANCE) * GRIDDISTANCE + XOFFSET,
@@ -41,11 +41,11 @@ public class Player {
 			}
 		}
 	}
-	
+
 	public String getRepresentation() {
 		return representation;
 	}
-		
+
 	public boolean isPlaced() {
 		return placed;
 	}
@@ -64,11 +64,11 @@ public class Player {
 	public void stopPlacing() {
 		placing = false;
 	}
-	
+
 	public Point getPosition() {
 		return position;
 	}
-	
+
 	public void goUp() {
 		if (playing) {
 			position.move(position.x, position.y - GRIDDISTANCE);
@@ -104,7 +104,7 @@ public class Player {
 			}
 		}
 	}
-	
+
 	private boolean collides() {
 		boolean outside = true;
 		Iterator<GeneralPath> itr = mapLayer.pathList.iterator();
@@ -129,7 +129,7 @@ public class Player {
 			}
 		}
 	}
-	
+
 	public void draw(Graphics g) {
 		if (placed) {
 			Graphics2D g2d = (Graphics2D) g;

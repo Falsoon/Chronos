@@ -1,4 +1,4 @@
-package pdc;
+package main.java.pdc;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
@@ -40,14 +40,14 @@ public class MapWallingLayer extends MapLayer {
 		for(int i=0; i< pathList.size();i++) {
 			copy.pathList.add((GeneralPath)pathList.get(i).clone());
 		}
-		
+
 		return copy;
 	}
 
 	@Override
 	public void undo() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 }

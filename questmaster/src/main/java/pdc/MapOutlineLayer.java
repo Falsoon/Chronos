@@ -1,4 +1,4 @@
-package pdc;
+package main.java.pdc;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
@@ -50,7 +50,7 @@ public class MapOutlineLayer extends MapLayer {
 		if(!pointList.isEmpty()) {
 			copy.pointList = (ArrayList<Point>) pointList.clone();
 		}
-			
+
 		return copy;
 	}
 

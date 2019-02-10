@@ -1,4 +1,4 @@
-package junit;
+package test.java.junit;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.awt.Point;
@@ -7,12 +7,12 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import civ.CIV;
-import pdc.RoomList;
+import main.java.civ.CIV;
+import main.java.pdc.RoomList;
 
 /**
  * This is the tests for Use Case #1 Drawing rooms on map and display to author
- * 
+ *
  * @author Daniel
  *
  */
@@ -255,7 +255,7 @@ class DrawRoomTC01Test {
 		assertEquals(true, civ.map.mapLayer.pointList.contains(new Point(90, 30)));
 		assertEquals(true, civ.map.mapLayer.pointList.contains(new Point(300, 90)));
 	}
-	// TC01-13 User draws an unfinished room then draws a complete second room 
+	// TC01-13 User draws an unfinished room then draws a complete second room
 	@Test
 	void test01_13() throws Throwable {
 		civ.outlining();
@@ -278,7 +278,7 @@ class DrawRoomTC01Test {
 		assertEquals(true, civ.map.mapLayer.pointList.contains(new Point(90, 30)));
 		assertEquals(true, civ.map.mapLayer.pointList.contains(new Point(300, 90)));
 	}
-	// TC01-14 User draws room then draws a second room 
+	// TC01-14 User draws room then draws a second room
 	@Test
 	void test01_14() throws Throwable {
 		civ.outlining();
@@ -288,7 +288,7 @@ class DrawRoomTC01Test {
 		civ.mousePressed(new Point(90, 30), false, true);
 		civ.mousePressed(new Point(15,15), false, true);
 		civ.mousePressed(new Point(1500,1500), false, true);
-		
+
 		// then continues to draw a second room
 		civ.outlining();
 		civ.mousePressed(new Point(), false, true);
@@ -305,12 +305,12 @@ class DrawRoomTC01Test {
 		assertEquals(false, civ.map.mapLayer.pointList.contains(new Point(1500,1500)));
 	}
 	/*
-	 * 
-	 * 
-	 * 
-	 *  
-	 * 
-	 * 
-	 * 
+	 *
+	 *
+	 *
+	 *
+	 *
+	 *
+	 *
 	 */
 }

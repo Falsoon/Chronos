@@ -1,4 +1,4 @@
-package civ;
+package main.java.civ;
 
 import java.awt.EventQueue;
 import java.awt.Graphics;
@@ -10,8 +10,8 @@ import java.io.FileOutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
 
-import pdc.*;
-import hic.*;
+import main.java.pdc.*;
+import main.java.hic.*;
 
 /**
  * This class is used as the civ/presenter class for map
@@ -113,7 +113,7 @@ public class CIV {
 	public void dooring() {
 		map.dooring();
 	}
-	
+
 	//look into creating door list
 	public int numOfDoors() {
 		return map.numOfDoors();
@@ -150,7 +150,7 @@ public class CIV {
 		int d2 = direction(pA, pB, p2);
 		int d3 = direction(p1, p2, pA);
 		int d4 = direction(p1, p2, pB);
-		
+
 		if( ((d1 > 0 && d2 < 0) || (d1 < 0 && d2 > 0))  && ((d3 > 0 && d4 < 0) || (d3 < 0 && d4 > 0))) {
 			ans = true;
 		}
@@ -166,39 +166,24 @@ public class CIV {
 		else if( d4 == 0 && onSegment(p1, p2, pB) ) {
 			ans = true;
 		}
-		
+
 		return ans;
 	}
-	
+
 	public boolean onSegment(Point pi, Point pj, Point pk) {
 		boolean ans = false;
-		
+
 		if( Math.min(pi.x, pj.x) <= pk.x && Math.max(pi.x, pj.x) >= pk.x ) {
 			if( Math.min(pi.y, pj.y) <= pk.y && Math.max(pi.y, pj.y) >= pk.y ) {
 				ans = true;
 			}
 		}
-		
+
 		return ans;
 	}
-	
+
 	public int direction(Point p0, Point p1, Point p2) {
-		
+
 		return (p1.x - p0.x)*(p2.y - p0.y) - (p2.x - p0.x)*(p1.y - p0.y);
-	}
-	
-	public void outputStory() {
-		File out = new File("INFORM_Source/output.ni");
-		PrintStream output = null;
-		try {
-			output = new PrintStream(out);
-			System.setOut(output);
-			StoryBuilder.build(map);
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} finally {
-			output.close();
-		}
 	}
 }

@@ -1,4 +1,4 @@
-package pdc;
+package main.java.pdc;
 
 import java.awt.Point;
 import java.awt.geom.GeneralPath;
@@ -47,7 +47,7 @@ public class Room {
 	public void addDoor(Door d) {
 		this.doors.add(d);
 	}
-	
+
 	public ArrayList<Door> getDoors() {
 		return this.doors;
 	}

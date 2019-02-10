@@ -1,4 +1,4 @@
-package hic;
+package main.java.hic;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
@@ -11,8 +11,8 @@ import javax.swing.JPanel;
 public class AuthorPanel extends JPanel {
 
 	public JComboBox<String> Rooms;
-	
-	
+
+
 	public void update() {
 		int index = Rooms.getSelectedIndex();
 		if(index == -1) {index = 0;}
@@ -32,6 +32,6 @@ public class AuthorPanel extends JPanel {
 
 
 	public void reset() {
-		
+
 	}
 }

@@ -1,12 +1,11 @@
-package hic;
+package main.java.hic;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 
-import civ.*;
-import pdc.Door;
-import pdc.DoorList;
+import main.java.civ.*;
+import main.java.pdc.*;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -45,34 +44,34 @@ public class FormWindow  {
 		frame.setBounds(200, 100, 350, 600);
 		frame.setTitle("Room Description");
 		frame.getContentPane().setLayout(null);
-		
+
 		JLabel lblRoomTitle = new JLabel("Room Title");
 		lblRoomTitle.setBounds(10, 25, 100, 15);
 		frame.getContentPane().add(lblRoomTitle);
-		
+
 		titleText = new JTextArea();
 		titleText.setBounds(110, 20, 200, 30);
 		frame.getContentPane().add(titleText);
 		titleText.setColumns(10);
 		titleText.setText(formCiv.getRoomTitle());
 		titleText.setLineWrap(true);
-		
+
 		JLabel lblRoomDescription = new JLabel("Room Description");
 		lblRoomDescription.setBounds(10, 75, 150, 15);
 		frame.getContentPane().add(lblRoomDescription);
-		
+
 		JLabel lblRoomId = new JLabel("Room ID");
 		lblRoomId.setBounds(10, 50, 75, 15);
 		frame.getContentPane().add(lblRoomId);
-		
+
 		roomIdText = new JTextField();
 		roomIdText.setBounds(115, 50, 90, 20);
-		
+
 		roomIdText.setText(formCiv.getRoomID() + "");
 		frame.getContentPane().add(roomIdText);
 		roomIdText.setColumns(10);
 		roomIdText.setEditable(false);
-		
+
 		portalCombo.addItem("Select Door");
 		ArrayList<Door> doorList = formCiv.getRoomDoors();
 		for (int i = 0; i < doorList.size();i++) {
@@ -89,7 +88,7 @@ public class FormWindow  {
 				}
 			}
 		});
-		
+
 		JButton btnSubmit = new JButton("Submit");
 		btnSubmit.setBounds(180, 510, 100, 25);
 		btnSubmit.addActionListener(new ActionListener() {
@@ -102,18 +101,18 @@ public class FormWindow  {
 					formCiv.addRoomToRoomList();
 				}
 			}
-			
+
 		});
 		frame.getContentPane().add(btnSubmit);
-		
+
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setBounds(10, 100, 300, 400);
 		frame.getContentPane().add(scrollPane);
-		
+
 		textArea = new JTextArea();
 		textArea.setLineWrap(true);
 		textArea.setText(formCiv.getRoomDesc());
 		scrollPane.setViewportView(textArea);
 	}
-		
+
 }

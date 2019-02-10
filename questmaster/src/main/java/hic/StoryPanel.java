@@ -1,4 +1,4 @@
-package hic;
+package main.java.hic;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.net.URL;
@@ -23,20 +23,20 @@ public class StoryPanel extends JPanel {
     private WebEngine engine;
 	private MapPanel mapPanel;
 	private JPanel disPanel = new JPanel();
-	
+
 	public StoryPanel(MapPanel mp) {
-		mapPanel = mp;		
+		mapPanel = mp;
 		createScene();
 		this.add(jfxPanel, BorderLayout.CENTER);
 		this.add(disPanel, BorderLayout.SOUTH);
-		
+
 		Platform.runLater(new Runnable() {
             @Override
             public void run() {
             	URL url = this.getClass().getResource("/Release/play.html");
             	engine.load(url.toString());
             }
-        });	
+        });
 	}
 	private void createScene() {
 
@@ -45,7 +45,7 @@ public class StoryPanel extends JPanel {
             public void run() {
 
                 WebView view = new WebView();
-                engine = view.getEngine();   
+                engine = view.getEngine();
                 Scene scene = new Scene(view);
                 scene.setOnKeyPressed(event->{
                     switch (event.getCode()) {
