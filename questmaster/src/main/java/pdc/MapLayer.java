@@ -1,14 +1,22 @@
 package main.java.pdc;
 
+import javafx.geometry.BoundingBox;
+import javafx.geometry.Point2D;
+
+import javax.sound.sampled.Line;
 import java.awt.BasicStroke;
 import java.awt.Graphics;
 import java.awt.Point;
-import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.Stroke;
 import java.awt.geom.GeneralPath;
+import java.awt.geom.Line2D;
 import java.awt.geom.PathIterator;
+import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
 
 
 /**
@@ -26,6 +34,10 @@ public abstract class MapLayer {
 	public GeneralPath guiPath;
 	private boolean walling;
 	protected Room selectedRoom;
+	protected BoundingBox bb;
+	protected ArrayList<Point2D> currentPoints = new ArrayList<>();
+   private final int XOFFSET = 2;
+   private final int YOFFSET = 4;
 
 	public MapLayer() {
 		this.pathList = new ArrayList<GeneralPath>();
@@ -52,7 +64,9 @@ public abstract class MapLayer {
 		this.outlining = true;
 
 		this.pointList.add(p);
-		boolean first = !this.drawing;
+
+
+      boolean first = !this.drawing;
 		// at the first point, start a newguiPath
 		if (!this.drawing) {
 			this.start = p;// save start to compare later
@@ -65,7 +79,9 @@ public abstract class MapLayer {
 			// if not the first point, add toguiPath
 			this.guiPath.lineTo(p.x, p.y);
 		}
+      roomIsEnclosed();
 		// if the guiPath has returned to start, the end outline
+      // this is where the game currently determines that a room is complete.  If the author clicks on the starting point of the room, it considers the room complete.  This is fine for common use cases but does not handle many error/special cases.
 		if (!first && p.equals(this.start)) {
 			this.outlining = false;
 			this.guiPath.closePath();
@@ -74,7 +90,106 @@ public abstract class MapLayer {
 		return this.outlining;
 	}
 
-	private GeneralPath getPath(Point p) {
+   private void roomIsEnclosed() {
+      //find the min and max x and y coordinates
+      int minX = Integer.MAX_VALUE;
+      int maxX = 0;
+      int minY = Integer.MAX_VALUE;
+      int maxY = 0;
+      for (Point point : pointList){
+         if(point.x<minX){
+            minX = point.x;
+         }
+         if(point.x>maxX){
+            maxX = point.x;
+         }
+         if(point.y>maxY){
+            maxY = point.y;
+         }
+         if (point.y<minY){
+            minY = point.y;
+         }
+      }
+      //create the bounding box and increase the size by one cell on all sides
+      bb = new BoundingBox(minX-Constants.GRIDDISTANCE,minY-Constants.GRIDDISTANCE,maxX-minX+2*Constants.GRIDDISTANCE,maxY-minY+2*Constants.GRIDDISTANCE);
+      ArrayList<Point2D> visitedPoints = new ArrayList<>();
+      currentPoints.clear();
+      isEnclosed(new Point2D(bb.getMinX(),bb.getMinY()),visitedPoints);
+      System.out.println(visitedPoints.size());
+	}
+
+   private void isEnclosed(Point2D point,ArrayList<Point2D> visitedPoints){
+	   currentPoints.add(point);
+	   if(visitedPoints.contains(point)){
+	      return;
+      }else{
+         visitedPoints.add(point);
+      }
+      Point2D sPoint = new Point2D(point.getX(),point.getY()+Constants.GRIDDISTANCE);
+	   if(bb.contains(sPoint)&&!collides(point,sPoint)){
+         isEnclosed(sPoint,visitedPoints);
+      }
+      Point2D nPoint = new Point2D(point.getX(),point.getY()-Constants.GRIDDISTANCE);
+      if(bb.contains(nPoint)&&!collides(point,nPoint)){
+         isEnclosed(nPoint,visitedPoints);
+      }
+      Point2D wPoint = new Point2D(point.getX()-Constants.GRIDDISTANCE,point.getY());
+      if(bb.contains(wPoint)&&!collides(point,wPoint)){
+         isEnclosed(wPoint,visitedPoints);
+      }
+      Point2D ePoint = new Point2D(point.getX()+Constants.GRIDDISTANCE,point.getY());
+      if(bb.contains(ePoint)&&!collides(point,ePoint)){
+         isEnclosed(ePoint,visitedPoints);
+      }
+
+   }
+
+   private boolean collides(Point2D previousP,Point2D nextP) {
+
+	   /*
+	   int x = Integer.min((int)previousP.getX(),(int)nextP.getX());
+	   int y = Integer.min((int)previousP.getY(),(int)nextP.getY());
+	   int width = Math.abs((int)previousP.getX()-(int)nextP.getX());
+	   int height = Math.abs((int)previousP.getY()-(int)nextP.getY());
+	   */
+      boolean collides = false;
+      Iterator<GeneralPath> itr = pathList.iterator();
+      double[] coords = new double[6];
+      while (itr.hasNext() && !collides) {
+         GeneralPath path = itr.next();
+         List<double[]> pathPointList = new ArrayList<>();;
+         for(PathIterator pi = path.getPathIterator(null);!pi.isDone();pi.next()){
+            int piCode = pi.currentSegment(coords);
+            //if(piCode == PathIterator.SEG_LINETO) {
+               pathPointList.add(Arrays.copyOf(coords, 2));
+
+            //}
+         }
+         if(pathPointList.size()>0) {
+            Point2D point1 = new Point2D(pathPointList.get(0)[0], pathPointList.get(0)[1]);
+            for (int i = 1; i < pathPointList.size() && !collides; i++) {
+               Point2D point2 = new Point2D(pathPointList.get(i)[0], pathPointList.get(i)[1]);
+               Line2D pathLine = new Line2D.Double(new java.awt.geom.Point2D.Double(point1.getX(), point1.getY()), new java.awt.geom.Point2D.Double(point2.getX(), point2.getY()));
+               Line2D ffLine = new Line2D.Double(new java.awt.geom.Point2D.Double(previousP.getX(), previousP.getY()), new java.awt.geom.Point2D.Double(nextP.getX(), nextP.getY()));
+               if (pathLine.intersectsLine(ffLine)) {
+                  collides = true;
+               }
+               point1 = point2;
+            }
+         }
+         /*
+         if ((!path.contains(previousP.getX(),previousP.getY())&&
+            path.contains(nextP.getX(),nextP.getY())) ||
+            (path.contains(previousP.getX(),previousP.getY())&&
+               !path.contains(nextP.getX(),nextP.getY()))) {
+            collides = true;
+         }
+         */
+      }
+      return collides;
+   }
+
+   private GeneralPath getPath(Point p) {
 		int index = 0;
 		boolean found = false;
 		GeneralPath path;

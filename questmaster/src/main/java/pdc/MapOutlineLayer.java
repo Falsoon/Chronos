@@ -6,6 +6,7 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.RenderingHints;
 import java.awt.geom.GeneralPath;
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
 
 
@@ -32,6 +33,17 @@ public class MapOutlineLayer extends MapLayer {
 				g2d.draw(selectedRoom.path);
 			}
 		}
+		///TODO remove this when done working on room detection
+		if(bb!=null) {
+		   g2d.setColor(Color.GREEN);
+         g2d.drawRect((int) bb.getMinX(), (int) bb.getMinY(), (int) bb.getWidth(), (int) bb.getHeight());
+      }
+      g2d.setColor(Color.CYAN);
+      if(currentPoints!=null){
+		   for(javafx.geometry.Point2D currentPoint : currentPoints) {
+            g2d.drawString("o", (int) currentPoint.getX(), (int) currentPoint.getY());
+         }
+      }
 	}
 
 	@Override
