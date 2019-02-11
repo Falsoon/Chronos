@@ -1,18 +1,12 @@
-package main.java.pdc;
+package pdc;
 
 import javafx.geometry.BoundingBox;
 import javafx.geometry.Point2D;
 
-import javax.sound.sampled.Line;
-import java.awt.BasicStroke;
-import java.awt.Graphics;
-import java.awt.Point;
-import java.awt.Shape;
-import java.awt.Stroke;
+import java.awt.*;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Line2D;
 import java.awt.geom.PathIterator;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;

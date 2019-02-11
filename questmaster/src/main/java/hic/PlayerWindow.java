@@ -1,7 +1,7 @@
-package main.java.hic;
-import java.awt.BorderLayout;
-import javax.swing.JFrame;
-import javax.swing.JSplitPane;
+package hic;
+
+import javax.swing.*;
+import java.awt.*;
 
 /**
  * handles UI of playing (moving player around) on the map

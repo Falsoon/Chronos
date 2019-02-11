@@ -1,8 +1,6 @@
-package main.java.pdc;
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Point;
+package pdc;
+
+import java.awt.*;
 import java.awt.geom.GeneralPath;
 import java.util.Iterator;
 

@@ -1,14 +1,12 @@
 package test.java.junit;
-import static org.junit.jupiter.api.Assertions.*;
 
-import java.awt.Point;
-
+import main.java.civ.CIV;
+import main.java.pdc.RoomList;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import main.java.civ.CIV;
-import main.java.pdc.RoomList;
+import java.awt.*;
 
 /**
  * This is the tests for Use Case #1 Drawing rooms on map and display to author

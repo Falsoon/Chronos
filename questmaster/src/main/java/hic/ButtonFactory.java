@@ -1,12 +1,11 @@
-package main.java.hic;
-import java.awt.EventQueue;
+package hic;
+
+import civ.FormCiv;
+
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-
-import main.java.civ.*;
 /**
  * This class is used to encapsulate the creation of buttons and the logic behind
  * action listeners of each button

@@ -1,9 +1,8 @@
-package main.java.hic;
+package hic;
+
+import javax.swing.*;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-
-import javax.swing.JComboBox;
-import javax.swing.JPanel;
 /**
  * Used for encapsulating the author UI
  */

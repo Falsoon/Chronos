@@ -1,8 +1,11 @@
-package main.java.civ;
+package civ;
+
+import pdc.Door;
+import pdc.DoorList;
+import pdc.Room;
+import pdc.RoomList;
 
 import java.util.ArrayList;
-
-import main.java.pdc.*;
 
 /**
  * This class is used to be the civ component/presenter

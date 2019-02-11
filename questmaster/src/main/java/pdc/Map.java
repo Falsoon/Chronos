@@ -1,14 +1,13 @@
-package main.java.pdc;
-import java.awt.Graphics;
-import java.awt.Point;
-import java.util.ArrayList;
-import java.util.Hashtable;
+package pdc;
 
 import javax.swing.event.UndoableEditListener;
 import javax.swing.undo.StateEdit;
 import javax.swing.undo.StateEditable;
 import javax.swing.undo.UndoManager;
 import javax.swing.undo.UndoableEditSupport;
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.Hashtable;
 
 /**
  * Handles the data of map overall including data of 3 mapLayers

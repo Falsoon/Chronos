@@ -1,4 +1,4 @@
-package main.java.pdc;
+package pdc;
 import java.awt.geom.GeneralPath;
 
 /**

@@ -1,4 +1,5 @@
 package test.java.junit;
+
 import main.java.civ.CIV;
 import main.java.civ.FormCiv;
 import main.java.hic.AuthorWindow;
@@ -11,8 +12,6 @@ import org.junit.jupiter.api.Test;
 
 import javax.swing.*;
 import java.awt.*;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class DescriptionFormTC05Test {
 

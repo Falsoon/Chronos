@@ -1,11 +1,11 @@
-package main.java.pdc;
+package pdc;
 
-import java.awt.Point;
+import javafx.geometry.Point2D;
+
+import java.awt.*;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.PathIterator;
 import java.util.ArrayList;
-
-import javafx.geometry.Point2D;
 
 /*
  * encapsulates room data

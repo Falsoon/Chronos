@@ -1,20 +1,13 @@
-package main.java.hic;
+package hic;
 
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JTextField;
+import civ.FormCiv;
+import pdc.Door;
+import pdc.DoorList;
 
-import main.java.civ.*;
-import main.java.pdc.*;
-
+import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
 
 /**
  * Handles UI of form window

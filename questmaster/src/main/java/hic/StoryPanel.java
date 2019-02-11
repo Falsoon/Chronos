@@ -1,18 +1,14 @@
-package main.java.hic;
-import java.awt.BorderLayout;
-import java.awt.event.ActionEvent;
-import java.net.URL;
+package hic;
 
-import javax.swing.AbstractAction;
-import javax.swing.JPanel;
-import javax.swing.JTextArea;
-import javax.swing.KeyStroke;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
-import javafx.scene.web.WebEngine;
 import javafx.scene.Scene;
-import javafx.scene.input.KeyCode;
+import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
+
+import javax.swing.*;
+import java.awt.*;
+import java.net.URL;
 
 /**
  * Presenter class used to update playerWindow and player data.
