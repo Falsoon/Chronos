@@ -72,7 +72,8 @@ public class FormWindow  {
 		frame.getContentPane().add(roomIdText);
 		roomIdText.setColumns(10);
 		roomIdText.setEditable(false);
-		
+
+		portalCombo = new JComboBox<>();
 		portalCombo.addItem("Select Door");
 		ArrayList<Door> doorList = formCiv.getRoomDoors();
 		for (int i = 0; i < doorList.size();i++) {
