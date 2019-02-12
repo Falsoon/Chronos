@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.awt.Point;
 
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import civ.CIV;
@@ -14,6 +15,7 @@ import pdc.Door;
 import pdc.Map;
 import pdc.MapLayer;
 import pdc.RoomList;
+import pdc.DoorList;
 
 class SimplePortalsDoorsTC06Test {
 
@@ -29,6 +31,15 @@ class SimplePortalsDoorsTC06Test {
 		bf = null;
 		civ = null;
 		RoomList.reset();
+		DoorList.reset();
+	}
+
+	@BeforeEach
+	public void setUp() {
+		civ = new CIV();
+		map = new Map();
+		aw = new AuthorWindow();
+		bf = new ButtonFactory(aw);
 	}
 	
 	@Test
@@ -39,6 +50,10 @@ class SimplePortalsDoorsTC06Test {
 		civ.outlining();
 		civ.mousePressed(new Point(50, 50), false, true);
 		civ.mousePressed(new Point(50, 100), false, true);
+		civ.mousePressed(new Point(100, 100), false, true);
+		civ.mousePressed(new Point(50, 50), false, true);
+		// the real problem is that we can change to adding doors before drawing the
+		// room is finished. To be fixed.
 		
 		civ.dooring();
 		civ.mousePressed(new Point(50, 75), false, true);
@@ -54,6 +69,8 @@ class SimplePortalsDoorsTC06Test {
 		civ.outlining();
 		civ.mousePressed(new Point(50, 50), false, true);
 		civ.mousePressed(new Point(50, 100), false, true);
+		civ.mousePressed(new Point(100, 100), false, true);
+		civ.mousePressed(new Point(50, 50), false, true);
 		
 		civ.dooring();
 		civ.mousePressed(new Point(50, 75), false, true);

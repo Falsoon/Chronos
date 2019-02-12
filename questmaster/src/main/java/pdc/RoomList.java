@@ -30,7 +30,7 @@ public class RoomList {
 
 	public static void reset() {
 		list.clear();
-		Room.idCount =1;
+		Room.idCount = 1;
 	}
 
 	public static Room getRoomById(int id) {
