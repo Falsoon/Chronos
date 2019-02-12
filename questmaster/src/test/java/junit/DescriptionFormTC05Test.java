@@ -1,17 +1,19 @@
-package test.java.junit;
+package junit;
 
-import main.java.civ.CIV;
-import main.java.civ.FormCiv;
-import main.java.hic.AuthorWindow;
-import main.java.hic.ButtonFactory;
-import main.java.hic.FormWindow;
-import main.java.pdc.Room;
-import main.java.pdc.RoomList;
+import civ.CIV;
+import civ.FormCiv;
+import hic.AuthorWindow;
+import hic.ButtonFactory;
+import hic.FormWindow;
+import pdc.Room;
+import pdc.RoomList;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
 import javax.swing.*;
 import java.awt.*;
+
+import static org.junit.Assert.assertEquals;
 
 class DescriptionFormTC05Test {
 

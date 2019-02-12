@@ -1,12 +1,14 @@
-package test.java.junit;
+package junit;
 
-import main.java.civ.CIV;
-import main.java.pdc.RoomList;
+import civ.CIV;
+import pdc.RoomList;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.awt.*;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * This is the tests for Use Case #1 Drawing rooms on map and display to author

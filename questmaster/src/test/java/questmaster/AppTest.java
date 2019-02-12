@@ -1,4 +1,4 @@
-package test.java.questmaster;
+package questmaster;
 
 import org.junit.jupiter.api.Test;
 

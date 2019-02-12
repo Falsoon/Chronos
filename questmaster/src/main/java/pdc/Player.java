@@ -4,6 +4,9 @@ import java.awt.*;
 import java.awt.geom.GeneralPath;
 import java.util.Iterator;
 
+import static pdc.Constants.XOFFSET;
+import static pdc.Constants.YOFFSET;
+
 /*
  * encapsulates player's avatar data
  */
@@ -14,8 +17,6 @@ public class Player {
 	private GeneralPath currentRoom;
 	private MapLayer mapLayer;
 	private String representation;
-	private final int XOFFSET = 2;
-	private final int YOFFSET = 4;
 
 	public Player(MapLayer mapLayer){
 		placed = false;

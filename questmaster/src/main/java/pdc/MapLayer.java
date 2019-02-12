@@ -12,11 +12,13 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
+import static pdc.Constants.XOFFSET;
+import static pdc.Constants.YOFFSET;
+
 
 /**
  * Layer of the map
  *
- * @author Daniel
  *
  */
 public abstract class MapLayer {
@@ -28,16 +30,15 @@ public abstract class MapLayer {
 	public GeneralPath guiPath;
 	private boolean walling;
 	protected Room selectedRoom;
-	protected BoundingBox bb;
-	protected ArrayList<Point2D> currentPoints = new ArrayList<>();
-   private final int XOFFSET = 2;
-   private final int YOFFSET = 4;
+	protected BoundingBox boundingBox;
+   private ArrayList<Point> floodFillPointList;
 
 	public MapLayer() {
-		this.pathList = new ArrayList<GeneralPath>();
-		this.pointList = new ArrayList<Point>();
+		this.pathList = new ArrayList<>();
+		this.pointList = new ArrayList<>();
 		this.drawing = false;
 		this.selectedRoom = null;
+		this.floodFillPointList = new ArrayList<>();
 	}
 
 	public void addPath(GeneralPath guiPath) {
@@ -58,9 +59,8 @@ public abstract class MapLayer {
 		this.outlining = true;
 
 		this.pointList.add(p);
+		this.floodFillPointList.add(p);
 
-
-      boolean first = !this.drawing;
 		// at the first point, start a newguiPath
 		if (!this.drawing) {
 			this.start = p;// save start to compare later
@@ -73,24 +73,36 @@ public abstract class MapLayer {
 			// if not the first point, add toguiPath
 			this.guiPath.lineTo(p.x, p.y);
 		}
-      roomIsEnclosed();
-		// if the guiPath has returned to start, the end outline
-      // this is where the game currently determines that a room is complete.  If the author clicks on the starting point of the room, it considers the room complete.  This is fine for common use cases but does not handle many error/special cases.
-		if (!first && p.equals(this.start)) {
-			this.outlining = false;
-			this.guiPath.closePath();
-			RoomList.add(new Room((GeneralPath) this.guiPath.clone()));
-		}
+		//check if the room is enclosed, finish room if so
+      if(roomIsEnclosed()){
+         closeRoom();
+      }
 		return this.outlining;
 	}
 
-   private void roomIsEnclosed() {
+   /**
+    * Logic behind finishing a room once it's enclosed
+    */
+   private void closeRoom() {
+      boundingBox = null;
+      floodFillPointList.clear();
+      this.outlining = false;
+      this.guiPath.closePath();
+      RoomList.add(new Room((GeneralPath) this.guiPath.clone()));
+   }
+
+   /**
+    * Checks if the room is enclosed
+    * @return true if the room is enclosed
+    */
+   private boolean roomIsEnclosed() {
+	   boolean enclosed =false;
       //find the min and max x and y coordinates
       int minX = Integer.MAX_VALUE;
       int maxX = 0;
       int minY = Integer.MAX_VALUE;
       int maxY = 0;
-      for (Point point : pointList){
+      for (Point point : floodFillPointList){
          if(point.x<minX){
             minX = point.x;
          }
@@ -105,59 +117,93 @@ public abstract class MapLayer {
          }
       }
       //create the bounding box and increase the size by one cell on all sides
-      bb = new BoundingBox(minX-Constants.GRIDDISTANCE,minY-Constants.GRIDDISTANCE,maxX-minX+2*Constants.GRIDDISTANCE,maxY-minY+2*Constants.GRIDDISTANCE);
-      ArrayList<Point2D> visitedPoints = new ArrayList<>();
-      currentPoints.clear();
-      isEnclosed(new Point2D(bb.getMinX(),bb.getMinY()),visitedPoints);
-      System.out.println(visitedPoints.size());
+      boundingBox = new BoundingBox(minX-Constants.GRIDDISTANCE,minY-Constants.GRIDDISTANCE,
+         maxX-minX+2*Constants.GRIDDISTANCE,maxY-minY+2*Constants.GRIDDISTANCE);
+      ArrayList<Point> visitedPoints = new ArrayList<>();
+      //x and y offset added to reflect player's position within the map
+      floodFill(new Point((int) boundingBox.getMinX()+XOFFSET,(int) boundingBox.getMinY()+YOFFSET),visitedPoints);
+      if(visitedPoints.size()< getBoundingBoxFloodFillArea()){
+         enclosed = true;
+      }
+      return enclosed;
 	}
 
-   private void isEnclosed(Point2D point,ArrayList<Point2D> visitedPoints){
-	   currentPoints.add(point);
+   /**
+    *
+    * @return the area of the bounding box by the flood fill algorithm (the area of the bounding box
+    * divided by the the squared grid size)
+    */
+   private int getBoundingBoxFloodFillArea() {
+      return (int) (boundingBox.getWidth()* boundingBox.getHeight()/(Math.pow(Constants.GRIDDISTANCE,2)));
+   }
+
+   /**
+    * Flood fill to check for enclosed spaces when a room is drawn.  Points are "colored" by being added to visitedPoints
+    * @param point the current point to check
+    * @param visitedPoints a list of points visited by the algorithm
+    */
+   private void floodFill(Point point, ArrayList<Point> visitedPoints){
 	   if(visitedPoints.contains(point)){
 	      return;
       }else{
          visitedPoints.add(point);
       }
-      Point2D sPoint = new Point2D(point.getX(),point.getY()+Constants.GRIDDISTANCE);
-	   if(bb.contains(sPoint)&&!collides(point,sPoint)){
-         isEnclosed(sPoint,visitedPoints);
-      }
-      Point2D nPoint = new Point2D(point.getX(),point.getY()-Constants.GRIDDISTANCE);
-      if(bb.contains(nPoint)&&!collides(point,nPoint)){
-         isEnclosed(nPoint,visitedPoints);
-      }
-      Point2D wPoint = new Point2D(point.getX()-Constants.GRIDDISTANCE,point.getY());
-      if(bb.contains(wPoint)&&!collides(point,wPoint)){
-         isEnclosed(wPoint,visitedPoints);
-      }
-      Point2D ePoint = new Point2D(point.getX()+Constants.GRIDDISTANCE,point.getY());
-      if(bb.contains(ePoint)&&!collides(point,ePoint)){
-         isEnclosed(ePoint,visitedPoints);
-      }
+      Point sPoint = new Point(point.x,point.y+Constants.GRIDDISTANCE);
+	   floodFillNextPoint(point,sPoint,visitedPoints);
+
+      Point nPoint = new Point(point.x,point.y-Constants.GRIDDISTANCE);
+      floodFillNextPoint(point,nPoint,visitedPoints);
+
+      Point wPoint = new Point(point.x-Constants.GRIDDISTANCE,point.y);
+      floodFillNextPoint(point,wPoint,visitedPoints);
+
+      Point ePoint = new Point(point.x+Constants.GRIDDISTANCE,point.y);
+      floodFillNextPoint(point,ePoint,visitedPoints);
 
    }
 
-   private boolean collides(Point2D previousP,Point2D nextP) {
+   /**
+    * Performs the next recursion of the flood fill algorithm if the point can be visited
+    * @param point the current point
+    * @param nextPoint the next potential point
+    * @param visitedPoints the list of visited points in the algorithm
+    */
+   private void floodFillNextPoint(Point point, Point nextPoint, ArrayList<Point> visitedPoints){
+      if(nextPointValid(point,nextPoint)){
+         floodFill(nextPoint,visitedPoints);
+      }
+   }
 
-	   /*
-	   int x = Integer.min((int)previousP.getX(),(int)nextP.getX());
-	   int y = Integer.min((int)previousP.getY(),(int)nextP.getY());
-	   int width = Math.abs((int)previousP.getX()-(int)nextP.getX());
-	   int height = Math.abs((int)previousP.getY()-(int)nextP.getY());
-	   */
+   /**
+    * Determines if the specified next point can be visited by the flood fill algorithm
+    * @param point the current point in the algorithm
+    * @param nextPoint the potential next point in the algorithm
+    * @return true if the next point can be visited
+    */
+   private boolean nextPointValid(Point point, Point nextPoint){
+      boolean valid = false;
+      if(boundingBox.contains(new Point2D(nextPoint.x,nextPoint.y))&&!collides(new Point2D(point.x,point.y),new Point2D(nextPoint.x,nextPoint.y))){
+         valid = true;
+      }
+      return valid;
+   }
+
+   /**
+    * Checks if the next point in the flood fill algorithm crosses a wall
+    * @param previousP the previous point in the algorithm
+    * @param nextP the next potential point in the algorithm
+    * @return true if the line between the previous and next point crosses a wall
+    */
+   private boolean collides(Point2D previousP,Point2D nextP) {
       boolean collides = false;
       Iterator<GeneralPath> itr = pathList.iterator();
       double[] coords = new double[6];
       while (itr.hasNext() && !collides) {
          GeneralPath path = itr.next();
-         List<double[]> pathPointList = new ArrayList<>();;
+         List<double[]> pathPointList = new ArrayList<>();
          for(PathIterator pi = path.getPathIterator(null);!pi.isDone();pi.next()){
-            int piCode = pi.currentSegment(coords);
-            //if(piCode == PathIterator.SEG_LINETO) {
-               pathPointList.add(Arrays.copyOf(coords, 2));
-
-            //}
+            pi.currentSegment(coords);
+            pathPointList.add(Arrays.copyOf(coords, 2));
          }
          if(pathPointList.size()>0) {
             Point2D point1 = new Point2D(pathPointList.get(0)[0], pathPointList.get(0)[1]);
@@ -171,14 +217,6 @@ public abstract class MapLayer {
                point1 = point2;
             }
          }
-         /*
-         if ((!path.contains(previousP.getX(),previousP.getY())&&
-            path.contains(nextP.getX(),nextP.getY())) ||
-            (path.contains(previousP.getX(),previousP.getY())&&
-               !path.contains(nextP.getX(),nextP.getY()))) {
-            collides = true;
-         }
-         */
       }
       return collides;
    }

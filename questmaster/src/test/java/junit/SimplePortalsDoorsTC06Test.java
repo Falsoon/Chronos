@@ -1,14 +1,16 @@
-package test.java.junit;
+package junit;
 
-import main.java.civ.CIV;
-import main.java.hic.AuthorWindow;
-import main.java.hic.ButtonFactory;
-import main.java.pdc.Map;
-import main.java.pdc.RoomList;
+import civ.CIV;
+import hic.AuthorWindow;
+import hic.ButtonFactory;
+import pdc.Map;
+import pdc.RoomList;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
 import java.awt.*;
+
+import static org.junit.Assert.assertEquals;
 
 class SimplePortalsDoorsTC06Test {
 
