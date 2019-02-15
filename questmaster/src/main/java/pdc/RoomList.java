@@ -5,7 +5,7 @@ import java.util.Iterator;
 
 
 /**
- * Encapsulates all the rooms into a list
+ * Encapsulates all the rooms into a pointList
  */
 public class RoomList {
 	public static ArrayList<Room> list = new ArrayList<Room>();

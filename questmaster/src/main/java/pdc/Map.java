@@ -67,9 +67,9 @@ public class Map implements StateEditable {
 				mapLayer = new MapOutlineLayer();
 			}
 			if (room == null) {
-				outlining = mapLayer.outline(p);
+				mapLayer.outline(p);
 			} else {
-				outlining = mapLayer.outline(p, room);
+				//outlining = mapLayer.outline(p, room);
 			}
 			if (!outlining) {
 				layers.add(mapLayer);

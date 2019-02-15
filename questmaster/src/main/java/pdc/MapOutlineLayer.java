@@ -6,6 +6,7 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.RenderingHints;
 import java.awt.geom.GeneralPath;
+import java.awt.geom.Line2D;
 import java.util.ArrayList;
 
 
@@ -20,12 +21,8 @@ public class MapOutlineLayer extends MapLayer {
 		g2d.setColor(Color.BLACK);
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		g2d.setStroke(new BasicStroke(4, BasicStroke.CAP_ROUND, BasicStroke.JOIN_BEVEL));
-		if (pathList == null) {
-			pathList = new ArrayList<GeneralPath>();
-		}
-		for (int i = 0; i < pathList.size(); i++) {
-			g2d.draw(pathList.get(i));
-		}
+		pathList.forEach(g2d::draw);
+		wallList.forEach(g2d::draw);
 		if (selectedRoom != null) {
 			g2d.setColor(Color.RED);
 			if (selectedRoom.path != null) {

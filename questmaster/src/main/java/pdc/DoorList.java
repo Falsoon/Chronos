@@ -5,7 +5,7 @@ import java.util.Iterator;
 
 
 /**
- * Encapsulates all the doors into a list
+ * Encapsulates all the doors into a pointList
  */
 public class DoorList {
 	public static ArrayList<Door> list = new ArrayList<Door>();

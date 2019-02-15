@@ -3,12 +3,13 @@ package pdc;
 import java.awt.BasicStroke;
 import java.awt.Graphics;
 import java.awt.Point;
-import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.Stroke;
 import java.awt.geom.GeneralPath;
+import java.awt.geom.Line2D;
 import java.awt.geom.PathIterator;
-import java.util.ArrayList;
+import java.awt.geom.Point2D;
+import java.util.*;
 
 
 /**
@@ -26,12 +27,22 @@ public abstract class MapLayer {
 	public GeneralPath guiPath;
 	private boolean walling;
 	protected Room selectedRoom;
+	protected ArrayList<Line2D> wallList;
+	private boolean firstClick;
+	private Point firstPoint;
+   private ArrayList<Point> intersectionList;
+   private Line2D lastWall;
+   private ArrayList<Line2D> edgeList;
 
-	public MapLayer() {
-		this.pathList = new ArrayList<GeneralPath>();
-		this.pointList = new ArrayList<Point>();
+   public MapLayer() {
+		this.pathList = new ArrayList<>();
+		this.pointList = new ArrayList<>();
+		wallList = new ArrayList<>();
 		this.drawing = false;
 		this.selectedRoom = null;
+		firstClick = false;
+		intersectionList = new ArrayList<>();
+		edgeList = new ArrayList<>();
 	}
 
 	public void addPath(GeneralPath guiPath) {
@@ -48,7 +59,19 @@ public abstract class MapLayer {
 
 	public abstract void draw(Graphics g);
 
-	public boolean outline(Point p) {
+	public void outline(Point p) {
+
+	   firstClick = !firstClick;
+	   if(firstClick){
+	      firstPoint = p;
+      }else{
+	      lastWall = new Line2D.Double(firstPoint,p);
+	      wallList.add(lastWall);
+         detectRooms();
+      }
+	   pointList.add(p);
+
+	   /*
 		this.outlining = true;
 
 		this.pointList.add(p);
@@ -72,9 +95,124 @@ public abstract class MapLayer {
 			RoomList.add(new Room((GeneralPath) this.guiPath.clone()));
 		}
 		return this.outlining;
+		*/
 	}
 
-	private GeneralPath getPath(Point p) {
+
+	private void detectRooms(){
+	   for(int i = 0;i<wallList.size()-1;i++){
+	         Line2D wallA = wallList.get(i);
+	         if(Line2D.linesIntersect(wallA.getX1(),wallA.getY1(),wallA.getX2(),wallA.getY2(),
+               lastWall.getX1(),lastWall.getY1(),lastWall.getX2(),lastWall.getY2())) {
+               Optional<Point> intersection = intersectionPoint(wallA, lastWall);
+               intersection.ifPresent(point -> {
+                  intersectionList.add(point);
+                  if (wallA.getP1().equals(point) || wallA.getP2().equals(point)
+                     && (lastWall.getP1().equals(point) || lastWall.getP2().equals(point))) {
+                     //case 1: walls both intersect at one of their endpoints, don't need to break anything up
+                     edgeList.add(lastWall);
+                  } else if (wallA.getP1().equals(point) || wallA.getP2().equals(point)) {
+                     //case 2: wall A intersects at an endpoint, need to break up lastWall and add its new segments
+                     breakUpWallAndAddToList(point, lastWall);
+                  } else if (lastWall.getP1().equals(point) || lastWall.getP2().equals(point)) {
+                     //case 3: lastWall intersects at an endpoint, need to remove wallA, break it up, and add the new segments
+                     wallList.remove(wallA);
+                     breakUpWallAndAddToList(point, wallA);
+                  } else {
+                     //case 4: neither wall intersects at an endpoint, need to break up both walls and add their new segments
+                     wallList.remove(wallA);
+                     breakUpWallAndAddToList(point, wallA);
+                     breakUpWallAndAddToList(point, lastWall);
+                  }
+               });
+            }
+      }
+	   //hash points so they can be indexed by the graph
+
+      /*
+      HashMap<Point, Integer> pointsHashMap = new HashMap<>();
+	   int index = 0;
+	   pointList.forEach(point->{
+	      if(!pointsHashMap.containsKey(point)) {
+            pointsHashMap.put(point, index);
+         }
+      });
+      */
+
+	   //map intersections to vertices on a graph and walls to edges
+      Graph graph = new Graph(wallList.size());
+      ArrayList<ArrayList<Point2D>> cyclesToRemove = new ArrayList<>();
+      wallList.forEach(wall->{
+         //TODO if this blows up, just create a new Point from the Point2D
+         graph.addEdge(wall.getP1(),wall.getP2());
+      });
+      graph.findCycles();
+      ArrayList<Point2D[]> cycles = graph.cycles;
+      System.out.println("here be the cycles: " +cycles);
+
+      //TODO remove all the cycles that only consist of edges from other cycles
+      /*
+      for(int i = 0;i<cycles.size()-1;i++){
+         for(int j = i+1;j<cycles.size() && !cyclesToRemove.contains(cycles.get(j));j++){
+            if(cycles.get(j).containsAll(cycles.get(i))){
+               cyclesToRemove.add(cycles.get(i));
+            }
+         }
+      }
+      cycles.removeAll(cyclesToRemove);
+      */
+      //each member of cycles is a room
+      //TODO find a way to check if rooms were deleted
+
+   }
+
+   /**
+    * Method to break line into 2 line segments at the specified point and add them to the wall pointList
+    * @param point
+    * @param wall
+    */
+   private void breakUpWallAndAddToList(Point point, Line2D wall) {
+      Line2D lastWallA = new Line2D.Double(wall.getP1(), point);
+      Line2D lastWallB = new Line2D.Double(wall.getP2(), point);
+      wallList.add(lastWallA);
+      wallList.add(lastWallB);
+   }
+
+   /**
+    * Determines where the specified Line2Ds intersect
+    * Adapted from https://www.geeksforgeeks.org/program-for-point-of-intersection-of-two-lines/
+    * and https://www.baeldung.com/java-intersection-of-two-lines
+    * @param lineA the first line
+    * @param lineB the second line
+    * @return the intersection as a point if the lines intersect, Optional.Empty() if not
+    */
+   private Optional<Point> intersectionPoint(Line2D lineA, Line2D lineB) {
+      // Line AB represented as a1x + b1y = c1
+      double a1 = lineA.getY2() - lineA.getY1();
+      double b1 = lineA.getX1() - lineA.getX2();
+      double c1 = a1*(lineA.getX1()) + b1*(lineA.getY1());
+
+      // Line CD represented as a2x + b2y = c2
+      double a2 = lineB.getY2() - lineB.getY1();
+      double b2 = lineB.getX1() - lineB.getX2();
+      double c2 = a2*(lineB.getX1())+ b2*(lineB.getY1());
+
+      double determinant = a1*b2 - a2*b1;
+
+      if (determinant == 0)
+      {
+         // The lines are parallel
+            return Optional.empty();
+      }
+      else
+      {
+         double x = (b2*c1 - b1*c2)/determinant;
+         double y = (a1*c2 - a2*c1)/determinant;
+         return Optional.of(new Point((int)x, (int)y));
+      }
+   }
+
+   private GeneralPath getPath(Point p) {
 		int index = 0;
 		boolean found = false;
 		GeneralPath path;
@@ -125,6 +263,7 @@ public abstract class MapLayer {
 		return found;
 	}
 
+
 	/*
 	 * transWalling is used to encapsulate the logic behind implementing a
 	 * transparent wall.
@@ -132,6 +271,7 @@ public abstract class MapLayer {
 	 * going forward, we could ID whether the layer is a walling and whether the
 	 * previous layer is a outline layer before calling this method
 	 */
+
 	public boolean transWalling(Point p, MapLayer previousLayer) {
 		this.walling = true;
 		Room r1 = null, r2 = RoomList.getRoom(p);
@@ -143,7 +283,7 @@ public abstract class MapLayer {
 			boolean first = this.pointList.isEmpty();
 			this.pointList.add(p);
 			if (r2 != null) {
-				r1 = r2.split(this.pointList);
+				//r1 = r2.split(this.pointList);
 			}
 			if (r1 != null) {
 				RoomList.add(r1);
@@ -199,6 +339,8 @@ public abstract class MapLayer {
 		return this.walling;
 	}
 
+
+
 	public abstract MapLayer copy();
 
 	public abstract void undo();
@@ -207,6 +349,7 @@ public abstract class MapLayer {
 		return RoomList.getRoom(p);
 	}
 
+	/*
 	public boolean outline(Point p, Room room) {
 		this.outlining = true;
 		this.pointList.add(p);
@@ -230,6 +373,7 @@ public abstract class MapLayer {
 		}
 		return this.outlining;
 	}
+	*/
 
     public void setSelectedRoom(Room r) {
         this.selectedRoom = r;
@@ -241,7 +385,7 @@ public abstract class MapLayer {
         for (int j = 0; j < l.size(); j++) { // For each room
             Room r = l.get(j);
             if (r.doorCount() < 8) { // Limit to 8 doors per room
-                ArrayList<Point> list = r.list;
+                ArrayList<Point> list = r.pointList;
                 if(list.contains(p)) {
                 	throw new Throwable("Door must be placed on a wall");
                 }

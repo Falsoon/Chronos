@@ -114,7 +114,7 @@ public class CIV {
 		map.dooring();
 	}
 	
-	//look into creating door list
+	//look into creating door pointList
 	public int numOfDoors() {
 		return map.numOfDoors();
 	}
