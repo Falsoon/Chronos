@@ -1,6 +1,4 @@
 package pdc;
-// Java Program to demonstrate adjacency pointList
-// representation of graphs 
 
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
@@ -8,6 +6,7 @@ import java.util.HashMap;
 
 /**
  * Represents a graph theory graph, used for room detection
+ * adapted from https://stackoverflow.com/a/14115627
  */
 public class Graph {
 
@@ -69,18 +68,6 @@ public class Graph {
          vertexOrderingIndex++;
       }
    }
-
-
-   /*
-   //  Graph modeled as list of edge
-      static int[][] graph = {
-         {1, 2}, {1, 3}, {1, 4}, {2, 3},
-         {3, 4}, {2, 6}, {4, 6}, {7, 8},
-         {8, 9}, {9, 7}
-      };
-      */
-
-   //static List<int[]> cycles = new ArrayList<int[]>();
 
    private void findNewCycles(Point2D[] path) {
       Point2D n = path[0];

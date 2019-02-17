@@ -1,5 +1,7 @@
 package pdc;
 
+import javafx.geometry.BoundingBox;
+
 import java.awt.BasicStroke;
 import java.awt.Graphics;
 import java.awt.Point;
@@ -127,21 +129,9 @@ public abstract class MapLayer {
                });
             }
       }
-	   //hash points so they can be indexed by the graph
-
-      /*
-      HashMap<Point, Integer> pointsHashMap = new HashMap<>();
-	   int index = 0;
-	   pointList.forEach(point->{
-	      if(!pointsHashMap.containsKey(point)) {
-            pointsHashMap.put(point, index);
-         }
-      });
-      */
 
 	   //map intersections to vertices on a graph and walls to edges
       Graph graph = new Graph(wallList.size());
-      ArrayList<ArrayList<Point2D>> cyclesToRemove = new ArrayList<>();
       wallList.forEach(wall->{
          //TODO if this blows up, just create a new Point from the Point2D
          graph.addEdge(wall.getP1(),wall.getP2());
@@ -149,19 +139,39 @@ public abstract class MapLayer {
       graph.findCycles();
       ArrayList<Point2D[]> cycles = graph.cycles;
       System.out.println("here be the cycles: " +cycles);
+      //TODO convert cycles from vertices to edges
+      ArrayList<ArrayList<Line2D>> cyclesAsEdges = new ArrayList<>();
+      cycles.forEach(cycle->{
+         ArrayList<Line2D> currentCycle = new ArrayList<>();
+         for(int i = 0;i<cycle.length-1;i++){
+            currentCycle.add(new Line2D.Double(cycle[i],cycle[i+1]));
+         }
+         //add edge back to the starting vertex
+         currentCycle.add(new Line2D.Double(cycle[cycle.length-1],cycle[0]));
+         cyclesAsEdges.add(currentCycle);
+      });
+      //create new rooms from the cycles, put in a temporary array before sorting out non-rooms
+      ArrayList<Room> tempRoomList = new ArrayList<>();
+      ArrayList<Room> roomsToRemove = new ArrayList<>();
+      cyclesAsEdges.forEach(cycle-> tempRoomList.add(new Room(cycle)));
 
       //TODO remove all the cycles that only consist of edges from other cycles
-      /*
-      for(int i = 0;i<cycles.size()-1;i++){
-         for(int j = i+1;j<cycles.size() && !cyclesToRemove.contains(cycles.get(j));j++){
-            if(cycles.get(j).containsAll(cycles.get(i))){
-               cyclesToRemove.add(cycles.get(i));
+      //Iterator<Room> it = tempRoomList.iterator();
+      for(int i = 0; i<tempRoomList.size()-1;i++){
+         for(int j = i+1;j<tempRoomList.size();j++){
+            Room roomA = tempRoomList.get(i);
+            Room roomB = tempRoomList.get(j);
+            if (!roomsToRemove.contains(roomB)&&roomB.contains(roomA)) {
+               roomsToRemove.add(roomB);
+            }else if(!roomsToRemove.contains(roomA)&&roomA.contains(roomB)){
+               roomsToRemove.add(roomA);
             }
          }
       }
-      cycles.removeAll(cyclesToRemove);
-      */
-      //each member of cycles is a room
+      tempRoomList.removeAll(roomsToRemove);
+      //RoomList.reset();
+      tempRoomList.forEach(RoomList::add);
+
       //TODO find a way to check if rooms were deleted
 
    }

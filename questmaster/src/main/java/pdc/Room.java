@@ -3,7 +3,6 @@ package pdc;
 import java.awt.Point;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Line2D;
-import java.awt.geom.PathIterator;
 import java.util.ArrayList;
 
 import javafx.geometry.Point2D;
@@ -24,9 +23,9 @@ public class Room {
 		this.walls = walls;
 		ROOMID = idCount;
 		idCount++;
+      pointList = new ArrayList<>();
 		makeList(walls);
 		doors = new ArrayList<>();
-		pointList = new ArrayList<>();
 		makePath();
 	}
 
@@ -162,6 +161,15 @@ public class Room {
 		}
 		return found;
 	}
+
+   /**
+    * Checks if this room contains the specified room
+    * @param r the room to check is contained by this room
+    * @return true if r is contained by this room
+    */
+	public boolean contains (Room r){
+      return r.pointList.stream().allMatch(this::contains);
+   }
 
 	@Override
 	public String toString() {
