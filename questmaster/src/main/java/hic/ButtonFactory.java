@@ -109,7 +109,7 @@ public class ButtonFactory implements ActionListener  {
 								window.frame.setVisible(true);
 								AuthorWindow.civ.setSelectedRoom(null);
 								authorWindow.mapPanel.repaint();
-								AuthorWindow.civ.outputStory();
+								// AuthorWindow.civ.outputStory();
 							} catch (Exception e) {
 								e.printStackTrace();
 							}
