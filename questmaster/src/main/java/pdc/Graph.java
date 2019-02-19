@@ -47,8 +47,9 @@ public class Graph {
          }
 
          o(s);
-         System.out.println("The num of cycles is: "+cycles.size());
+
       }
+      System.out.println("The num of cycles is: "+cycles.size());
 
    }
 

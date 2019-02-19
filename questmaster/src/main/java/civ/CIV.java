@@ -52,6 +52,7 @@ public class CIV {
 				}
 			}
 		}else {
+		   System.out.println("Mouse Position: " + point);
 			map.stopDrawing();
 		}
 	}

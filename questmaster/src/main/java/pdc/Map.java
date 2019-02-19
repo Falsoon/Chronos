@@ -20,7 +20,7 @@ public class Map implements StateEditable {
 	public MapLayer mapLayer;
 	public MapLayer mapLayer2;
 	public MapLayer mapLayer3;
-	public boolean walling, outlining, dooring;
+	public boolean transparentWallMode, opaqueWallMode, dooring;
 	UndoableEditSupport undoSupport = new UndoableEditSupport(this);
 	UndoManager manager = new UndoManager();
 	private final Object MAP_KEY = "MAPKEY";
@@ -28,10 +28,10 @@ public class Map implements StateEditable {
 
 	public Map() {
 		layers = new ArrayList<MapLayer>();
-		outlining = false;
+		opaqueWallMode = false;
 		dooring = false;
-		mapLayer = new MapOutlineLayer();
-		mapLayer2 = new MapWallingLayer();
+		mapLayer = new MapOpaqueWallLayer();
+		mapLayer2 = new MapTransparentWallLayer();
 		mapLayer3 = new MapDoorLayer();
 		addUndoableEditListener(manager);
 		player = new Player(mapLayer);
@@ -53,8 +53,8 @@ public class Map implements StateEditable {
 
 	public void outlining() {
 		room = null;
-		outlining = true;
-		walling = false;
+		opaqueWallMode = true;
+		transparentWallMode = false;
 		dooring = false;
 		mapLayer.start = null;
 		mapLayer.drawing = false;
@@ -62,27 +62,27 @@ public class Map implements StateEditable {
 
 	public void mousePressed(Point p) {
 		StateEdit stateEdit = new StateEdit(Map.this);
-		if (outlining) {
+		if (opaqueWallMode) {
 			if (mapLayer == null) {
-				mapLayer = new MapOutlineLayer();
+				mapLayer = new MapOpaqueWallLayer();
 			}
 			if (room == null) {
 				mapLayer.outline(p);
 			} else {
-				//outlining = mapLayer.outline(p, room);
+				//opaqueWallMode = mapLayer.outline(p, room);
 			}
-			if (!outlining) {
+			if (!opaqueWallMode) {
 				layers.add(mapLayer);
 			}
 		}
-		if (walling) {
+		if (transparentWallMode) {
 			/*if (getRoom(p) != null) {
 */
 				if (mapLayer2 == null) {
-					mapLayer2 = new MapWallingLayer();
+					mapLayer2 = new MapTransparentWallLayer();
 				}
-				walling = mapLayer2.transWalling(p, mapLayer);
-				if (!walling) {
+				transparentWallMode = mapLayer2.transWalling(p);
+				if (!transparentWallMode) {
 					layers.add(mapLayer2);
 				}
 			/*}else {
@@ -110,8 +110,8 @@ public class Map implements StateEditable {
 	}
 
 	public void walling() {
-		walling = true;
-		outlining = false;
+		transparentWallMode = true;
+		opaqueWallMode = false;
 		mapLayer2.start = null;
 		mapLayer2.drawing = false;
 		dooring = false;
@@ -119,8 +119,8 @@ public class Map implements StateEditable {
 
 	public void dooring() {
 		dooring = true;
-		walling = false;
-		outlining = false;
+		transparentWallMode = false;
+		opaqueWallMode = false;
 	}
 	public int numOfDoors() {
 		return DoorList.list.size();
@@ -131,8 +131,8 @@ public class Map implements StateEditable {
 		copy.mapLayer = mapLayer.copy();
 		copy.mapLayer2 = mapLayer2.copy();
 		copy.mapLayer3 = mapLayer3.copy();
-		copy.outlining = outlining;
-		copy.walling = walling;
+		copy.opaqueWallMode = opaqueWallMode;
+		copy.transparentWallMode = transparentWallMode;
 		return copy;
 	}
 
@@ -149,7 +149,7 @@ public class Map implements StateEditable {
 	}
 
 	public boolean isCreating() {
-		return walling || outlining || dooring || player.isPlacing();
+		return transparentWallMode || opaqueWallMode || dooring || player.isPlacing();
 	}
 
 	@Override
@@ -169,8 +169,8 @@ public class Map implements StateEditable {
 			this.mapLayer = newP.mapLayer;
 			this.mapLayer2 = newP.mapLayer2;
 			this.mapLayer3 = newP.mapLayer3;
-			this.outlining = newP.outlining;
-			this.walling = newP.walling;
+			this.opaqueWallMode = newP.opaqueWallMode;
+			this.transparentWallMode = newP.transparentWallMode;
 			this.player = newP.player;
 		}
 	}
@@ -181,8 +181,8 @@ public class Map implements StateEditable {
 
 	public void placePlayerStart() {
 		player.startPlacing();
-		outlining = false;
-		walling = false;
+		opaqueWallMode = false;
+		transparentWallMode = false;
 		dooring = false;
 	}
 
@@ -195,15 +195,15 @@ public class Map implements StateEditable {
 	}
 
 	public void stopDrawing() {
-		outlining = false;
-		walling = false;
+		opaqueWallMode = false;
+		transparentWallMode = false;
 		dooring = false;
 	}
 
 	public void drawRoom(String str) {
 		room = RoomList.getRoomByStr(str);
-		outlining = true;
-		walling = false;
+		opaqueWallMode = true;
+		transparentWallMode = false;
 		dooring = false;
 		mapLayer.start = null;
 		mapLayer.drawing = false;

@@ -149,17 +149,13 @@ public class Room {
 	}
 
 	public boolean contains(Point p) {
-		boolean found = false;
 		if (this.path == null) {
 			return false;
 		}
 		if (this.path.contains(p)) {
 			return true;
 		}
-		for (int i = 0; !found && i < this.pointList.size() - 1; i++) {
-			found = this.pointBetween(p, this.pointList.get(i), this.pointList.get(i + 1));
-		}
-		return found;
+		return(onBoundary(p));
 	}
 
    /**
