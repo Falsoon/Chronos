@@ -6,8 +6,8 @@ import java.util.ArrayList;
 
 import javafx.geometry.Point2D;
 
-/*
- * encapsulates room data
+/**
+ * Represents a room on the map
  */
 public class Room {
 	public ArrayList<Wall> walls;
@@ -18,6 +18,10 @@ public class Room {
 	private ArrayList<Door> doors;
 	public GeneralPath path;
 
+   /**
+    * Create a room from a list of walls, typical case
+    * @param walls the walls of the room
+    */
 	public Room(ArrayList<Wall> walls) {
 		this.walls = walls;
 		ROOMID = idCount;
@@ -27,6 +31,63 @@ public class Room {
 		doors = new ArrayList<>();
 		makePath();
 	}
+
+   /**
+    * No-argument constructor
+    */
+   public Room() {
+      this.ROOMID = idCount;
+      idCount++;
+   }
+
+   /**
+    * Can assign id, title, description.  Used when splitting a room
+    * @param id the ID of the room
+    * @param title the title of the room
+    * @param desc the description of the room
+    * @param walls the walls of the room
+    */
+   public Room(int id,String title, String desc, ArrayList<Wall> walls){
+      this.walls = walls;
+      ROOMID = id;
+      this.title = title;
+      this.desc = desc;
+      pointList = new ArrayList<>();
+      makeList(walls);
+      doors = new ArrayList<>();
+      makePath();
+   }
+
+   /**
+    * Can assign title, description.  Used when splitting a room
+    * @param title the title of the room
+    * @param desc the description of the room
+    * @param walls the walls of the room
+    */
+   public Room(String title, String desc, ArrayList<Wall> walls){
+      this.walls = walls;
+      ROOMID = idCount;
+      idCount++;
+      this.title = title;
+      this.desc = desc;
+      pointList = new ArrayList<>();
+      makeList(walls);
+      doors = new ArrayList<>();
+      makePath();
+   }
+
+   /**
+    * Constructor for making rooms when detecting rooms, allows for creation of a room without assigning an ID
+    * @param walls the walls of the room
+    * @param assignId used to overload the constructor
+    */
+   public Room(ArrayList<Wall> walls, boolean assignId){
+      this.walls = walls;
+      pointList = new ArrayList<>();
+      makeList(walls);
+      doors = new ArrayList<>();
+      makePath();
+   }
 
 	private void makeList(ArrayList<Wall> walls) {
 		walls.forEach(wall->{
@@ -65,93 +126,6 @@ public class Room {
 		}
 	}
 
-	/*
-	public Room(ArrayList<Point> l) {
-		this.pointList = l;
-		this.ROOMID = idCount;
-		idCount++;
-		this.makePath();
-	}
-	*/
-
-	public Room() {
-		this.ROOMID = idCount;
-		idCount++;
-	}
-
-	public Room(int id,String title, String desc, ArrayList<Wall> walls){
-      this.walls = walls;
-      ROOMID = id;
-      this.title = title;
-      this.desc = desc;
-      pointList = new ArrayList<>();
-      makeList(walls);
-      doors = new ArrayList<>();
-      makePath();
-   }
-
-	/*
-	public Room split(ArrayList<Point> split) {
-		if (split.size() < 2) {
-			return null;
-		}
-		if (split.get(0).equals(split.get(split.size() - 1))) {
-			return null;
-		}
-		ArrayList<Point> newL2 = new ArrayList<>();
-		boolean forder, first, last;
-		int findex = -1, lindex = -1, index = 0; // for over pointList
-		for (int i = 0; i < this.pointList.size() - 1; i++) {
-			// check for intersect at first or last
-			first = this.pointBetween(split.get(0), this.pointList.get(i), this.pointList.get(i + 1));
-			last = this.pointBetween(split.get(split.size() - 1), this.pointList.get(i), this.pointList.get(i + 1));
-			if (first) {
-				findex = i;
-			}
-			if (last) {
-				lindex = i;
-			}
-		}
-		forder = lindex > findex;
-		int start, finish;
-		if (forder) {
-			start = findex + 1;
-			finish = lindex + 1;
-			index = split.size() - 1;
-			for (int k = 0; k < split.size(); k++) {
-				newL2.add(split.get(split.size() - 1 - k));
-			}
-		} else {
-			start = lindex + 1;
-			finish = findex + 1;
-			newL2.addAll(split);
-		}
-		for (int i = start; i < finish; i++) {
-			newL2.add(this.pointList.remove(start));
-
-			if (index > 0) {
-				index--;
-			}
-		}
-		newL2.add(split.get(index));
-		if (forder) {
-			this.pointList.addAll(start, split);
-		} else {
-			this.pointList.addAll(start, this.reverse(split));
-		}
-		this.makePath();
-		return new Room(newL2);
-	}
-	*/
-
-	private ArrayList<Point> reverse(ArrayList<Point> split) {
-		ArrayList<Point> ret = new ArrayList<>();
-		for (int i = 0; i < split.size(); i++) {
-			ret.add(split.get(split.size() - 1 - i));
-		}
-		return ret;
-	}
-
 	private boolean pointBetween(Point p1, Point p2, Point p3) {
 		return Point.distance(p2.getX(), p2.getY(), p1.getX(), p1.getY())
 				+ Point.distance(p1.getX(), p1.getY(), p3.getX(), p3.getY()) == Point.distance(p2.getX(), p2.getY(),
@@ -185,13 +159,6 @@ public class Room {
 			return "Room#" + this.ROOMID + "-" + this.title;
 		}
 	}
-
-	/*
-	public void setPath(GeneralPath clone) {
-		this.path = clone;
-		this.makeList(this.path);
-	}
-	*/
 
 	public boolean onBoundary(Point p) {
 		boolean found = false;

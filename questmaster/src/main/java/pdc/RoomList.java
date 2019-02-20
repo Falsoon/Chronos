@@ -28,8 +28,6 @@ public class RoomList {
 		list.add(r);
 	}
 
-	public static void remove(Room r) { list.remove(r); }
-
 	public static void reset() {
 		list.clear();
 		Room.idCount =1;

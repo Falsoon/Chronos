@@ -1,8 +1,5 @@
 package pdc;
 
-import javafx.geometry.BoundingBox;
-import javafx.util.Pair;
-
 import java.awt.BasicStroke;
 import java.awt.Graphics;
 import java.awt.Point;
@@ -10,7 +7,6 @@ import java.awt.Shape;
 import java.awt.Stroke;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Line2D;
-import java.awt.geom.PathIterator;
 import java.awt.geom.Point2D;
 import java.util.*;
 
@@ -46,23 +42,13 @@ public abstract class MapLayer {
 		roomToDivide = null;
 	}
 
-	/*
-	public void addPath(GeneralPath guiPath) {
-		this.pathList.add(guiPath);
-	}
-
-	public GeneralPath removeLastPath() {
-		if (!this.pathList.isEmpty()) {
-			return this.pathList.remove(this.pathList.size() - 1);
-		} else {
-			return null;
-		}
-	}
-*/
 	public abstract void draw(Graphics g);
 
+   /**
+    * Method called to draw opaque walls
+    * @param p the point the author clicked on
+    */
 	public void drawOpaqueWalls(Point p) {
-
 	   firstClick = !firstClick;
 	   if(firstClick){
 	      firstPoint = p;
@@ -72,78 +58,80 @@ public abstract class MapLayer {
          detectRooms();
       }
 	   pointList.add(p);
-
-	   /*
-		this.opaqueWallMode = true;
-
-		this.pointList.add(p);
-		boolean first = !this.drawing;
-		// at the first point, start a newguiPath
-		if (!this.drawing) {
-			this.start = p;// save start to compare later
-			this.guiPath = this.getPath(p);// get path with point. sets start
-			if (this.guiPath.getCurrentPoint() == null) {
-				this.guiPath.moveTo(p.x, p.y);
-			}
-			this.drawing = true;
-		} else {
-			// if not the first point, add toguiPath
-			this.guiPath.lineTo(p.x, p.y);
-		}
-		// if the guiPath has returned to start, the end drawOpaqueWalls
-		if (!first && p.equals(this.start)) {
-			this.opaqueWallMode = false;
-			this.guiPath.closePath();
-			RoomList.add(new Room((GeneralPath) this.guiPath.clone()));
-		}
-		return this.opaqueWallMode;
-		*/
 	}
 
-
+   /**
+    * Method called to detect rooms from lines drawn on the map
+    */
 	private void detectRooms(){
       breakUpWallsAtIntersections();
-
-      //map intersections to vertices on a graph and walls to edges
 
       ArrayList<Room> tempRoomList = getRooms();
       //tempRoomList now contains all the valid rooms and only the valid rooms
 
-      //TODO if any existing room contains rooms from templist, that means it's been split.  remove it, give one of
-      // the contained rooms the original ID, assign new ones to the others, give all the same name and desc as
-      // original room
-      //if tempRoomList is bigger, there's a new room in town
+      //if tempRoomList is bigger than the RoomList, there's a new room in town
       if(tempRoomList.size()>RoomList.list.size()) {
-         //check if the new room is from splitting a room, handle that if so
-         for (int i = 0; i < RoomList.list.size(); i++) {
-            ArrayList<Room> containedRooms = new ArrayList<>();
-            Room roomA = new Room();
-            for (int j = 0; j < RoomList.list.size(); j++) {
-               if (j == i) {
-                  continue;
-               }
-               roomA = RoomList.list.get(i);
-               Room roomB = RoomList.list.get(j);
-               if (roomA.contains(roomB)) {
-                  containedRooms.add(roomB);
-               }
-            }
-            if (containedRooms.size() > 0) {
-               RoomList.remove(roomA);
-               for(Room containedRoom : containedRooms) {
-                  RoomList.add(new Room(roomA.ROOMID, roomA.title, roomA.desc, containedRoom.walls));
-                  tempRoomList.remove(containedRoom);
-               }
-            }
-         }
-         //if there are still remaining rooms, they're new rooms.  Simply add them
-
+         addNewRooms(tempRoomList);
       }
-      //TODO only add rooms new rooms
-      tempRoomList.forEach(RoomList::add);
 
    }
 
+   /**
+    * Method to add new rooms to RoomList
+    * @param tempRoomList the temporary list of rooms detected after a wall has been drawn
+    */
+   private void addNewRooms(ArrayList<Room> tempRoomList) {
+      //find the new rooms
+      ArrayList<Room> newRooms = new ArrayList<>();
+      for (Room roomA : tempRoomList) {
+         boolean unique = true;
+         for (int j = 0; unique && j < RoomList.list.size(); j++) {
+            Room roomB = RoomList.list.get(j);
+            if (roomA.pointList.containsAll(roomB.pointList)) {
+               unique = false;
+            }
+         }
+         if (unique) {
+            newRooms.add(roomA);
+         }
+      }
+
+      //check which if any of the new rooms are from splitting a room, handle that if so
+      ArrayList<Room> roomsToRemove = new ArrayList<>();
+      ArrayList<Room> subRooms = new ArrayList<>();
+      for (int i = 0; i < RoomList.list.size(); i++) {
+         ArrayList<Room> containedRooms = new ArrayList<>();
+         Room roomA = RoomList.list.get(i);
+         for (Room roomB : newRooms) {
+            if (roomA.contains(roomB)) {
+               containedRooms.add(roomB);
+            }
+         }
+         if (containedRooms.size() > 0) {
+            roomsToRemove.add(roomA);
+            boolean first = true;
+            for(Room containedRoom : containedRooms) {
+               if(first) {
+                  subRooms.add(new Room(roomA.ROOMID, roomA.title, roomA.desc, containedRoom.walls));
+                  first = false;
+               }else{
+                  subRooms.add(new Room(roomA.title, roomA.desc, containedRoom.walls));
+               }
+               newRooms.remove(containedRoom);
+            }
+         }
+      }
+      //remove the old rooms, add the subRooms
+      RoomList.list.removeAll(roomsToRemove);
+      RoomList.list.addAll(subRooms);
+      //if there are still remaining rooms, they're regular new rooms.  Simply add them
+      newRooms.forEach(room-> RoomList.add(new Room(room.walls)));
+   }
+
+   /**
+    * Method to find all rooms on the map after a line has been drawn
+    * @return a list of all rooms detected on the map
+    */
    private ArrayList<Room> getRooms() {
       Graph graph = new Graph(wallList.size());
       wallList.forEach(wall-> graph.addEdge(wall.getP1(),wall.getP2()));
@@ -173,7 +161,8 @@ public abstract class MapLayer {
       //create new rooms from the cycles, put in a temporary array before sorting out non-rooms
       ArrayList<Room> tempRoomList = new ArrayList<>();
       ArrayList<Room> roomsToRemove = new ArrayList<>();
-      cyclesAsEdges.forEach(cycle-> tempRoomList.add(new Room(cycle)));
+      //add potential rooms to the list, but don't assign them IDs until they're verified to be desired rooms
+      cyclesAsEdges.forEach(cycle-> tempRoomList.add(new Room(cycle,false)));
 
       //remove all rooms that contain other rooms
       for(int i = 0; i<tempRoomList.size()-1;i++){
@@ -192,26 +181,47 @@ public abstract class MapLayer {
       return tempRoomList;
    }
 
-   private boolean linesMatch(Line2D wallA, Line2D wallB){
-	   return xMatch(wallA,wallB)&&yMatch(wallA,wallB);
-   }
-   
-   private boolean xMatch(Line2D wallA, Line2D wallB){
-	   return (wallA.getX1()==wallB.getX1()
-         ||wallA.getX1()==wallB.getX2())
-         &&
-         (wallA.getX2()==wallB.getX1()
-         ||wallA.getX2()==wallB.getX2());
-   }
-   
-   private boolean yMatch(Line2D wallA, Line2D wallB){
-      return (wallA.getY1()==wallB.getY1()
-         ||wallA.getY1()==wallB.getY2())
-         &&
-         (wallA.getY2()==wallB.getY1()
-         ||wallA.getY2()==wallB.getY2());
+   /**
+    * Helper method to determine if 2 lines are the same
+    * @param lineA the first line
+    * @param lineB the second line
+    * @return true if lineA and lineB have the same coordinates in either order
+    */
+   private boolean linesMatch(Line2D lineA, Line2D lineB){
+	   return xMatch(lineA,lineB)&&yMatch(lineA,lineB);
    }
 
+   /**
+    * Helper method to determine if the x coordinates of the 2 lines are the same
+    * @param lineA the first line
+    * @param lineB the second line
+    * @return true of lineA and lineB have the same x coordinate in either order
+    */
+   private boolean xMatch(Line2D lineA, Line2D lineB){
+	   return (lineA.getX1()==lineB.getX1()
+         ||lineA.getX1()==lineB.getX2())
+         &&
+         (lineA.getX2()==lineB.getX1()
+         ||lineA.getX2()==lineB.getX2());
+   }
+
+   /**
+    * Helper method to determine if the y coordinates of the 2 lines are the same
+    * @param lineA the first line
+    * @param lineB the second line
+    * @return true of lineA and lineB have the same y coordinate in either order
+    */
+   private boolean yMatch(Line2D lineA, Line2D lineB){
+      return (lineA.getY1()==lineB.getY1()
+         ||lineA.getY1()==lineB.getY2())
+         &&
+         (lineA.getY2()==lineB.getY1()
+         ||lineA.getY2()==lineB.getY2());
+   }
+
+   /**
+    * Breaks up walls that intersect into separate line segments so that they are easier to work with
+    */
    private void breakUpWallsAtIntersections() {
       HashMap<Wall, ArrayList<Point>> wallsToBreak = new HashMap<>();
       for (Wall wallA : wallList) {
@@ -315,68 +325,11 @@ public abstract class MapLayer {
       }
    }
 
-   /*
-   private GeneralPath getPath(Point p) {
-		int index = 0;
-		boolean found = false;
-		GeneralPath path;
-		for (int i = 0; i < this.pathList.size() && !found; i++) {
-			found = this.onPath(this.pathList.get(i), p);
-			if (found) {
-				index = i;
-			}
-		}
-		// if point on a path
-		if (found) {
-			path = this.pathList.get(index);
-			// setStart(path);
-		} else {
-			path = new GeneralPath();
-			this.pathList.add(path);
-		}
-		return path;
-	}
-	*/
-
-	/**
-	 *
-	 * @param path
-	 *            - a path to search for the point
-	 * @param p
-	 *            - a point to find on the path
-	 * @return found - if the point is a part of the path
-	 */
-	private boolean onPath(GeneralPath path, Point p) {
-		boolean found = false;
-		Point point = new Point();
-		double[] coords = new double[6];
-		PathIterator pi = path.getPathIterator(null);
-		if (!pi.isDone()) {
-			pi.currentSegment(coords);
-			point.setLocation((int) coords[0], (int) coords[1]);
-			found = p.equals(point);
-		}
-		if (found) {
-			this.start.setLocation(path.getCurrentPoint());
-		}
-		if (!found) {
-			found = p.equals(path.getCurrentPoint());
-			if (found) {
-				this.start.setLocation(point);
-			}
-		}
-		return found;
-	}
-
-
-	/*
-	 * drawTransparentWalls is used to encapsulate the logic behind implementing a
-	 * transparent wall.
-	 *
-	 * going forward, we could ID whether the layer is a transparentWallMode and whether the
-	 * previous layer is a drawOpaqueWalls layer before calling this method
-	 */
-
+   /**
+    * Method called when drawing transparent walls
+    * @param p the point the author clicked
+    * @return true if the author is still drawing transparent walls
+    */
 	public boolean drawTransparentWalls(Point p) {
 		this.walling = true;
       firstClick = !firstClick;
@@ -391,6 +344,7 @@ public abstract class MapLayer {
          }
          if(roomToDivide==null){
             //TODO error message that the author must divide a room with transparent walls
+            walling = false;
             firstClick = false;
          }else {
             firstPoint = p;
@@ -400,79 +354,16 @@ public abstract class MapLayer {
             lastWall = new Wall(new Line2D.Double(firstPoint, p), Type.TRANSPARENT);
             wallList.add(lastWall);
             detectRooms();
-            System.out.println("ROOMS: " + RoomList.list.size());
          }else {
             //TODO error message that the author must divide a room with transparent walls
+            walling = false;
          }
          roomToDivide=null;
       }
       pointList.add(p);
 
-//		Room r1 = null, r2 = RoomList.getRoom(p);
-//		//if r2 null then just draw
-//		if(r2 != null) {
-//         if (r2.onBoundary(p)) {
-//            boolean first = this.pointList.isEmpty();
-//            this.pointList.add(p);
-//            if (r2 != null) {
-//               //r1 = r2.split(this.pointList);
-//            }
-//            if (r1 != null) {
-//               RoomList.add(r1);
-//            }
-//            if (!first) {
-//               this.walling = false;
-//               this.pointList.clear();
-//            }
-//         } else {
-//            if (!this.pointList.isEmpty()) {
-//               this.pointList.add(p);
-//            }
-//         }
-//      }
-//		if (!this.drawing) {
-//			this.guiPath = new GeneralPath();
-//			this.guiPath.moveTo(p.x, p.y);
-//			this.drawing = true;
-//			//TODO add logic for pushing to closest call point here
-//			this.pathList.add(this.guiPath);
-//		} else {
-//			this.guiPath.lineTo(p.x, p.y);
-//			//Calculate for midpoint, removing them in case they cross over another line
-//			/*Point p2 = this.pointList.remove(0);
-//			Point p1 = this.pointList.remove(1);
-//			Point midp = new Point();
-//			midp.x = (int) Math.sqrt( (p1.x + p2.x)/2.0);
-//			midp.y = (int) Math.sqrt((p2.y + p1.y )/2.0);*/
-//			//Get room from midpoint by roomlist
-//			//don't have to worry about r being null, we take care of this earlier
-//			/*Room r = RoomList.getRoom(midp);
-//			if( r != null) {
-//				//split room
-//			}*/
-//			//snap end points of line to 2 wall opaque walls that have been crossed
-//				//make the line an infinite line to see if it crosses 2 opaque walls of the room
-//			/*double slope = (p2.y - p1.y) / (p2.x - p1.x) * 1.0; */
-//			/*while(!r.contains(p2)) {
-//
-//			}*/
-//				//if so, adjust end points to wall boundary
-//			//p1 = newEndPoint1;
-//			//p2 = newEndPoint2;
-//				//double check that no other transparent walls are being crossed over,
-//			/*boolean onOtherTrans = false;
-//			for(int i = 0; this.pathList.size() > 0 ; i++) {
-//				GeneralPath exisitingP = this.pathList.get(i);
-//				exisitingP.c
-//			}*/
-//				//if so delete this line, and display error message
-//			//add new path to pathlist
-//			drawing = false;
-//		}
-
 		return this.walling;
 	}
-
 
 
 	public abstract MapLayer copy();
@@ -483,89 +374,63 @@ public abstract class MapLayer {
 		return RoomList.getRoom(p);
 	}
 
-	/*
-	public boolean drawOpaqueWalls(Point p, Room room) {
-		this.opaqueWallMode = true;
-		this.pointList.add(p);
-		boolean first = !this.drawing;
-		// at the first point, start a newguiPath
-		if (!this.drawing) {
-			this.guiPath = new GeneralPath();
-			this.guiPath.moveTo(p.x, p.y);
-			this.start = p;// save start to compare later
-			this.drawing = true;
-			this.pathList.add(this.guiPath);
-		} else {
-			// if not the first point, add toguiPath
-			this.guiPath.lineTo(p.x, p.y);
-		}
-		// if the guiPath has returned to start, the end drawOpaqueWalls
-		if (!first && p.equals(this.start)) {
-			this.opaqueWallMode = false;
-			this.guiPath.closePath();
-			room.setPath((GeneralPath) this.guiPath.clone());
-		}
-		return this.opaqueWallMode;
+	public void setSelectedRoom(Room r) {
+       this.selectedRoom = r;
 	}
-	*/
 
-    public void setSelectedRoom(Room r) {
-        this.selectedRoom = r;
-    }
-
-    public void placeDoor(Point p) throws Throwable {
-        this.guiPath = new GeneralPath();
-        ArrayList<Room> l = RoomList.list;
-        for (int j = 0; j < l.size(); j++) { // For each room
-            Room r = l.get(j);
-            if (r.doorCount() < 8) { // Limit to 8 doors per room
-                ArrayList<Point> list = r.pointList;
-                if(list.contains(p)) {
-                	throw new Throwable("Door must be placed on a wall");
-                }
-                for (int i = 0; i < list.size(); i++) { // Iterate over each pair of points
-                    Point a = list.get(i);
-                    Point b;
-                    if (i == list.size() - 1) {
-                        b = list.get(0);
-                    } else {
-                        b = list.get(i + 1);
-                    }
-                    // Create a shape matching the line between by points a and b
-                    GeneralPath line = new GeneralPath();
-                    double m;
-                    line.moveTo(a.x, a.y);
-                    line.lineTo(b.x, b.y);
-                    Stroke s = new BasicStroke(4, BasicStroke.CAP_ROUND,
-                            BasicStroke.JOIN_BEVEL);
-                    Shape sh = s.createStrokedShape(line);
-                    if (sh.contains(p)) { // Point is on the line
-                        if (b.x != a.x) { // Case the line is not vertical
-                            // M = slope between a and b 
-                            m = ((double)b.y - a.y) / ((double)b.x - a.x);
-                            // Theta = angle between line with slope m and x axis
-                            double theta = Math.toDegrees(Math.atan(m));
-                            // Start path at point clicked
-                            this.guiPath.moveTo(p.x, p.y);
-                            this.guiPath.lineTo(
-                                    p.x + Constants.GRIDDISTANCE
-                                            * Math.cos(Math.toRadians(theta)),
-                                    p.y + Constants.GRIDDISTANCE
-                                            * Math.sin(Math.toRadians(theta)));
-                            // Add path to doorList
-                        } else { // Case the line is vertical
-                            System.out.println("here");
-                            this.guiPath.moveTo(p.x, p.y);
-                            this.guiPath.lineTo(p.x,
-                                    p.y + Constants.GRIDDISTANCE);
-                        }
-                        //TODO: Make door objects and store them
-                        Door d = new Door(this.guiPath);
-                        d.room = r;
-                        d.title = "Room Title";
-                        DoorList.add(d);
-                        r.addDoor(d);
-                    }
+   public void placeDoor(Point p) throws Throwable {
+       this.guiPath = new GeneralPath();
+       ArrayList<Room> l = RoomList.list;
+       for (int j = 0; j < l.size(); j++) { // For each room
+           Room r = l.get(j);
+           if (r.doorCount() < 8) { // Limit to 8 doors per room
+               ArrayList<Point> list = r.pointList;
+               if(list.contains(p)) {
+               	throw new Throwable("Door must be placed on a wall");
+               }
+               for (int i = 0; i < list.size(); i++) { // Iterate over each pair of points
+                   Point a = list.get(i);
+                   Point b;
+                   if (i == list.size() - 1) {
+                       b = list.get(0);
+                   } else {
+                       b = list.get(i + 1);
+                   }
+                   // Create a shape matching the line between by points a and b
+                   GeneralPath line = new GeneralPath();
+                   double m;
+                   line.moveTo(a.x, a.y);
+                   line.lineTo(b.x, b.y);
+                   Stroke s = new BasicStroke(4, BasicStroke.CAP_ROUND,
+                           BasicStroke.JOIN_BEVEL);
+                   Shape sh = s.createStrokedShape(line);
+                   if (sh.contains(p)) { // Point is on the line
+                       if (b.x != a.x) { // Case the line is not vertical
+                           // M = slope between a and b
+                           m = ((double)b.y - a.y) / ((double)b.x - a.x);
+                           // Theta = angle between line with slope m and x axis
+                           double theta = Math.toDegrees(Math.atan(m));
+                           // Start path at point clicked
+                           this.guiPath.moveTo(p.x, p.y);
+                           this.guiPath.lineTo(
+                                   p.x + Constants.GRIDDISTANCE
+                                           * Math.cos(Math.toRadians(theta)),
+                                   p.y + Constants.GRIDDISTANCE
+                                           * Math.sin(Math.toRadians(theta)));
+                           // Add path to doorList
+                       } else { // Case the line is vertical
+                           System.out.println("here");
+                           this.guiPath.moveTo(p.x, p.y);
+                           this.guiPath.lineTo(p.x,
+                                   p.y + Constants.GRIDDISTANCE);
+                       }
+                       //TODO: Make door objects and store them
+                       Door d = new Door(this.guiPath);
+                       d.room = r;
+                       d.title = "Room Title";
+                       DoorList.add(d);
+                       r.addDoor(d);
+                   }
                 }
             }
         }
