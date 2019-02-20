@@ -34,6 +34,7 @@ public abstract class MapLayer {
 	private boolean firstClick;
 	private Point firstPoint;
    private Wall lastWall;
+   Room roomToDivide;
 
    public MapLayer() {
 		this.pathList = new ArrayList<>();
@@ -42,6 +43,7 @@ public abstract class MapLayer {
 		this.drawing = false;
 		this.selectedRoom = null;
 		firstClick = false;
+		roomToDivide = null;
 	}
 
 	/*
@@ -59,7 +61,7 @@ public abstract class MapLayer {
 */
 	public abstract void draw(Graphics g);
 
-	public void outline(Point p) {
+	public void drawOpaqueWalls(Point p) {
 
 	   firstClick = !firstClick;
 	   if(firstClick){
@@ -88,7 +90,7 @@ public abstract class MapLayer {
 			// if not the first point, add toguiPath
 			this.guiPath.lineTo(p.x, p.y);
 		}
-		// if the guiPath has returned to start, the end outline
+		// if the guiPath has returned to start, the end drawOpaqueWalls
 		if (!first && p.equals(this.start)) {
 			this.opaqueWallMode = false;
 			this.guiPath.closePath();
@@ -100,8 +102,118 @@ public abstract class MapLayer {
 
 
 	private void detectRooms(){
-	   //TODO handle wall needing to be broken up at multiple points
-	   HashMap<Wall,ArrayList<Point>> wallsToBreak = new HashMap<>();
+      breakUpWallsAtIntersections();
+
+      //map intersections to vertices on a graph and walls to edges
+
+      ArrayList<Room> tempRoomList = getRooms();
+      //tempRoomList now contains all the valid rooms and only the valid rooms
+
+      //TODO if any existing room contains rooms from templist, that means it's been split.  remove it, give one of
+      // the contained rooms the original ID, assign new ones to the others, give all the same name and desc as
+      // original room
+      //if tempRoomList is bigger, there's a new room in town
+      if(tempRoomList.size()>RoomList.list.size()) {
+         //check if the new room is from splitting a room, handle that if so
+         for (int i = 0; i < RoomList.list.size(); i++) {
+            ArrayList<Room> containedRooms = new ArrayList<>();
+            Room roomA = new Room();
+            for (int j = 0; j < RoomList.list.size(); j++) {
+               if (j == i) {
+                  continue;
+               }
+               roomA = RoomList.list.get(i);
+               Room roomB = RoomList.list.get(j);
+               if (roomA.contains(roomB)) {
+                  containedRooms.add(roomB);
+               }
+            }
+            if (containedRooms.size() > 0) {
+               RoomList.remove(roomA);
+               for(Room containedRoom : containedRooms) {
+                  RoomList.add(new Room(roomA.ROOMID, roomA.title, roomA.desc, containedRoom.walls));
+                  tempRoomList.remove(containedRoom);
+               }
+            }
+         }
+         //if there are still remaining rooms, they're new rooms.  Simply add them
+
+      }
+      //TODO only add rooms new rooms
+      tempRoomList.forEach(RoomList::add);
+
+   }
+
+   private ArrayList<Room> getRooms() {
+      Graph graph = new Graph(wallList.size());
+      wallList.forEach(wall-> graph.addEdge(wall.getP1(),wall.getP2()));
+      graph.findCycles();
+      ArrayList<Point2D[]> cycles = graph.cycles;
+      //convert cycles from vertices to edges
+      ArrayList<ArrayList<Wall>> cyclesAsEdges = new ArrayList<>();
+      cycles.forEach(cycle->{
+         ArrayList<Wall> currentCycle = new ArrayList<>();
+         for(int i = 0;i<cycle.length-1;i++){
+            Line2D line = new Line2D.Double(cycle[i],cycle[i+1]);
+            for(Wall wall : wallList){
+               if(linesMatch(wall.getLineRepresentation(),line)){
+                  currentCycle.add(wall);
+               }
+            }
+         }
+         //add edge back to the starting vertex
+         Line2D line = new Line2D.Double(cycle[cycle.length-1],cycle[0]);
+         for(Wall wall : wallList){
+            if(linesMatch(wall.getLineRepresentation(),line)){
+               currentCycle.add(wall);
+            }
+         }
+         cyclesAsEdges.add(currentCycle);
+      });
+      //create new rooms from the cycles, put in a temporary array before sorting out non-rooms
+      ArrayList<Room> tempRoomList = new ArrayList<>();
+      ArrayList<Room> roomsToRemove = new ArrayList<>();
+      cyclesAsEdges.forEach(cycle-> tempRoomList.add(new Room(cycle)));
+
+      //remove all rooms that contain other rooms
+      for(int i = 0; i<tempRoomList.size()-1;i++){
+         for(int j = i+1;j<tempRoomList.size();j++){
+            Room roomA = tempRoomList.get(i);
+            Room roomB = tempRoomList.get(j);
+            if (!roomsToRemove.contains(roomB)&&roomB.contains(roomA)) {
+
+               roomsToRemove.add(roomB);
+            }else if(!roomsToRemove.contains(roomA)&&roomA.contains(roomB)){
+               roomsToRemove.add(roomA);
+            }
+         }
+      }
+      tempRoomList.removeAll(roomsToRemove);
+      return tempRoomList;
+   }
+
+   private boolean linesMatch(Line2D wallA, Line2D wallB){
+	   return xMatch(wallA,wallB)&&yMatch(wallA,wallB);
+   }
+   
+   private boolean xMatch(Line2D wallA, Line2D wallB){
+	   return (wallA.getX1()==wallB.getX1()
+         ||wallA.getX1()==wallB.getX2())
+         &&
+         (wallA.getX2()==wallB.getX1()
+         ||wallA.getX2()==wallB.getX2());
+   }
+   
+   private boolean yMatch(Line2D wallA, Line2D wallB){
+      return (wallA.getY1()==wallB.getY1()
+         ||wallA.getY1()==wallB.getY2())
+         &&
+         (wallA.getY2()==wallB.getY1()
+         ||wallA.getY2()==wallB.getY2());
+   }
+
+   private void breakUpWallsAtIntersections() {
+      HashMap<Wall, ArrayList<Point>> wallsToBreak = new HashMap<>();
       for (Wall wallA : wallList) {
          if (Line2D.linesIntersect(wallA.getX1(), wallA.getY1(), wallA.getX2(), wallA.getY2(),
             lastWall.getX1(), lastWall.getY1(), lastWall.getX2(), lastWall.getY2())) {
@@ -141,69 +253,6 @@ public abstract class MapLayer {
          wallList.remove(key);
          breakUpWallAndAddToList(key, value);
       });
-
-	   //map intersections to vertices on a graph and walls to edges
-      Graph graph = new Graph(wallList.size());
-      wallList.forEach(wall-> graph.addEdge(wall.getP1(),wall.getP2()));
-      graph.findCycles();
-      ArrayList<Point2D[]> cycles = graph.cycles;
-      //convert cycles from vertices to edges
-      ArrayList<ArrayList<Line2D>> cyclesAsEdges = new ArrayList<>();
-      cycles.forEach(cycle->{
-         ArrayList<Line2D> currentCycle = new ArrayList<>();
-         for(int i = 0;i<cycle.length-1;i++){
-            currentCycle.add(new Line2D.Double(cycle[i],cycle[i+1]));
-         }
-         //add edge back to the starting vertex
-         currentCycle.add(new Line2D.Double(cycle[cycle.length-1],cycle[0]));
-         cyclesAsEdges.add(currentCycle);
-      });
-      //create new rooms from the cycles, put in a temporary array before sorting out non-rooms
-      ArrayList<Room> tempRoomList = new ArrayList<>();
-      ArrayList<Room> roomsToRemove = new ArrayList<>();
-      cyclesAsEdges.forEach(cycle-> tempRoomList.add(new Room(cycle)));
-
-      //remove all rooms that contain other rooms
-      //TODO note to self - reduce temp list down to actual rooms, check for any/all rooms contained by existing rooms
-      //TODO note to self - if an existing room contains another room,
-      for(int i = 0; i<tempRoomList.size()-1;i++){
-         for(int j = i+1;j<tempRoomList.size();j++){
-            Room roomA = tempRoomList.get(i);
-            Room roomB = tempRoomList.get(j);
-            if (!roomsToRemove.contains(roomB)&&roomB.contains(roomA)) {
-
-               roomsToRemove.add(roomB);
-            }else if(!roomsToRemove.contains(roomA)&&roomA.contains(roomB)){
-               roomsToRemove.add(roomA);
-            }
-         }
-      }
-      tempRoomList.removeAll(roomsToRemove);
-      //tempRoomList now contains all the valid rooms and only the valid rooms
-      RoomList.reset();
-
-      //TODO if any existing room contains rooms from templist, that means it's been split.  remove it, give one of
-      // the contained rooms the original ID, assign new ones to the others, give all the same name and desc as
-      // original room
-      for(int i = 0; i<RoomList.list.size();i++){
-         ArrayList<Room> containedRooms = new ArrayList<>();
-         for(int j = 0;j<RoomList.list.size();j++){
-            if(j==i){
-               continue;
-            }
-            Room roomA = RoomList.list.get(i);
-            Room roomB = RoomList.list.get(j);
-            if(roomA.contains(roomB)){
-               containedRooms.add(roomB);
-            }
-         }
-         if(containedRooms.size()>0){
-            //TODO remove existing room from RoomList, add new rooms with appropriate IDs, names, descs
-         }
-      }
-      tempRoomList.forEach(RoomList::add);
-
-
    }
 
    /**
@@ -321,25 +370,44 @@ public abstract class MapLayer {
 
 
 	/*
-	 * transWalling is used to encapsulate the logic behind implementing a
+	 * drawTransparentWalls is used to encapsulate the logic behind implementing a
 	 * transparent wall.
 	 *
 	 * going forward, we could ID whether the layer is a transparentWallMode and whether the
-	 * previous layer is a outline layer before calling this method
+	 * previous layer is a drawOpaqueWalls layer before calling this method
 	 */
 
-	public boolean transWalling(Point p) {
+	public boolean drawTransparentWalls(Point p) {
 		this.walling = true;
       firstClick = !firstClick;
-      if(firstClick){
-         firstPoint = p;
-      }else{
-         lastWall = new Wall(new Line2D.Double(firstPoint,p),Type.TRANSPARENT);
-         wallList.add(lastWall);
-         detectRooms();
-         System.out.println("ROOMS: "+RoomList.list.size());
+
+      if (firstClick) {
+         //check that the player has clicked on the boundary of a room
+         for(int i = 0; roomToDivide==null && i<RoomList.list.size();i++){
+            Room room = RoomList.list.get(i);
+            if(room.onBoundary(p)){
+               roomToDivide = room;
+            }
+         }
+         if(roomToDivide==null){
+            //TODO error message that the author must divide a room with transparent walls
+            firstClick = false;
+         }else {
+            firstPoint = p;
+         }
+      } else {
+         if(roomToDivide.onBoundary(p)) {
+            lastWall = new Wall(new Line2D.Double(firstPoint, p), Type.TRANSPARENT);
+            wallList.add(lastWall);
+            detectRooms();
+            System.out.println("ROOMS: " + RoomList.list.size());
+         }else {
+            //TODO error message that the author must divide a room with transparent walls
+         }
+         roomToDivide=null;
       }
       pointList.add(p);
+
 //		Room r1 = null, r2 = RoomList.getRoom(p);
 //		//if r2 null then just draw
 //		if(r2 != null) {
@@ -416,7 +484,7 @@ public abstract class MapLayer {
 	}
 
 	/*
-	public boolean outline(Point p, Room room) {
+	public boolean drawOpaqueWalls(Point p, Room room) {
 		this.opaqueWallMode = true;
 		this.pointList.add(p);
 		boolean first = !this.drawing;
@@ -431,7 +499,7 @@ public abstract class MapLayer {
 			// if not the first point, add toguiPath
 			this.guiPath.lineTo(p.x, p.y);
 		}
-		// if the guiPath has returned to start, the end outline
+		// if the guiPath has returned to start, the end drawOpaqueWalls
 		if (!first && p.equals(this.start)) {
 			this.opaqueWallMode = false;
 			this.guiPath.closePath();

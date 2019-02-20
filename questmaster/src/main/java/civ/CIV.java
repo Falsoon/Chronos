@@ -202,4 +202,8 @@ public class CIV {
 			output.close();
 		}
 	}
+
+	public void showDialog(){
+
+   }
 }

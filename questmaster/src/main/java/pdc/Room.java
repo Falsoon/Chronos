@@ -2,7 +2,6 @@ package pdc;
 
 import java.awt.Point;
 import java.awt.geom.GeneralPath;
-import java.awt.geom.Line2D;
 import java.util.ArrayList;
 
 import javafx.geometry.Point2D;
@@ -11,7 +10,7 @@ import javafx.geometry.Point2D;
  * encapsulates room data
  */
 public class Room {
-	public ArrayList<Line2D> walls;
+	public ArrayList<Wall> walls;
 	public ArrayList<Point> pointList;
 	public String desc = "", title = "";
 	public int ROOMID;
@@ -19,7 +18,7 @@ public class Room {
 	private ArrayList<Door> doors;
 	public GeneralPath path;
 
-	public Room(ArrayList<Line2D> walls) {
+	public Room(ArrayList<Wall> walls) {
 		this.walls = walls;
 		ROOMID = idCount;
 		idCount++;
@@ -29,10 +28,10 @@ public class Room {
 		makePath();
 	}
 
-	private void makeList(ArrayList<Line2D> walls) {
+	private void makeList(ArrayList<Wall> walls) {
 		walls.forEach(wall->{
-         pointList.add(new Point((int)wall.getX1(),(int)wall.getY1()));
          pointList.add(new Point((int)wall.getX2(),(int)wall.getY2()));
+         pointList.add(new Point((int)wall.getX1(),(int)wall.getY1()));
       });
 	}
 
@@ -79,6 +78,17 @@ public class Room {
 		this.ROOMID = idCount;
 		idCount++;
 	}
+
+	public Room(int id,String title, String desc, ArrayList<Wall> walls){
+      this.walls = walls;
+      ROOMID = id;
+      this.title = title;
+      this.desc = desc;
+      pointList = new ArrayList<>();
+      makeList(walls);
+      doors = new ArrayList<>();
+      makePath();
+   }
 
 	/*
 	public Room split(ArrayList<Point> split) {

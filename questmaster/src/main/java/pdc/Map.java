@@ -18,7 +18,6 @@ public class Map implements StateEditable {
 	public ArrayList<MapLayer> layers;
 	public Player player;
 	public MapLayer mapLayer;
-	public MapLayer mapLayer2;
 	public MapLayer mapLayer3;
 	public boolean transparentWallMode, opaqueWallMode, dooring;
 	UndoableEditSupport undoSupport = new UndoableEditSupport(this);
@@ -30,8 +29,7 @@ public class Map implements StateEditable {
 		layers = new ArrayList<MapLayer>();
 		opaqueWallMode = false;
 		dooring = false;
-		mapLayer = new MapOpaqueWallLayer();
-		mapLayer2 = new MapTransparentWallLayer();
+		mapLayer = new MapWallLayer();
 		mapLayer3 = new MapDoorLayer();
 		addUndoableEditListener(manager);
 		player = new Player(mapLayer);
@@ -43,7 +41,6 @@ public class Map implements StateEditable {
 
 	public void draw(Graphics g) {
 		mapLayer.draw(g);
-		mapLayer2.draw(g);
 		mapLayer3.draw(g);
 		player.draw(g);
 		/*
@@ -64,12 +61,12 @@ public class Map implements StateEditable {
 		StateEdit stateEdit = new StateEdit(Map.this);
 		if (opaqueWallMode) {
 			if (mapLayer == null) {
-				mapLayer = new MapOpaqueWallLayer();
+				mapLayer = new MapWallLayer();
 			}
 			if (room == null) {
-				mapLayer.outline(p);
+				mapLayer.drawOpaqueWalls(p);
 			} else {
-				//opaqueWallMode = mapLayer.outline(p, room);
+				//opaqueWallMode = mapLayer.drawOpaqueWalls(p, room);
 			}
 			if (!opaqueWallMode) {
 				layers.add(mapLayer);
@@ -78,13 +75,13 @@ public class Map implements StateEditable {
 		if (transparentWallMode) {
 			/*if (getRoom(p) != null) {
 */
-				if (mapLayer2 == null) {
-					mapLayer2 = new MapTransparentWallLayer();
-				}
-				transparentWallMode = mapLayer2.transWalling(p);
+
+				transparentWallMode = mapLayer.drawTransparentWalls(p);
+				/*
 				if (!transparentWallMode) {
 					layers.add(mapLayer2);
 				}
+				*/
 			/*}else {
 				mapLayer2.pointList.clear();
 				Throwable e = new Throwable("Transparent walls must be drawn in bounded rooms");
@@ -112,8 +109,8 @@ public class Map implements StateEditable {
 	public void walling() {
 		transparentWallMode = true;
 		opaqueWallMode = false;
-		mapLayer2.start = null;
-		mapLayer2.drawing = false;
+		mapLayer.start = null;
+		mapLayer.drawing = false;
 		dooring = false;
 	}
 
@@ -129,7 +126,6 @@ public class Map implements StateEditable {
 	public Map copy() {
 		Map copy = new Map();
 		copy.mapLayer = mapLayer.copy();
-		copy.mapLayer2 = mapLayer2.copy();
 		copy.mapLayer3 = mapLayer3.copy();
 		copy.opaqueWallMode = opaqueWallMode;
 		copy.transparentWallMode = transparentWallMode;
@@ -167,7 +163,6 @@ public class Map implements StateEditable {
 		if (newP != null) {
 			this.layers = newP.layers;
 			this.mapLayer = newP.mapLayer;
-			this.mapLayer2 = newP.mapLayer2;
 			this.mapLayer3 = newP.mapLayer3;
 			this.opaqueWallMode = newP.opaqueWallMode;
 			this.transparentWallMode = newP.transparentWallMode;
