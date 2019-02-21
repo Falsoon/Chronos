@@ -1,17 +1,13 @@
 package civ;
 
-import java.awt.EventQueue;
-import java.awt.Graphics;
-import java.awt.Point;
-import java.awt.Rectangle;
+import hic.FormWindow;
+import pdc.*;
+
+import java.awt.*;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
-
-import pdc.*;
-import hic.*;
 
 /**
  * This class is used as the civ/presenter class for map

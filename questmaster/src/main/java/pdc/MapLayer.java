@@ -1,14 +1,13 @@
 package pdc;
 
-import java.awt.BasicStroke;
-import java.awt.Graphics;
-import java.awt.Point;
-import java.awt.Shape;
-import java.awt.Stroke;
+import java.awt.*;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Optional;
 
 
 /**
@@ -18,9 +17,9 @@ import java.util.*;
  *
  */
 public abstract class MapLayer {
-	protected boolean drawing;
+	protected boolean drawingTransparent;
 	protected Point start;
-	private boolean outlining;
+	private boolean drawingOpaque;
 	protected ArrayList<GeneralPath> pathList;
 	public ArrayList<Point> pointList;
 	public GeneralPath guiPath;
@@ -36,7 +35,7 @@ public abstract class MapLayer {
 		this.pathList = new ArrayList<>();
 		this.pointList = new ArrayList<>();
 		wallList = new ArrayList<>();
-		this.drawing = false;
+		this.drawingTransparent = false;
 		this.selectedRoom = null;
 		firstClick = false;
 		roomToDivide = null;
@@ -56,8 +55,10 @@ public abstract class MapLayer {
 	      lastWall = new Wall(new Line2D.Double(firstPoint,p),Type.OPAQUE);
 	      wallList.add(lastWall);
          detectRooms();
+         pointList.add(firstPoint);
+         pointList.add(p);
       }
-	   pointList.add(p);
+
 	}
 
    /**
@@ -326,9 +327,9 @@ public abstract class MapLayer {
    }
 
    /**
-    * Method called when drawing transparent walls
+    * Method called when drawingTransparent transparent walls
     * @param p the point the author clicked
-    * @return true if the author is still drawing transparent walls
+    * @return true if the author is still drawingTransparent transparent walls
     */
 	public boolean drawTransparentWalls(Point p) {
 		this.walling = true;
@@ -351,6 +352,8 @@ public abstract class MapLayer {
          }
       } else {
          if(roomToDivide.onBoundary(p)) {
+            pointList.add(firstPoint);
+            pointList.add(p);
             lastWall = new Wall(new Line2D.Double(firstPoint, p), Type.TRANSPARENT);
             wallList.add(lastWall);
             detectRooms();
@@ -360,7 +363,7 @@ public abstract class MapLayer {
          }
          roomToDivide=null;
       }
-      pointList.add(p);
+
 
 		return this.walling;
 	}

@@ -1,14 +1,13 @@
 package pdc;
-import java.awt.Graphics;
-import java.awt.Point;
-import java.util.ArrayList;
-import java.util.Hashtable;
 
 import javax.swing.event.UndoableEditListener;
 import javax.swing.undo.StateEdit;
 import javax.swing.undo.StateEditable;
 import javax.swing.undo.UndoManager;
 import javax.swing.undo.UndoableEditSupport;
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.Hashtable;
 
 /**
  * Handles the data of map overall including data of 3 mapLayers
@@ -54,7 +53,7 @@ public class Map implements StateEditable {
 		transparentWallMode = false;
 		dooring = false;
 		mapLayer.start = null;
-		mapLayer.drawing = false;
+		mapLayer.drawingTransparent = false;
 	}
 
 	public void mousePressed(Point p) {
@@ -63,19 +62,15 @@ public class Map implements StateEditable {
 			if (mapLayer == null) {
 				mapLayer = new MapWallLayer();
 			}
-			if (room == null) {
-				mapLayer.drawOpaqueWalls(p);
-			} else {
-				//opaqueWallMode = mapLayer.drawOpaqueWalls(p, room);
-			}
+
+			mapLayer.drawOpaqueWalls(p);
 			if (!opaqueWallMode) {
 				layers.add(mapLayer);
 			}
 		}
 		if (transparentWallMode) {
 			/*if (getRoom(p) != null) {
-*/
-
+			* */
 				transparentWallMode = mapLayer.drawTransparentWalls(p);
 				/*
 				if (!transparentWallMode) {
@@ -110,7 +105,7 @@ public class Map implements StateEditable {
 		transparentWallMode = true;
 		opaqueWallMode = false;
 		mapLayer.start = null;
-		mapLayer.drawing = false;
+		mapLayer.drawingTransparent = false;
 		dooring = false;
 	}
 
@@ -201,7 +196,7 @@ public class Map implements StateEditable {
 		transparentWallMode = false;
 		dooring = false;
 		mapLayer.start = null;
-		mapLayer.drawing = false;
+		mapLayer.drawingTransparent = false;
 	}
 
 	public void setSelectedRoom(String str) {

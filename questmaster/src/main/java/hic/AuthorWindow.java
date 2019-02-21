@@ -1,18 +1,9 @@
 package hic;
-import java.awt.Color;
-import java.awt.EventQueue;
 
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JSplitPane;
+import civ.CIV;
 
-
-import civ.*;
-
-import java.awt.BorderLayout;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JComboBox;
+import javax.swing.*;
+import java.awt.*;
 
 /**
  * UI class for entire application

@@ -1,12 +1,11 @@
 package pdc;
+
 import java.awt.*;
-import java.awt.geom.PathIterator;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 
 /*
- * handles the logic behind drawing, coping and undoing an opaque wall
+ * handles the logic behind drawingTransparent, coping and undoing an opaque wall
  */
 public class MapWallLayer extends MapLayer {
 
@@ -65,7 +64,7 @@ public class MapWallLayer extends MapLayer {
       /*
 		if (!pathList.isEmpty()) {
 			guiPath = pathList.get(pathList.size() - 1);
-			drawing = true;
+			drawingTransparent = true;
 		}
 		*/
 	}

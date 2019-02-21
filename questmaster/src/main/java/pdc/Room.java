@@ -1,10 +1,10 @@
 package pdc;
 
-import java.awt.Point;
+import javafx.geometry.Point2D;
+
+import java.awt.*;
 import java.awt.geom.GeneralPath;
 import java.util.ArrayList;
-
-import javafx.geometry.Point2D;
 
 /**
  * Represents a room on the map
