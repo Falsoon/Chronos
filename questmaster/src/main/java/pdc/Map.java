@@ -1,14 +1,13 @@
 package pdc;
-import java.awt.Graphics;
-import java.awt.Point;
-import java.util.ArrayList;
-import java.util.Hashtable;
 
 import javax.swing.event.UndoableEditListener;
 import javax.swing.undo.StateEdit;
 import javax.swing.undo.StateEditable;
 import javax.swing.undo.UndoManager;
 import javax.swing.undo.UndoableEditSupport;
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.Hashtable;
 
 /**
  * Handles the data of map overall including data of 3 mapLayers
@@ -18,9 +17,8 @@ public class Map implements StateEditable {
 	public ArrayList<MapLayer> layers;
 	public Player player;
 	public MapLayer mapLayer;
-	public MapLayer mapLayer2;
 	public MapLayer mapLayer3;
-	public boolean walling, outlining, dooring, archwayAdd;
+	public boolean transparentWallMode, opaqueWallMode, dooring, archwayAdd;
 	UndoableEditSupport undoSupport = new UndoableEditSupport(this);
 	UndoManager manager = new UndoManager();
 	private final Object MAP_KEY = "MAPKEY";
@@ -28,10 +26,9 @@ public class Map implements StateEditable {
 
 	public Map() {
 		layers = new ArrayList<MapLayer>();
-		outlining = false;
+		opaqueWallMode = false;
 		dooring = false;
-		mapLayer = new MapOutlineLayer();
-		mapLayer2 = new MapWallingLayer();
+		mapLayer = new MapWallLayer();
 		mapLayer3 = new MapDoorLayer();
 		addUndoableEditListener(manager);
 		player = new Player(mapLayer);
@@ -43,7 +40,6 @@ public class Map implements StateEditable {
 
 	public void draw(Graphics g) {
 		mapLayer.draw(g);
-		mapLayer2.draw(g);
 		mapLayer3.draw(g);
 		player.draw(g);
 		/*
@@ -53,38 +49,34 @@ public class Map implements StateEditable {
 
 	public void outlining() {
 		room = null;
-		outlining = true;
-		walling = false;
+		opaqueWallMode = true;
+		transparentWallMode = false;
 		dooring = false;
 		mapLayer.start = null;
-		mapLayer.drawing = false;
+		mapLayer.drawingTransparent = false;
 	}
 
 	public void mousePressed(Point p) {
 		StateEdit stateEdit = new StateEdit(Map.this);
-		if (outlining) {
+		if (opaqueWallMode) {
 			if (mapLayer == null) {
-				mapLayer = new MapOutlineLayer();
+				mapLayer = new MapWallLayer();
 			}
-			if (room == null) {
-				mapLayer.outline(p);
-			} else {
-				//outlining = mapLayer.outline(p, room);
-			}
-			if (!outlining) {
+
+			mapLayer.drawOpaqueWalls(p);
+			if (!opaqueWallMode) {
 				layers.add(mapLayer);
 			}
 		}
-		if (walling) {
+		if (transparentWallMode) {
 			/*if (getRoom(p) != null) {
-*/
-				if (mapLayer2 == null) {
-					mapLayer2 = new MapWallingLayer();
-				}
-				walling = mapLayer2.transWalling(p, mapLayer);
-				if (!walling) {
+			* */
+				transparentWallMode = mapLayer.drawTransparentWalls(p);
+				/*
+				if (!transparentWallMode) {
 					layers.add(mapLayer2);
 				}
+				*/
 			/*}else {
 				mapLayer2.pointList.clear();
 				Throwable e = new Throwable("Transparent walls must be drawn in bounded rooms");
@@ -118,19 +110,19 @@ public class Map implements StateEditable {
 	}
 
 	public void walling() {
-		walling = true;
-		outlining = false;
-		mapLayer2.start = null;
-		mapLayer2.drawing = false;
+		transparentWallMode = true;
+		opaqueWallMode = false;
+		mapLayer.start = null;
+		mapLayer.drawingTransparent = false;
 		dooring = false;
 		archwayAdd = false;
 	}
 
 	public void dooring() {
 		dooring = true;
+		transparentWallMode = false;
+		opaqueWallMode = false;
 		archwayAdd = false;
-		walling = false;
-		outlining = false;
 	}
    public void archwayAdd() {
       dooring = false;
@@ -145,10 +137,9 @@ public class Map implements StateEditable {
 	public Map copy() {
 		Map copy = new Map();
 		copy.mapLayer = mapLayer.copy();
-		copy.mapLayer2 = mapLayer2.copy();
 		copy.mapLayer3 = mapLayer3.copy();
-		copy.outlining = outlining;
-		copy.walling = walling;
+		copy.opaqueWallMode = opaqueWallMode;
+		copy.transparentWallMode = transparentWallMode;
 		return copy;
 	}
 
@@ -165,7 +156,7 @@ public class Map implements StateEditable {
 	}
 
 	public boolean isCreating() {
-		return walling || outlining ||archwayAdd || dooring || player.isPlacing();
+		return transparentWallMode || opaqueWallMode || archwayAdd || dooring || player.isPlacing();
 	}
 
 	@Override
@@ -183,10 +174,9 @@ public class Map implements StateEditable {
 		if (newP != null) {
 			this.layers = newP.layers;
 			this.mapLayer = newP.mapLayer;
-			this.mapLayer2 = newP.mapLayer2;
 			this.mapLayer3 = newP.mapLayer3;
-			this.outlining = newP.outlining;
-			this.walling = newP.walling;
+			this.opaqueWallMode = newP.opaqueWallMode;
+			this.transparentWallMode = newP.transparentWallMode;
 			this.player = newP.player;
 		}
 	}
@@ -197,8 +187,8 @@ public class Map implements StateEditable {
 
 	public void placePlayerStart() {
 		player.startPlacing();
-		outlining = false;
-		walling = false;
+		opaqueWallMode = false;
+		transparentWallMode = false;
 		dooring = false;
 		archwayAdd = false;
 	}
@@ -212,20 +202,20 @@ public class Map implements StateEditable {
 	}
 
 	public void stopDrawing() {
-		outlining = false;
-		walling = false;
+		opaqueWallMode = false;
+		transparentWallMode = false;
 		dooring = false;
 		archwayAdd = false;
 	}
 
 	public void drawRoom(String str) {
 		room = RoomList.getRoomByStr(str);
-		outlining = true;
-		walling = false;
+		opaqueWallMode = true;
+		transparentWallMode = false;
 		dooring = false;
 		archwayAdd = false;
 		mapLayer.start = null;
-		mapLayer.drawing = false;
+		mapLayer.drawingTransparent = false;
 	}
 
 	public void setSelectedRoom(String str) {

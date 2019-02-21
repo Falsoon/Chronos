@@ -38,6 +38,8 @@ public class Graph {
          }
 
 
+      //prints out all the cycles
+      /*
       for (Point2D[] cy : cycles) {
          String s = "" + cy[0];
 
@@ -47,12 +49,17 @@ public class Graph {
          }
 
          o(s);
-         System.out.println("The num of cycles is: "+cycles.size());
+
       }
+      */
 
    }
 
-   // Adds an edge to an undirected graph
+   /**
+    * Method to add an edge to the graph
+    * @param src the first vertex
+    * @param dest the second vertext
+    */
    public void addEdge(Point2D src, Point2D dest) {
       // Add an edge from src to dest.
       adjListArray[adjListArrayIndex][0] = src;
@@ -69,6 +76,10 @@ public class Graph {
       }
    }
 
+   /**
+    * Method to find new cycles in the graph
+    * @param path the current path in the cycle detection
+    */
    private void findNewCycles(Point2D[] path) {
       Point2D n = path[0];
       Point2D x;
@@ -88,7 +99,7 @@ public class Graph {
                } else if ((path.length > 2) && (x.equals(path[path.length - 1]))){
                   //  cycle found
                   Point2D[] p = normalize(path);
-                  Point2D[] inv = invert(p);
+                  Point2D[] inv = reverse(p);
                   if (isNew(p) && isNew(inv)) {
                      cycles.add(p);
                   }
@@ -98,7 +109,12 @@ public class Graph {
       }
    }
 
-   //  check of both arrays have same lengths and contents
+   /**
+    * Method to determine if 2 arrays are the same
+    * @param a the first array
+    * @param b the second array
+    * @return true if the arrays have the same contents
+    */
    private boolean equals(Point2D[] a, Point2D[] b)
    {
       boolean ret = (a[0].equals(b[0])) && (a.length == b.length);
@@ -114,8 +130,12 @@ public class Graph {
       return ret;
    }
 
-   //  create a path array with reversed order
-   private Point2D[] invert(Point2D[] path)
+   /**
+    * Reverses the order of vertices on the path
+    * @param path the path of vertices to reverse
+    * @return path with its elements in reversed order
+    */
+   private Point2D[] reverse(Point2D[] path)
    {
       Point2D[] p = new Point2D[path.length];
 
@@ -127,7 +147,11 @@ public class Graph {
       return normalize(p);
    }
 
-   //  rotate cycle path such that it begins with the smallest node
+   /**
+    * Rotates the cycle so that the vertices are in a standardized order
+    * @param path the vertices of the path
+    * @return the path in a standardized order
+    */
    private Point2D[] normalize(Point2D[] path)
    {
       Point2D[] p = new Point2D[path.length];
@@ -146,8 +170,11 @@ public class Graph {
       return p;
    }
 
-   //  compare path against known cycles
-   //  return true, iff path is not a known cycle
+   /**
+    * Determines if a path is unique or a permutation of an existing path
+    * @param path the path to check
+    * @return true if the path is unique
+    */
    private boolean isNew(Point2D[] path)
    {
       boolean ret = true;
@@ -164,12 +191,20 @@ public class Graph {
       return ret;
    }
 
+   /**
+    * Method to output the specified string
+    * @param s the string to output
+    */
    static void o(String s)
    {
       System.out.println(s);
    }
 
-   //  return the Point of the array which is the smallest
+   /**
+    * Method to determine the smallest point of the path
+    * @param path the path to examine
+    * @return the smallest point on the path
+    */
    private Point2D smallest(Point2D[] path)
    {
       Point2D min = path[0];
@@ -185,7 +220,12 @@ public class Graph {
       return min;
    }
 
-   //  check if vertex n is contained in path
+   /**
+    * Method to determine if the specified point is contained in the specified path
+    * @param n the point to check
+    * @param path the path to check
+    * @return true if the path contains the point n
+    */
    private boolean visited(Point2D n, Point2D[] path) {
       boolean ret = false;
 

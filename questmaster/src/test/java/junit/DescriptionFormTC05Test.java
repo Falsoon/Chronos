@@ -152,7 +152,7 @@ class DescriptionFormTC05Test {
 	
 	@Test
 	void testFormPopUpViaDrawMode() {
-		//author brings up form by clicking room in drawing mode
+		//author brings up form by clicking room in drawingTransparent mode
 		bf = new ButtonFactory(aw);
 		bf.setMode1();
 		bf.addRoombtn1.doClick();
@@ -164,7 +164,7 @@ class DescriptionFormTC05Test {
 	
 	@Test
 	void testFormEditingViaDrawMode() throws Throwable {
-		//author can edit room desc and title when in drawing mode
+		//author can edit room desc and title when in drawingTransparent mode
 		civ.outlining();
 		civ.mousePressed(new Point(), true, true);
 		civ.mousePressed(new Point(87, 95), true, true);

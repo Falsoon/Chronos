@@ -1,5 +1,6 @@
 package pdc;
-import java.awt.Point;
+
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -8,7 +9,7 @@ import java.util.Iterator;
  * Encapsulates all the rooms into a pointList
  */
 public class RoomList {
-	public static ArrayList<Room> list = new ArrayList<Room>();
+	public static ArrayList<Room> list = new ArrayList<>();
 
 	public static Room getRoom(Point p) {
 		Room room = null;
@@ -59,4 +60,8 @@ public class RoomList {
 		// TODO Auto-generated method stub
 		
 	}
+
+	public static Iterator<Room> iterator(){
+	   return list.iterator();
+   }
 }
