@@ -127,8 +127,8 @@ public class Map implements StateEditable {
    public void archwayAdd() {
       dooring = false;
       archwayAdd = true;
-      walling = false;
-      outlining = false;
+      opaqueWallMode = false;
+      transparentWallMode = false;
    }
 	public int numOfDoors() {
 		return DoorList.list.size();
