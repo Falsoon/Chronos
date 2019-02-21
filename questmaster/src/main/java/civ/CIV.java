@@ -113,7 +113,8 @@ public class CIV {
 	public void dooring() {
 		map.dooring();
 	}
-	
+
+	public void archwayAdd() { map.archwayAdd();}
 	//look into creating door pointList
 	public int numOfDoors() {
 		return map.numOfDoors();

@@ -188,6 +188,70 @@ public abstract class MapLayer {
       wallList.add(lastWallB);
    }
 
+   //TODO: improve Java Doc
+   /**
+    * Method to add archway onto map.
+    * @param point
+    * @throws Throwable
+    */
+   public void placeArchway(Point point) throws Throwable
+   {
+      Line2D archwayWall= new Line2D.Double();
+      boolean flag = false;
+      System.out.println(wallList.size());
+      for(int i = 0; i< this.wallList.size(); i++)
+      {
+         if (this.wallList.get(i).ptLineDist(point) < 1)
+         {
+            archwayWall = this.wallList.get(i);
+            System.out.println(Math.sqrt( ( ( archwayWall.getX2() - archwayWall.getX1() ) * ( archwayWall.getX2() - archwayWall.getX1() ) ) + ( ( archwayWall.getY2() - archwayWall.getY1() ) * ( archwayWall.getY2() - archwayWall.getY1() ) ) ));
+            if(Math.sqrt( ( ( archwayWall.getX2() - archwayWall.getX1() ) * ( archwayWall.getX2() - archwayWall.getX1() ) ) + ( ( archwayWall.getY2() - archwayWall.getY1() ) * ( archwayWall.getY2() - archwayWall.getY1() ) ) )> 15)
+            {
+               this.wallList.remove(archwayWall);
+               flag = true;
+               break;
+            }
+            else
+            {
+               throw new Throwable("Archway must be placed on a large enough wall");
+            }
+
+         }
+      }
+      if(flag)
+      {
+         Point2D start = archwayWall.getP1();
+         Point2D end = archwayWall.getP2();
+         Line2D newStartWall = new Line2D.Double(start, point);
+         Point2D endArchway;
+         if(archwayWall.getX1() == archwayWall.getX2())
+         {
+            endArchway = new Point2D.Double(archwayWall.getX2(), point.getY()-15);
+            if(newStartWall.ptLineDist(endArchway)<1)
+            {
+               endArchway = new Point2D.Double(archwayWall.getX2(), point.getY()+15);
+            }
+         }
+         else
+         {
+            endArchway = new Point2D.Double(point.getX()-15, archwayWall.getY2());
+            if(newStartWall.ptLineDist(endArchway)<1)
+            {
+               endArchway = new Point2D.Double(point.getX()+15, archwayWall.getY2());
+            }
+         }
+         Line2D archwaySeg = new Line2D.Double(point, endArchway);
+         Line2D newEndWall = new Line2D.Double(endArchway, end);
+         this.wallList.add(newStartWall);
+         this.wallList.add(archwaySeg);
+         this.wallList.add(newEndWall);
+      }
+      else
+      {
+         throw new Throwable("Archway must be placed on a wall");
+      }
+   }
+
    /**
     * Determines where the specified Line2Ds intersect
     * Adapted from https://www.geeksforgeeks.org/program-for-point-of-intersection-of-two-lines/

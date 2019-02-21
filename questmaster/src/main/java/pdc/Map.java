@@ -20,7 +20,7 @@ public class Map implements StateEditable {
 	public MapLayer mapLayer;
 	public MapLayer mapLayer2;
 	public MapLayer mapLayer3;
-	public boolean walling, outlining, dooring;
+	public boolean walling, outlining, dooring, archwayAdd;
 	UndoableEditSupport undoSupport = new UndoableEditSupport(this);
 	UndoManager manager = new UndoManager();
 	private final Object MAP_KEY = "MAPKEY";
@@ -99,6 +99,14 @@ public class Map implements StateEditable {
 				e.printStackTrace();
 			}
 		}
+      if (archwayAdd) {
+         try {
+            mapLayer.placeArchway(p);
+         } catch (Throwable e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+         }
+      }
 		if (player.isPlacing()) {
 			player.place(p);
 		}
@@ -115,13 +123,21 @@ public class Map implements StateEditable {
 		mapLayer2.start = null;
 		mapLayer2.drawing = false;
 		dooring = false;
+		archwayAdd = false;
 	}
 
 	public void dooring() {
 		dooring = true;
+		archwayAdd = false;
 		walling = false;
 		outlining = false;
 	}
+   public void archwayAdd() {
+      dooring = false;
+      archwayAdd = true;
+      walling = false;
+      outlining = false;
+   }
 	public int numOfDoors() {
 		return DoorList.list.size();
 	}
@@ -149,7 +165,7 @@ public class Map implements StateEditable {
 	}
 
 	public boolean isCreating() {
-		return walling || outlining || dooring || player.isPlacing();
+		return walling || outlining ||archwayAdd || dooring || player.isPlacing();
 	}
 
 	@Override
@@ -184,6 +200,7 @@ public class Map implements StateEditable {
 		outlining = false;
 		walling = false;
 		dooring = false;
+		archwayAdd = false;
 	}
 
 	public void startGame() {
@@ -198,6 +215,7 @@ public class Map implements StateEditable {
 		outlining = false;
 		walling = false;
 		dooring = false;
+		archwayAdd = false;
 	}
 
 	public void drawRoom(String str) {
@@ -205,6 +223,7 @@ public class Map implements StateEditable {
 		outlining = true;
 		walling = false;
 		dooring = false;
+		archwayAdd = false;
 		mapLayer.start = null;
 		mapLayer.drawing = false;
 	}
