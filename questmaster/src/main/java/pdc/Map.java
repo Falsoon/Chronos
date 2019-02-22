@@ -18,7 +18,7 @@ public class Map implements StateEditable {
 	public Player player;
 	public MapLayer mapLayer;
 	public MapLayer mapLayer3;
-	public boolean transparentWallMode, opaqueWallMode, dooring;
+	public boolean transparentWallMode, opaqueWallMode, dooring, archwayAdd;
 	UndoableEditSupport undoSupport = new UndoableEditSupport(this);
 	UndoManager manager = new UndoManager();
 	private final Object MAP_KEY = "MAPKEY";
@@ -91,6 +91,14 @@ public class Map implements StateEditable {
 				e.printStackTrace();
 			}
 		}
+      if (archwayAdd) {
+         try {
+            mapLayer.placeArchway(p);
+         } catch (Throwable e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+         }
+      }
 		if (player.isPlacing()) {
 			player.place(p);
 		}
@@ -107,13 +115,21 @@ public class Map implements StateEditable {
 		mapLayer.start = null;
 		mapLayer.drawingTransparent = false;
 		dooring = false;
+		archwayAdd = false;
 	}
 
 	public void dooring() {
 		dooring = true;
 		transparentWallMode = false;
 		opaqueWallMode = false;
+		archwayAdd = false;
 	}
+   public void archwayAdd() {
+      dooring = false;
+      archwayAdd = true;
+      opaqueWallMode = false;
+      transparentWallMode = false;
+   }
 	public int numOfDoors() {
 		return DoorList.list.size();
 	}
@@ -140,7 +156,7 @@ public class Map implements StateEditable {
 	}
 
 	public boolean isCreating() {
-		return transparentWallMode || opaqueWallMode || dooring || player.isPlacing();
+		return transparentWallMode || opaqueWallMode || archwayAdd || dooring || player.isPlacing();
 	}
 
 	@Override
@@ -174,6 +190,7 @@ public class Map implements StateEditable {
 		opaqueWallMode = false;
 		transparentWallMode = false;
 		dooring = false;
+		archwayAdd = false;
 	}
 
 	public void startGame() {
@@ -188,6 +205,7 @@ public class Map implements StateEditable {
 		opaqueWallMode = false;
 		transparentWallMode = false;
 		dooring = false;
+		archwayAdd = false;
 	}
 
 	public void drawRoom(String str) {
@@ -195,6 +213,7 @@ public class Map implements StateEditable {
 		opaqueWallMode = true;
 		transparentWallMode = false;
 		dooring = false;
+		archwayAdd = false;
 		mapLayer.start = null;
 		mapLayer.drawingTransparent = false;
 	}

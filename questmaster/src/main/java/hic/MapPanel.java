@@ -83,6 +83,13 @@ public class MapPanel extends JPanel {
 		civ.dooring();
 	}
 
+   /**
+    * Changes state of MapPanel to add Archway
+    */
+   public void paintArchway() {
+      civ.archwayAdd();
+   }
+
 	/**
 	 * Resets state of MapPanel
 	 */

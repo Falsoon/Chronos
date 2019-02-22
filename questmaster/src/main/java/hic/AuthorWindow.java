@@ -17,7 +17,7 @@ public class AuthorWindow extends JPanel {
 	public AuthorPanel authorPanel;
 	public MapPanel mapPanel;
 	public String[] wallTypes = { "Walls", "Opaque", "Transparent" };
-	public String[] portalTypes = { "Portals", "Doors" };
+	public String[] portalTypes = { "Portals", "Doors", "Archway" };
 	public String[] authorModes = { "Select Authoring Mode", "Author Room descriptions", "Draw Rooms" };
 	public JComboBox<String> wallCombo, portalCombo;
 	public JButton start, placeStart, undoButton, btnClear, addRoombtn1, addRoombtn2;

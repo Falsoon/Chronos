@@ -208,6 +208,9 @@ public class ButtonFactory implements ActionListener  {
 		case "Doors":
 			authorWindow.mapPanel.paintDoors();
 			break;
+		case "Archway":
+         authorWindow.mapPanel.paintArchway();
+         break;
 		case "Portals":
 			authorWindow.mapPanel.stopDrawing();
 			break;
