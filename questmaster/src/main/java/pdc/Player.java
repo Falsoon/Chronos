@@ -30,7 +30,7 @@ public class Player {
 				Math.round(position.y / GRIDDISTANCE) * GRIDDISTANCE - YOFFSET);
 		placed = true;
 		placing = false;
-		Iterator<Room> itr = RoomList.iterator();
+		Iterator<Room> itr = RoomList.getInstance().iterator();
 		while (itr.hasNext()) {
 			Room curr = itr.next();
 			if (curr.contains(position)) {
@@ -104,7 +104,7 @@ public class Player {
 	
 	private boolean collides() {
 		boolean outside = true;
-		Iterator<Room> itr = RoomList.iterator();
+		Iterator<Room> itr = RoomList.getInstance().iterator();
 		while (itr.hasNext() && outside) {
 			Room room = itr.next();
 			if (room.equals(currentRoom) &&
@@ -118,7 +118,7 @@ public class Player {
 	}
 
 	public void rePlace() {
-		Iterator<Room> itr = RoomList.iterator();
+		Iterator<Room> itr = RoomList.getInstance().iterator();
 		while (itr.hasNext()) {
 			Room curr = itr.next();
 			if (curr.contains(position)) {

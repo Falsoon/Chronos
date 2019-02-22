@@ -1,6 +1,7 @@
 package junit;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.awt.Point;
@@ -25,7 +26,7 @@ class ClearAndUndoDrawingActionTC04Test {
 		aw = null;
 		bf = null;
 		civ = null;
-		RoomList.reset();
+		RoomList.getInstance().reset();
 	}
 	
 	@Test
@@ -33,23 +34,31 @@ class ClearAndUndoDrawingActionTC04Test {
 		bf = new ButtonFactory(aw);
 		bf.setMode2();
 		
-		Point p0 = new Point(50, 50);
-		Point p1 = new Point(87, 95);
-		Point p2 = new Point(300, 90);
-		Point p3 = new Point(50, 50);
+		Point p0 = new Point(15, 15);
+		Point p1 = new Point(15, 75);
+		Point p2 = new Point(75, 75);
+		Point p3 = new Point(75, 15);
 		
 		
 		civ.outlining();
 		civ.mousePressed(p0, false, true);
-		civ.mousePressed(p1, true, true);
+		civ.mousePressed(p1, false, true);
+
+      civ.mousePressed(p1, false, true);
 		civ.mousePressed(p2, false, true);
+
+      civ.mousePressed(p2, false, true);
 		civ.mousePressed(p3, false, true);
-		
-		assertEquals(true, civ.undo());
-		assertEquals(true, civ.map.mapLayer.pointList.contains(p0));
-		assertEquals(true, civ.map.mapLayer.pointList.contains(p1));
-		assertEquals(true, civ.map.mapLayer.pointList.contains(p2));
-		assertEquals(3, civ.map.mapLayer.pointList.size());
+
+      civ.mousePressed(p3, false, true);
+      civ.mousePressed(p0, false, true);
+
+      assertTrue(civ.undo());
+      assertTrue(civ.map.mapLayer.pointList.contains(p0));
+      assertTrue(civ.map.mapLayer.pointList.contains(p1));
+      assertTrue(civ.map.mapLayer.pointList.contains(p2));
+      assertTrue(civ.map.mapLayer.pointList.contains(p3));
+		assertEquals(6, civ.map.mapLayer.pointList.size());
 		
 	}
 	

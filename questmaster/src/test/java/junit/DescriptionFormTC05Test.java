@@ -43,7 +43,7 @@ class DescriptionFormTC05Test {
 		aw = null;
 		bf = null;
 		civ = null;
-		RoomList.reset();
+		RoomList.getInstance().reset();
 	}
 	
 	@Test
@@ -70,7 +70,7 @@ class DescriptionFormTC05Test {
 		FormWindow window = new FormWindow(fc, true);
 		window.frame.setVisible(true);
 		
-		RoomList.add(room);
+		RoomList.getInstance().add(room);
 		fc.setRoomReference(room.toString());
 		
 		window.frame = new JFrame();
@@ -109,7 +109,7 @@ class DescriptionFormTC05Test {
 	@Test
 	void testClosesFormBeforeSubmit() {
 		//the room title and room description should not save
-		RoomList.add(room);
+		RoomList.getInstance().add(room);
 		fc.setRoomReference(room.toString());
 		
 		frame = new JFrame();
@@ -184,7 +184,7 @@ class DescriptionFormTC05Test {
 	@Test
 	void testCreateRoomDescThenDrawRoom() throws Throwable {
 		//author creates room description and then draws room
-		RoomList.add(room);
+		RoomList.getInstance().add(room);
 		fc.setRoomReference(room.toString());
 		
 		frame = new JFrame();
@@ -234,7 +234,7 @@ class DescriptionFormTC05Test {
 	
 	@Test
 	void testRoomID() {
-		RoomList.add(room);
+		RoomList.getInstance().add(room);
 		int roomID = room.ROOMID;
 		fc.setRoomReference(room.toString());
 		assertEquals(roomID, fc.getRoomID() );		
@@ -243,7 +243,7 @@ class DescriptionFormTC05Test {
 	@Test
 	void testNumberInputForDescAndTitle(){
 		
-		RoomList.add(room);
+		RoomList.getInstance().add(room);
 		fc.setRoomReference(room.toString());
 		
 		frame = new JFrame();

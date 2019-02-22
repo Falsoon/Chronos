@@ -1,6 +1,7 @@
 package pdc;
 
 import java.awt.*;
+import java.util.Hashtable;
 
 public class MapDoorLayer extends MapLayer {
 	@Override
@@ -41,7 +42,15 @@ public class MapDoorLayer extends MapLayer {
 	@Override
 	public void undo() {		
 	}
-	
 
 
+   @Override
+   public void storeState(Hashtable<Object, Object> state) {
+
+   }
+
+   @Override
+   public void restoreState(Hashtable<?, ?> state) {
+
+   }
 }

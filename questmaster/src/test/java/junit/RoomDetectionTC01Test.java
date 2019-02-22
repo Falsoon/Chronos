@@ -27,7 +27,7 @@ class RoomDetectionTC01Test {
 	@AfterEach
 	public void tearDown() {
 		civ = null;
-		RoomList.reset();
+		RoomList.getInstance().reset();
 	}
 
 	// TC01-1 User clicks points on map without pressing draw button
