@@ -106,6 +106,14 @@ public class CIV {
 		map.getPlayer().goRight();
 	}
 
+	public String getRoomName() {
+		return map.getPlayer().getRoomName();
+	}
+
+	public String getRoomDesc() {
+		return map.getPlayer().getRoomDesc();
+	}
+
 	public void stopDrawing() {
 		map.stopDrawing();
 	}
@@ -186,7 +194,7 @@ public class CIV {
 		
 		return (p1.x - p0.x)*(p2.y - p0.y) - (p2.x - p0.x)*(p1.y - p0.y);
 	}
-	
+	/*
 	public void outputStory() {
 		File out = new File("INFORM_Source/output.ni");
 		PrintStream output = null;
@@ -201,4 +209,5 @@ public class CIV {
 			output.close();
 		}
 	}
+	*/
 }

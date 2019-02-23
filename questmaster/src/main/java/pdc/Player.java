@@ -14,6 +14,7 @@ public class Player {
 	private Point position;
 	private boolean placed, playing, placing;
 	private GeneralPath currentRoom;
+	// private Room currentRoom;
 	private MapLayer mapLayer;
 	private String representation;
 	private final int XOFFSET = 2;
@@ -70,10 +71,13 @@ public class Player {
 	}
 	
 	public void goUp() {
+		System.out.println("trying to go up");
 		if (playing) {
+			System.out.println("yup, we playin");
 			position.move(position.x, position.y - GRIDDISTANCE);
 			if (collides()) {
 				position.move(position.x, position.y + GRIDDISTANCE);
+				System.out.println("must be collidin");
 			}
 		}
 	}
@@ -137,5 +141,13 @@ public class Player {
 			g2d.drawString(representation, position.x, position.y);
 			placing = false;
 		}
+	}
+
+	public String getRoomName() {
+		return RoomList.getRoom(position).title;
+	}
+
+	public String getRoomDesc() {
+		return RoomList.getRoom(position).desc;
 	}
 }
