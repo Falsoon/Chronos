@@ -1,8 +1,11 @@
 package civ;
 
-import java.util.ArrayList;
+import pdc.Door;
+import pdc.DoorList;
+import pdc.Room;
+import pdc.RoomList;
 
-import pdc.*;
+import java.util.ArrayList;
 
 /**
  * This class is used to be the civ component/presenter
@@ -18,7 +21,7 @@ public class FormCiv {
 	}
 	
 	public void setRoomReference(String str) {
-		Room r = RoomList.getRoomByStr(str);
+		Room r = RoomList.getInstance().getRoomByStr(str);
 		if(r==null) {
 			room = new Room();
 		}else {
@@ -66,11 +69,11 @@ public class FormCiv {
 		if(room ==null) {
 			room = new Room();
 		}
-		RoomList.add(room);
+		RoomList.getInstance().add(room);
 	}
 
 	public boolean getRoomDrawn(String str) {
-		Room r = RoomList.getRoomByStr(str);
+		Room r = RoomList.getInstance().getRoomByStr(str);
 		if(r ==null) {return false;}
 		return r.isDrawn();
 	}

@@ -1,20 +1,15 @@
 package hic;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Point;
-import java.awt.Rectangle;
-import java.awt.event.*;
-
-import javax.swing.JDialog;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
-
 import civ.CIV;
 import pdc.Constants;
+
+import javax.swing.*;
+import javax.swing.undo.UndoManager;
+import javax.swing.undo.UndoableEditSupport;
+import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 /**
  * the presenter class for the mapWindow handles updating both data on the map
@@ -36,6 +31,7 @@ public class MapPanel extends JPanel {
 	public MapPanel(AuthorWindow authorWindow) {
 		civ = AuthorWindow.civ;
 		aw = authorWindow;
+
 		// Anonymous class was used to access MapPanel fields
 		MouseListener mousehandler = new MouseAdapter() {
 			@Override
@@ -86,6 +82,13 @@ public class MapPanel extends JPanel {
 	public void paintDoors() {
 		civ.dooring();
 	}
+
+   /**
+    * Changes state of MapPanel to add Archway
+    */
+   public void paintArchway() {
+      civ.archwayAdd();
+   }
 
 	/**
 	 * Resets state of MapPanel

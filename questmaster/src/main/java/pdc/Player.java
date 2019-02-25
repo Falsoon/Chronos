@@ -1,9 +1,6 @@
 package pdc;
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Point;
-import java.awt.geom.GeneralPath;
+
+import java.awt.*;
 import java.util.Iterator;
 
 /*
@@ -13,7 +10,7 @@ public class Player {
 	private static final int GRIDDISTANCE = Constants.GRIDDISTANCE;
 	private Point position;
 	private boolean placed, playing, placing;
-	private GeneralPath currentRoom;
+	private Room currentRoom;
 	private MapLayer mapLayer;
 	private String representation;
 	private final int XOFFSET = 2;
@@ -33,9 +30,9 @@ public class Player {
 				Math.round(position.y / GRIDDISTANCE) * GRIDDISTANCE - YOFFSET);
 		placed = true;
 		placing = false;
-		Iterator<GeneralPath> itr = mapLayer.pathList.iterator();
+		Iterator<Room> itr = RoomList.getInstance().iterator();
 		while (itr.hasNext()) {
-			GeneralPath curr = itr.next();
+			Room curr = itr.next();
 			if (curr.contains(position)) {
 				currentRoom = curr;
 			}
@@ -107,23 +104,23 @@ public class Player {
 	
 	private boolean collides() {
 		boolean outside = true;
-		Iterator<GeneralPath> itr = mapLayer.pathList.iterator();
+		Iterator<Room> itr = RoomList.getInstance().iterator();
 		while (itr.hasNext() && outside) {
-			GeneralPath path = itr.next();
-			if (path.equals(currentRoom) &&
-					path.contains(position.x, position.y + YOFFSET - 2) &&
-						path.contains(position.x + GRIDDISTANCE - XOFFSET, position.y - GRIDDISTANCE - YOFFSET + 2) &&
-							path.contains(position.x + GRIDDISTANCE - XOFFSET, position.y + YOFFSET - 2) &&
-								path.contains(position.x, position.y - GRIDDISTANCE - YOFFSET + 2))
+			Room room = itr.next();
+			if (room.equals(currentRoom) &&
+					room.contains(new Point(position.x, position.y + YOFFSET - 2)) &&
+						room.contains(new Point(position.x + GRIDDISTANCE - XOFFSET, position.y - GRIDDISTANCE - YOFFSET + 2)) &&
+							room.contains(new Point(position.x + GRIDDISTANCE - XOFFSET, position.y + YOFFSET - 2)) &&
+								room.contains(new Point(position.x, position.y - GRIDDISTANCE - YOFFSET + 2)))
 									outside = false;
 		}
 		return outside;
 	}
 
 	public void rePlace() {
-		Iterator<GeneralPath> itr = mapLayer.pathList.iterator();
+		Iterator<Room> itr = RoomList.getInstance().iterator();
 		while (itr.hasNext()) {
-			GeneralPath curr = itr.next();
+			Room curr = itr.next();
 			if (curr.contains(position)) {
 				currentRoom = curr;
 			}
