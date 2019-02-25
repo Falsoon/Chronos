@@ -15,6 +15,7 @@ public class Player {
 	private String representation;
 	private final int XOFFSET = 2;
 	private final int YOFFSET = 4;
+	private final double COLLISION_MARGIN = 10;
 	
 	public Player(MapLayer mapLayer){
 		placed = false;
@@ -65,56 +66,53 @@ public class Player {
 	public Point getPosition() {
 		return position;
 	}
-	
+
 	public void goUp() {
-		if (playing) {
+		if (playing && !collides(new Point(position.x, position.y - GRIDDISTANCE))) {
 			position.move(position.x, position.y - GRIDDISTANCE);
-			if (collides()) {
-				position.move(position.x, position.y + GRIDDISTANCE);
-			}
 		}
 	}
 
 	public void goDown() {
-		if (playing) {
+		if (playing && !collides(new Point(position.x, position.y + GRIDDISTANCE))) {
 			position.move(position.x, position.y + GRIDDISTANCE);
-			if (collides()) {
-				position.move(position.x, position.y - GRIDDISTANCE);
-			}
 		}
 	}
 
 	public void goLeft() {
-		if (playing) {
+		if (playing && !collides(new Point(position.x - GRIDDISTANCE, position.y))) {
 			position.move(position.x - GRIDDISTANCE, position.y);
-			if (collides()) {
-				position.move(position.x + GRIDDISTANCE, position.y);
-			}
 		}
 	}
 
 	public void goRight() {
-		if (playing) {
+		if (playing && !collides(new Point(position.x + GRIDDISTANCE, position.y))) {
 			position.move(position.x + GRIDDISTANCE, position.y);
-			if (collides()) {
-				position.move(position.x - GRIDDISTANCE, position.y);
-			}
 		}
 	}
 	
-	private boolean collides() {
-		boolean outside = true;
-		Iterator<Room> itr = RoomList.getInstance().iterator();
-		while (itr.hasNext() && outside) {
-			Room room = itr.next();
-			if (room.equals(currentRoom) &&
-					room.contains(new Point(position.x, position.y + YOFFSET - 2)) &&
-						room.contains(new Point(position.x + GRIDDISTANCE - XOFFSET, position.y - GRIDDISTANCE - YOFFSET + 2)) &&
-							room.contains(new Point(position.x + GRIDDISTANCE - XOFFSET, position.y + YOFFSET - 2)) &&
-								room.contains(new Point(position.x, position.y - GRIDDISTANCE - YOFFSET + 2)))
-									outside = false;
+	/**
+	 * Returns true if there is no collision at point p, false otherwise
+	 * @param p the point to move to
+	 */
+	private boolean collides(Point p){
+		double closestCollision = Double.MAX_VALUE;
+		double closestNonCollision = Double.MAX_VALUE;
+		//TODO would like to not iterate through all walls. CurrentRoom currently does not store archways
+		for (Wall w : mapLayer.wallList) {
+			// System.out.println("Wall Type: " + w.getType());
+			double distance = w.getDistance(p);
+			if (w.getType() == Type.OPAQUE) {
+				if (distance < closestCollision) {
+					closestCollision = distance;
+				}
+			} else if (distance < closestNonCollision) {
+				closestNonCollision = distance;
+			}
 		}
-		return outside;
+		System.out.println("Closest collision: " + closestCollision);
+		System.out.println("Closest non-collision: " + closestNonCollision);
+		return closestCollision < closestNonCollision && closestCollision < COLLISION_MARGIN;
 	}
 
 	public void rePlace() {
