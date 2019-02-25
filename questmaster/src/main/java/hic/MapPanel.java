@@ -4,6 +4,8 @@ import civ.CIV;
 import pdc.Constants;
 
 import javax.swing.*;
+import javax.swing.undo.UndoManager;
+import javax.swing.undo.UndoableEditSupport;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -29,6 +31,7 @@ public class MapPanel extends JPanel {
 	public MapPanel(AuthorWindow authorWindow) {
 		civ = AuthorWindow.civ;
 		aw = authorWindow;
+
 		// Anonymous class was used to access MapPanel fields
 		MouseListener mousehandler = new MouseAdapter() {
 			@Override

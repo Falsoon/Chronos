@@ -1,7 +1,10 @@
 package pdc;
 
+import javax.swing.undo.UndoManager;
+import javax.swing.undo.UndoableEditSupport;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Hashtable;
 
 
 /*
@@ -59,6 +62,7 @@ public class MapWallLayer extends MapLayer {
 		*/
 		if(!pointList.isEmpty()) {
 			copy.pointList = (ArrayList<Point>) pointList.clone();
+			copy.wallList =(ArrayList<Wall>) wallList.clone();
 		}
 			
 		return copy;
@@ -67,11 +71,16 @@ public class MapWallLayer extends MapLayer {
 	@Override
 	public void undo() {
 	   //TODO need to fix this now that we've changed how rooms are created
-      /*
-		if (!pathList.isEmpty()) {
-			guiPath = pathList.get(pathList.size() - 1);
-			drawingTransparent = true;
-		}
-		*/
+
 	}
+
+   @Override
+   public void storeState(Hashtable<Object, Object> state) {
+
+   }
+
+   @Override
+   public void restoreState(Hashtable<?, ?> state) {
+
+   }
 }

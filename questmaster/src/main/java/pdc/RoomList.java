@@ -1,17 +1,38 @@
 package pdc;
 
+import javax.swing.undo.StateEdit;
+import javax.swing.undo.StateEditable;
+import javax.swing.undo.UndoManager;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.Iterator;
 
 
 /**
- * Encapsulates all the rooms into a pointList
+ * Encapsulates all the rooms into a list
  */
-public class RoomList {
-	public static ArrayList<Room> list = new ArrayList<>();
+public class RoomList implements StateEditable {
+	public ArrayList<Room> list = new ArrayList<>();
+	private static final String listKey = "list";
+   //private UndoManager undoManager;
+   //private StateEdit stateEdit;
 
-	public static Room getRoom(Point p) {
+   private static RoomList instance;
+
+   public static RoomList getInstance() {
+      if (instance == null) {
+         instance = new RoomList();
+      }
+
+      return instance;
+   }
+
+   private RoomList() {
+      //undoManager = new UndoManager();
+   }
+
+	public Room getRoom(Point p) {
 		Room room = null;
 		Iterator<Room> itr = list.iterator();
 		boolean found = false;
@@ -25,16 +46,16 @@ public class RoomList {
 		return room;
 	}
 
-	public static void add(Room r) {
-		list.add(r);
+	public void add(Room r) {
+      list.add(r);
 	}
 
-	public static void reset() {
+	public void reset() {
 		list.clear();
 		Room.idCount =1;
 	}
 
-	public static Room getRoomById(int id) {
+	public Room getRoomById(int id) {
 		Room room = null;
 		for(int i=0; i< list.size();i++) {
 			if(list.get(i).ROOMID==id) {
@@ -44,7 +65,7 @@ public class RoomList {
 		return room;
 	}
 
-	public static Room getRoomByStr(String str) {
+	public Room getRoomByStr(String str) {
 		boolean found = false;
 		Room r = null;
 		for(int i=0;i<list.size()&&!found;i++) {
@@ -56,12 +77,37 @@ public class RoomList {
 		return r;
 	}
 
-	public static void undo() {
-		// TODO Auto-generated method stub
-		
+	public void undo() {
+      /*
+      if(undoManager.canUndo()){
+         undoManager.undo();
+      }
+      */
 	}
 
-	public static Iterator<Room> iterator(){
+	public Iterator<Room> iterator(){
 	   return list.iterator();
+   }
+
+   public void startStateEdit(){
+      //stateEdit = new StateEdit(RoomList.getInstance());
+   }
+
+   public void endStateEdit(){
+      //stateEdit = new StateEdit(RoomList.getInstance());
+      //stateEdit.end();
+      //undoManager.addEdit(stateEdit);
+   }
+
+   @Override
+   public void storeState(Hashtable<Object, Object> state) {
+      state.put(listKey,list);
+   }
+
+   @Override
+   public void restoreState(Hashtable<?, ?> state) {
+      if(state.contains(listKey)){
+         list = (ArrayList) state.get(listKey);
+      }
    }
 }

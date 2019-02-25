@@ -1,5 +1,9 @@
 package pdc;
 
+import javax.swing.undo.StateEdit;
+import javax.swing.undo.StateEditable;
+import javax.swing.undo.UndoManager;
+import javax.swing.undo.UndoableEditSupport;
 import java.awt.*;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Line2D;
@@ -16,7 +20,7 @@ import java.util.Optional;
  * @author Daniel
  *
  */
-public abstract class MapLayer {
+public abstract class MapLayer implements StateEditable {
 	protected boolean drawingTransparent;
 	protected Point start;
 	private boolean drawingOpaque;
@@ -29,9 +33,15 @@ public abstract class MapLayer {
 	private boolean firstClick;
 	private Point firstPoint;
    private Wall lastWall;
-   Room roomToDivide;
+   private Room roomToDivide;
+   private UndoableEditSupport undoSupport;
+   private UndoManager undoManager;
+   private StateEdit stateEdit;
 
    public MapLayer() {
+      undoSupport = new UndoableEditSupport(this);
+      undoManager = new UndoManager();
+      undoSupport.addUndoableEditListener(undoManager);
 		this.pathList = new ArrayList<>();
 		this.pointList = new ArrayList<>();
 		wallList = new ArrayList<>();
@@ -48,18 +58,33 @@ public abstract class MapLayer {
     * @param p the point the author clicked on
     */
 	public void drawOpaqueWalls(Point p) {
+
 	   firstClick = !firstClick;
 	   if(firstClick){
 	      firstPoint = p;
       }else{
+         startStateEdit();
 	      lastWall = new Wall(new Line2D.Double(firstPoint,p),Type.OPAQUE);
 	      wallList.add(lastWall);
          detectRooms();
          pointList.add(firstPoint);
          pointList.add(p);
+         endStateEdit();
       }
 
+
 	}
+
+	private void startStateEdit(){
+      stateEdit = new StateEdit(MapLayer.this);
+      RoomList.getInstance().startStateEdit();
+   }
+
+   private void endStateEdit(){
+      stateEdit.end();
+      RoomList.getInstance().endStateEdit();
+      undoManager.addEdit(stateEdit);
+   }
 
    /**
     * Method called to detect rooms from lines drawn on the map
@@ -71,7 +96,7 @@ public abstract class MapLayer {
       //tempRoomList now contains all the valid rooms and only the valid rooms
 
       //if tempRoomList is bigger than the RoomList, there's a new room in town
-      if(tempRoomList.size()>RoomList.list.size()) {
+      if(tempRoomList.size()>RoomList.getInstance().list.size()) {
          addNewRooms(tempRoomList);
       }
 
@@ -86,8 +111,8 @@ public abstract class MapLayer {
       ArrayList<Room> newRooms = new ArrayList<>();
       for (Room roomA : tempRoomList) {
          boolean unique = true;
-         for (int j = 0; unique && j < RoomList.list.size(); j++) {
-            Room roomB = RoomList.list.get(j);
+         for (int j = 0; unique && j < RoomList.getInstance().list.size(); j++) {
+            Room roomB = RoomList.getInstance().list.get(j);
             if (roomA.pointList.containsAll(roomB.pointList)) {
                unique = false;
             }
@@ -100,9 +125,9 @@ public abstract class MapLayer {
       //check which if any of the new rooms are from splitting a room, handle that if so
       ArrayList<Room> roomsToRemove = new ArrayList<>();
       ArrayList<Room> subRooms = new ArrayList<>();
-      for (int i = 0; i < RoomList.list.size(); i++) {
+      for (int i = 0; i < RoomList.getInstance().list.size(); i++) {
          ArrayList<Room> containedRooms = new ArrayList<>();
-         Room roomA = RoomList.list.get(i);
+         Room roomA = RoomList.getInstance().list.get(i);
          for (Room roomB : newRooms) {
             if (roomA.contains(roomB)) {
                containedRooms.add(roomB);
@@ -123,10 +148,10 @@ public abstract class MapLayer {
          }
       }
       //remove the old rooms, add the subRooms
-      RoomList.list.removeAll(roomsToRemove);
-      RoomList.list.addAll(subRooms);
+      RoomList.getInstance().list.removeAll(roomsToRemove);
+      RoomList.getInstance().list.addAll(subRooms);
       //if there are still remaining rooms, they're regular new rooms.  Simply add them
-      newRooms.forEach(room-> RoomList.add(new Room(room.walls)));
+      newRooms.forEach(room-> RoomList.getInstance().add(new Room(room.walls)));
    }
 
    /**
@@ -420,8 +445,8 @@ public abstract class MapLayer {
 
       if (firstClick) {
          //check that the player has clicked on the boundary of a room
-         for(int i = 0; roomToDivide==null && i<RoomList.list.size();i++){
-            Room room = RoomList.list.get(i);
+         for(int i = 0; roomToDivide==null && i<RoomList.getInstance().list.size();i++){
+            Room room = RoomList.getInstance().list.get(i);
             if(room.onBoundary(p)){
                roomToDivide = room;
             }
@@ -435,11 +460,14 @@ public abstract class MapLayer {
          }
       } else {
          if(roomToDivide.onBoundary(p)) {
+            StateEdit stateEdit = new StateEdit(MapLayer.this);
             pointList.add(firstPoint);
             pointList.add(p);
             lastWall = new Wall(new Line2D.Double(firstPoint, p), Type.TRANSPARENT);
             wallList.add(lastWall);
             detectRooms();
+            stateEdit.end();
+            undoManager.addEdit(stateEdit);
          }else {
             //TODO error message that the author must divide a room with transparent walls
             walling = false;
@@ -454,10 +482,14 @@ public abstract class MapLayer {
 
 	public abstract MapLayer copy();
 
-	public abstract void undo();
+	public void undo(){
+	   if(undoManager.canUndo()){
+	      undoManager.undo();
+      }
+   }
 
 	public Room getRoom(Point p) {
-		return RoomList.getRoom(p);
+		return RoomList.getInstance().getRoom(p);
 	}
 
 	public void setSelectedRoom(Room r) {
@@ -466,7 +498,7 @@ public abstract class MapLayer {
 
    public void placeDoor(Point p) throws Throwable {
        this.guiPath = new GeneralPath();
-       ArrayList<Room> l = RoomList.list;
+       ArrayList<Room> l = RoomList.getInstance().list;
        for (int j = 0; j < l.size(); j++) { // For each room
            Room r = l.get(j);
            if (r.doorCount() < 8) { // Limit to 8 doors per room

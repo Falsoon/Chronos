@@ -175,8 +175,8 @@ public class Room {
 	public String getAdjacents() {
 		String adjacentRooms = "";
 		boolean first = true;
-		for (int i = 0; i < RoomList.list.size(); i++) {
-			Room r = RoomList.list.get(i);
+		for (int i = 0; i < RoomList.getInstance().list.size(); i++) {
+			Room r = RoomList.getInstance().list.get(i);
 			if (r.isAdjacent(this)) {
 				if (!first) {
 					adjacentRooms = adjacentRooms.concat(" and ");

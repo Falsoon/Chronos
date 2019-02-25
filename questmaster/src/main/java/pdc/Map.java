@@ -148,7 +148,7 @@ public class Map implements StateEditable {
 		if (manager.canUndo()) {
 			manager.undo();
 			mapLayer.undo();
-			RoomList.undo();
+			RoomList.getInstance().undo();
 			DoorList.undo();
 			undid = true;
 		}
@@ -209,7 +209,7 @@ public class Map implements StateEditable {
 	}
 
 	public void drawRoom(String str) {
-		room = RoomList.getRoomByStr(str);
+		room = RoomList.getInstance().getRoomByStr(str);
 		opaqueWallMode = true;
 		transparentWallMode = false;
 		dooring = false;
@@ -219,6 +219,6 @@ public class Map implements StateEditable {
 	}
 
 	public void setSelectedRoom(String str) {
-		mapLayer.setSelectedRoom(RoomList.getRoomByStr(str));
+		mapLayer.setSelectedRoom(RoomList.getInstance().getRoomByStr(str));
 	}
 }

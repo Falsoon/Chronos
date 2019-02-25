@@ -21,7 +21,7 @@ public class FormCiv {
 	}
 	
 	public void setRoomReference(String str) {
-		Room r = RoomList.getRoomByStr(str);
+		Room r = RoomList.getInstance().getRoomByStr(str);
 		if(r==null) {
 			room = new Room();
 		}else {
@@ -69,11 +69,11 @@ public class FormCiv {
 		if(room ==null) {
 			room = new Room();
 		}
-		RoomList.add(room);
+		RoomList.getInstance().add(room);
 	}
 
 	public boolean getRoomDrawn(String str) {
-		Room r = RoomList.getRoomByStr(str);
+		Room r = RoomList.getInstance().getRoomByStr(str);
 		if(r ==null) {return false;}
 		return r.isDrawn();
 	}
