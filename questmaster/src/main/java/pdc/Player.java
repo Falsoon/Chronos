@@ -14,7 +14,6 @@ public class Player {
 	private Point position;
 	private boolean placed, playing, placing;
 	private GeneralPath currentRoom;
-	// private Room currentRoom;
 	private MapLayer mapLayer;
 	private String representation;
 	private final int XOFFSET = 2;
@@ -71,13 +70,10 @@ public class Player {
 	}
 	
 	public void goUp() {
-		System.out.println("trying to go up");
 		if (playing) {
-			System.out.println("yup, we playin");
 			position.move(position.x, position.y - GRIDDISTANCE);
 			if (collides()) {
 				position.move(position.x, position.y + GRIDDISTANCE);
-				System.out.println("must be collidin");
 			}
 		}
 	}

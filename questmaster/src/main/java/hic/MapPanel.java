@@ -52,41 +52,6 @@ public class MapPanel extends JPanel {
 			}
 		};
 		addMouseListener(mousehandler);
-		/* fuck me I guess
-		KeyListener kl = new KeyListener(){
-		
-			@Override
-			public void keyTyped(KeyEvent e) {
-				// has to exist, even if empty
-			}
-		
-			@Override
-			public void keyReleased(KeyEvent e) {
-				// java why are you like this
-			}
-		
-			@Override
-			public void keyPressed(KeyEvent e) {
-				switch (e.getKeyCode()) {
-					case KeyEvent.VK_LEFT:
-						goLeft();
-						System.out.println("yo what the shit");
-						break;
-					case KeyEvent.VK_RIGHT:
-						goRight();
-						break;
-					case KeyEvent.VK_UP:
-						goUp();
-						break;
-					case KeyEvent.VK_DOWN:
-						goDown();
-						break;
-					default: break;
-				}
-			}
-		};
-		addKeyListener(kl);
-		*/
 	}
 	
 	protected void dialog(String message) {

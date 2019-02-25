@@ -39,49 +39,36 @@ public class StoryPanel extends JPanel {
 		createScene();
 		this.add(jfxPanel, BorderLayout.CENTER);
 		this.add(disPanel, BorderLayout.SOUTH);
-		
-		Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-            	// URL url = this.getClass().getResource("/Release/play.html");
-            	// engine.load(url.toString());
-            }
-        });	
 	}
 	private void createScene() {
 
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
-
-                Text t = new Text(mapPanel.getRoomName() + "\n\n" + mapPanel.getRoomDesc());
-                TextFlow tf = new TextFlow(t);
+                Text t = new Text("Begin exploring with WASD.");
+                printDetails(mapPanel.getRoomName(), mapPanel.getRoomDesc(), t);
                 VBox root = new VBox();
-                root.getChildren().add(tf);
-                //VBox.setVgrow(t, Priority.ALWAYS);
+                root.getChildren().add(t);
                 root.setPrefSize(400, 400);
-                // Region root = new Region();
-                //t.setX(400); 
-                //t.setY(400);
                 t.setTextAlignment(TextAlignment.LEFT);
-                //t.setWrappingWidth(400);
-                
-                Scene scene = new Scene(root);
+                t.setWrappingWidth(375);
+                ScrollPane pane = new ScrollPane(root);
+                Scene scene = new Scene(pane);
                 scene.setOnKeyPressed(event->{
                     switch (event.getCode()) {
-                        case LEFT:
+                        case A:
                             mapPanel.goLeft();
                             printDetails(mapPanel.getRoomName(), mapPanel.getRoomDesc(), t);
                             break;
-                        case RIGHT:
+                        case D:
                             mapPanel.goRight();
                             printDetails(mapPanel.getRoomName(), mapPanel.getRoomDesc(), t);
                             break;
-                        case UP:
+                        case W:
                             mapPanel.goUp();
                             printDetails(mapPanel.getRoomName(), mapPanel.getRoomDesc(), t);
                             break;
-                        case DOWN:
+                        case S:
                             mapPanel.goDown();
                             printDetails(mapPanel.getRoomName(), mapPanel.getRoomDesc(), t);
                             break;
@@ -94,8 +81,6 @@ public class StoryPanel extends JPanel {
 
             private void printDetails(String name, String desc, Text t) {
                 t.setText(name + "\n\n" + desc);
-                System.out.println("please just work this time: " + name + desc + " | " + t.getText());
-                repaint();
             }
         });
     }

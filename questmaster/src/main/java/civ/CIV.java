@@ -195,6 +195,9 @@ public class CIV {
 		return (p1.x - p0.x)*(p2.y - p0.y) - (p2.x - p0.x)*(p1.y - p0.y);
 	}
 	/*
+
+	NOTE: deliberately not deleted to be left as an output hook
+
 	public void outputStory() {
 		File out = new File("INFORM_Source/output.ni");
 		PrintStream output = null;
