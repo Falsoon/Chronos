@@ -10,12 +10,10 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.KeyStroke;
 
+
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
-import javafx.scene.web.WebEngine;
 import javafx.scene.Scene;
-import javafx.scene.input.KeyCode;
-import javafx.scene.web.WebView;
 import javafx.scene.*;
 import javafx.scene.text.*;
 import javafx.scene.layout.Priority;
@@ -24,13 +22,16 @@ import javafx.scene.layout.VBox;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Label;
 
+import javax.swing.*;
+import java.awt.*;
+import java.net.URL;
+
 /**
  * Presenter class used to update playerWindow and player data.
  */
 @SuppressWarnings("serial")
 public class StoryPanel extends JPanel {
 	private final JFXPanel jfxPanel = new JFXPanel();
-    private WebEngine engine;
 	private MapPanel mapPanel;
     private JPanel disPanel = new JPanel();
 	

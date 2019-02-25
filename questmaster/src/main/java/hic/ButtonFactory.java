@@ -1,12 +1,11 @@
 package hic;
-import java.awt.EventQueue;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
-import javax.swing.JButton;
-import javax.swing.JComboBox;
 
 import civ.FormCiv;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 /**
  * This class is used to encapsulate the creation of buttons and the logic behind
  * action listeners of each button 
@@ -209,6 +208,9 @@ public class ButtonFactory implements ActionListener  {
 		case "Doors":
 			authorWindow.mapPanel.paintDoors();
 			break;
+		case "Archway":
+         authorWindow.mapPanel.paintArchway();
+         break;
 		case "Portals":
 			authorWindow.mapPanel.stopDrawing();
 			break;

@@ -1,17 +1,13 @@
 package civ;
 
-import java.awt.EventQueue;
-import java.awt.Graphics;
-import java.awt.Point;
-import java.awt.Rectangle;
+import hic.FormWindow;
+import pdc.*;
+
+import java.awt.*;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
-
-import pdc.*;
-import hic.*;
 
 /**
  * This class is used as the civ/presenter class for map
@@ -26,6 +22,7 @@ public class CIV {
 	}
 
 	public void mousePressed(Point point,boolean isAltDown, boolean isLeftButton){
+	   System.out.println(RoomList.getInstance().list.size());
 		if (!isAltDown) {
 			point.setLocation(Math.round(((double) point.x) / Constants.GRIDDISTANCE) * Constants.GRIDDISTANCE,
 					Math.round(((double) point.y) / Constants.GRIDDISTANCE) * Constants.GRIDDISTANCE);
@@ -35,7 +32,7 @@ public class CIV {
 				map.mousePressed(point);
 			} else {
 				if (!map.getPlayer().isPlaying()) {
-					Room room = RoomList.getRoom(point);
+					Room room = RoomList.getInstance().getRoom(point);
 					if (room != null) {
 						EventQueue.invokeLater(new Runnable() {
 							public void run() {
@@ -52,6 +49,7 @@ public class CIV {
 				}
 			}
 		}else {
+		   System.out.println("Mouse Position: " + point);
 			map.stopDrawing();
 		}
 	}
@@ -62,7 +60,7 @@ public class CIV {
 
 	public boolean clear() {
 		map = new Map();
-		RoomList.reset();
+		RoomList.getInstance().reset();
 		return true;
 	}
 
@@ -121,8 +119,9 @@ public class CIV {
 	public void dooring() {
 		map.dooring();
 	}
-	
-	//look into creating door list
+
+	public void archwayAdd() { map.archwayAdd();}
+	//look into creating door pointList
 	public int numOfDoors() {
 		return map.numOfDoors();
 	}
@@ -137,14 +136,14 @@ public class CIV {
 
 	public ArrayList<String> getRoomList() {
 		ArrayList<String> rList = new ArrayList<String>();
-		for (int i = 0; i < RoomList.list.size(); i++) {
-			rList.add(RoomList.list.get(i).toString());
+		for (int i = 0; i < RoomList.getInstance().list.size(); i++) {
+			rList.add(RoomList.getInstance().list.get(i).toString());
 		}
 		return rList;
 	}
 
 	public Rectangle getRoomBounds(String str) {
-		Room r = RoomList.getRoomByStr(str);
+		Room r = RoomList.getInstance().getRoomByStr(str);
 		if (r == null || r.path == null) {
 			return null;
 		} else {
@@ -213,4 +212,8 @@ public class CIV {
 		}
 	}
 	*/
+
+	public void showDialog(){
+
+   }
 }

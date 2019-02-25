@@ -1,13 +1,7 @@
 package pdc;
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Point;
-import java.awt.RenderingHints;
-import java.awt.Stroke;
-import java.awt.geom.GeneralPath;
-import java.util.ArrayList;
+
+import java.awt.*;
+import java.util.Hashtable;
 
 public class MapDoorLayer extends MapLayer {
 	@Override
@@ -30,7 +24,8 @@ public class MapDoorLayer extends MapLayer {
 
 	@Override
 	public MapLayer copy() {
-		MapLayer copy = new MapDoorLayer();
+
+		/*
 		if(copy.pathList==null) {
 			copy.pathList = new ArrayList<GeneralPath>();
 		}
@@ -39,15 +34,23 @@ public class MapDoorLayer extends MapLayer {
 		}
 		for(int i=0; i< pathList.size();i++) {
 			copy.pathList.add((GeneralPath)pathList.get(i).clone());
-		}
+		}*/
 		
-		return copy;
+		return new MapDoorLayer();
 	}
 
 	@Override
 	public void undo() {		
 	}
-	
 
 
+   @Override
+   public void storeState(Hashtable<Object, Object> state) {
+
+   }
+
+   @Override
+   public void restoreState(Hashtable<?, ?> state) {
+
+   }
 }

@@ -30,16 +30,7 @@ class SimplePortalsDoorsTC06Test {
 		map = null;
 		bf = null;
 		civ = null;
-		RoomList.reset();
-		DoorList.reset();
-	}
-
-	@BeforeEach
-	public void setUp() {
-		civ = new CIV();
-		map = new Map();
-		aw = new AuthorWindow();
-		bf = new ButtonFactory(aw);
+		RoomList.getInstance().reset();
 	}
 	
 	@Test
@@ -50,10 +41,6 @@ class SimplePortalsDoorsTC06Test {
 		civ.outlining();
 		civ.mousePressed(new Point(50, 50), false, true);
 		civ.mousePressed(new Point(50, 100), false, true);
-		civ.mousePressed(new Point(100, 100), false, true);
-		civ.mousePressed(new Point(50, 50), false, true);
-		// the real problem is that we can change to adding doors before drawing the
-		// room is finished. To be fixed.
 		
 		civ.dooring();
 		civ.mousePressed(new Point(50, 75), false, true);
@@ -69,8 +56,6 @@ class SimplePortalsDoorsTC06Test {
 		civ.outlining();
 		civ.mousePressed(new Point(50, 50), false, true);
 		civ.mousePressed(new Point(50, 100), false, true);
-		civ.mousePressed(new Point(100, 100), false, true);
-		civ.mousePressed(new Point(50, 50), false, true);
 		
 		civ.dooring();
 		civ.mousePressed(new Point(50, 75), false, true);
