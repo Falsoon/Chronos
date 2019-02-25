@@ -53,6 +53,7 @@ public class StoryPanel extends JPanel {
                 t.setTextAlignment(TextAlignment.LEFT);
                 t.setWrappingWidth(375);
                 ScrollPane pane = new ScrollPane(root);
+                pane.setFitToWidth(true);
                 Scene scene = new Scene(pane);
                 scene.setOnKeyPressed(event->{
                     switch (event.getCode()) {
