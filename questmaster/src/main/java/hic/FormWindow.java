@@ -67,8 +67,12 @@ public class FormWindow  {
 
 		portalCombo = new JComboBox<>();
 		portalCombo.addItem("Select Door");
-		ArrayList<Door> doorList = formCiv.getRoomDoors();
-		for (int i = 0; i < doorList.size();i++) {
+		//ArrayList<Door> doorList = formCiv.getRoomDoors();
+		ArrayList<Door> doorList = new ArrayList<Door>();
+		if (formCiv.getRoomDoors() != null) {
+			doorList = formCiv.getRoomDoors();
+		}
+		for (int i = 0; i < doorList.size(); i++) {
 			portalCombo.addItem(DoorList.list.get(i).toString());
 		}
 		portalCombo.setBounds(250, 50, 90, 20);

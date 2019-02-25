@@ -52,7 +52,7 @@ public class RoomList implements StateEditable {
 
 	public void reset() {
 		list.clear();
-		Room.idCount =1;
+		Room.idCount = 1;
 	}
 
 	public Room getRoomById(int id) {

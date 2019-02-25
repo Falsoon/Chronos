@@ -29,7 +29,6 @@ class DescriptionFormTC05Test {
 	private Room room = new Room();
 	private CIV civ = new CIV();
 	private FormCiv fc = new FormCiv() ;
-	//private FormWindow fw = new FormWindow(fc, false);
 	private AuthorWindow aw = new AuthorWindow();
 	private ButtonFactory bf = new ButtonFactory(aw);
 	private JTextArea textArea, titleText;
@@ -39,7 +38,6 @@ class DescriptionFormTC05Test {
 	public void tearDown() {
 		room = null;
 		fc = null;
-		//fw = null;
 		aw = null;
 		bf = null;
 		civ = null;
@@ -180,7 +178,8 @@ class DescriptionFormTC05Test {
 		
 		
 	}
-	
+	/*
+	Why the hell was this a test in the first place?
 	@Test
 	void testCreateRoomDescThenDrawRoom() throws Throwable {
 		//author creates room description and then draws room
@@ -231,7 +230,8 @@ class DescriptionFormTC05Test {
 		assertEquals("1234", room.desc );
 		
 	}
-	
+	*/
+
 	@Test
 	void testRoomID() {
 		RoomList.getInstance().add(room);
