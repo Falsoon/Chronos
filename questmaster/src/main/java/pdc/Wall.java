@@ -41,6 +41,9 @@ public class Wall {
    public Point2D getP2(){
       return lineRepresentation.getP2();
    }
+   public double getDistance(Point2D p){
+      return lineRepresentation.ptSegDist(p);
+   }
    public Line2D getLineRepresentation(){
       return lineRepresentation;
    }
