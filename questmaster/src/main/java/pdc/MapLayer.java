@@ -329,7 +329,21 @@ public abstract class MapLayer implements StateEditable {
       boolean flag = false;
       for(int i = 0; i< this.wallList.size(); i++)
       {
-         if (this.wallList.get(i).getLineRepresentation().ptLineDist(point) < 1)
+         Rectangle tempRect = this.wallList.get(i).getLineRepresentation().getBounds();
+         double x = tempRect.getX();
+         double y = tempRect.getY();
+         double w = tempRect.getWidth();
+         double h = tempRect.getHeight();
+         if(h == 0)
+         {
+            tempRect.setRect(x,y,w,1.0);
+         }
+         else
+         {
+            tempRect.setRect(x,y,1.0,h);
+         }
+
+         if (tempRect.contains(point))
          {
             Wall archwayWallObj = this.wallList.get(i);
             archwayWall = archwayWallObj.getLineRepresentation();
@@ -353,6 +367,7 @@ public abstract class MapLayer implements StateEditable {
          Point2D start = archwayWall.getP1();
          Point2D end = archwayWall.getP2();
          Wall newStartWall = new Wall(new Line2D.Double(start, point),Type.OPAQUE);
+         //TODO: Limit number of archways on wall?
          Point2D endArchway;
          if(archwayWall.getX1() == archwayWall.getX2())
          {
@@ -372,8 +387,9 @@ public abstract class MapLayer implements StateEditable {
          }
          Wall newEndWall = new Wall(new Line2D.Double(endArchway, end),Type.OPAQUE);
          Wall archwaySeg = new Wall(new Line2D.Double(point, endArchway),Type.ARCHWAY);
-         System.out.println("Start: " + start + "\nPoint: " + point + "\nEndArch: " + endArchway + "\nEnd: " + end);
-         System.out.println("StartWall: " + newStartWall.getLineRepresentation() + "\nArchway:" + archwaySeg.getLineRepresentation() + "\nEnd: "+ newEndWall.getLineRepresentation());
+         //System.out.println("Start: " + start + "\nPoint: " + point + "\nEndArch: " + endArchway + "\nEnd: " + end);
+         //System.out.println("StartWall: " + newStartWall.getLineRepresentation() + "\nArchway:" + archwaySeg
+         // .getLineRepresentation() + "\nEnd: "+ newEndWall.getLineRepresentation());
          this.wallList.add(newStartWall);
          this.wallList.add(archwaySeg);
          this.wallList.add(newEndWall);
