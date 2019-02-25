@@ -30,7 +30,7 @@ class SimplePortalsDoorsTC06Test {
 		map = null;
 		bf = null;
 		civ = null;
-		RoomList.reset();
+		RoomList.getInstance().reset();
 		DoorList.reset();
 	}
 
