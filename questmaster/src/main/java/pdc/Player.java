@@ -135,11 +135,17 @@ public class Player {
 	}
 
 	public String getRoomName() {
+		if (RoomList.getInstance().getRoom(position) == null) {
+			return "why are you null shithead";
+		}
 		return RoomList.getInstance().getRoom(position).title;
 		// return currentRoom.title;
 	}
 
 	public String getRoomDesc() {
+		if (RoomList.getInstance().getRoom(position) == null) {
+			return "why are you null shithead";
+		}
 		return RoomList.getInstance().getRoom(position).desc;
 		// return currentRoom.desc;
 	}
