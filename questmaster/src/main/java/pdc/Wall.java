@@ -3,8 +3,6 @@ package pdc;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 
-enum Type {OPAQUE,TRANSPARENT,ARCHWAY,DOOR}
-
 /**
  * Representation of a wall as a Line2D and type of wall
  */
