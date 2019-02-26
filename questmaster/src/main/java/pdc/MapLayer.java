@@ -333,7 +333,8 @@ public abstract class MapLayer implements StateEditable {
          {
             Wall archwayWallObj = this.wallList.get(i);
             archwayWall = archwayWallObj.getLineRepresentation();
-            System.out.println(Math.sqrt( ( ( archwayWall.getX2() - archwayWall.getX1() ) * ( archwayWall.getX2() - archwayWall.getX1() ) ) + ( ( archwayWall.getY2() - archwayWall.getY1() ) * ( archwayWall.getY2() - archwayWall.getY1() ) ) ));
+            //System.out.println(Math.sqrt( ( ( archwayWall.getX2() - archwayWall.getX1() ) * ( archwayWall.getX2() -
+            // archwayWall.getX1() ) ) + ( ( archwayWall.getY2() - archwayWall.getY1() ) * ( archwayWall.getY2() - archwayWall.getY1() ) ) ));
             if(Math.sqrt( ( ( archwayWall.getX2() - archwayWall.getX1() ) * ( archwayWall.getX2() - archwayWall.getX1() ) ) + ( ( archwayWall.getY2() - archwayWall.getY1() ) * ( archwayWall.getY2() - archwayWall.getY1() ) ) )>= 15)
             {
                if((archwayWall.getX1() == archwayWall.getX2())  || (archwayWall.getY1() == archwayWall.getY2())) {
@@ -547,6 +548,10 @@ public abstract class MapLayer implements StateEditable {
 
     }
 
+    public ArrayList<Wall> getWallList()
+    {
+       return wallList;
+    }
    /**
     * Custom comparator used to sort points when breaking up walls.
     */
