@@ -136,7 +136,7 @@ public class Player {
 
 	public String getRoomName() {
 		if (RoomList.getInstance().getRoom(position) == null) {
-			return "why are you null shithead";
+			return "~CANT GET ROOM NAME~";
 		}
 		return RoomList.getInstance().getRoom(position).title;
 		// return currentRoom.title;
@@ -144,7 +144,7 @@ public class Player {
 
 	public String getRoomDesc() {
 		if (RoomList.getInstance().getRoom(position) == null) {
-			return "why are you null shithead";
+			return "~CANT GET ROOM DESCRIPTION~";
 		}
 		return RoomList.getInstance().getRoom(position).desc;
 		// return currentRoom.desc;
