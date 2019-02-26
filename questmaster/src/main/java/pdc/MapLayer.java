@@ -329,30 +329,22 @@ public abstract class MapLayer implements StateEditable {
       boolean flag = false;
       for(int i = 0; i< this.wallList.size(); i++)
       {
-         Rectangle tempRect = this.wallList.get(i).getLineRepresentation().getBounds();
-         double x = tempRect.getX();
-         double y = tempRect.getY();
-         double w = tempRect.getWidth();
-         double h = tempRect.getHeight();
-         if(h == 0)
-         {
-            tempRect.setRect(x,y,w,1.0);
-         }
-         else
-         {
-            tempRect.setRect(x,y,1.0,h);
-         }
-
-         if (tempRect.contains(point))
+         if (this.wallList.get(i).getDistance(point) ==0)
          {
             Wall archwayWallObj = this.wallList.get(i);
             archwayWall = archwayWallObj.getLineRepresentation();
             System.out.println(Math.sqrt( ( ( archwayWall.getX2() - archwayWall.getX1() ) * ( archwayWall.getX2() - archwayWall.getX1() ) ) + ( ( archwayWall.getY2() - archwayWall.getY1() ) * ( archwayWall.getY2() - archwayWall.getY1() ) ) ));
             if(Math.sqrt( ( ( archwayWall.getX2() - archwayWall.getX1() ) * ( archwayWall.getX2() - archwayWall.getX1() ) ) + ( ( archwayWall.getY2() - archwayWall.getY1() ) * ( archwayWall.getY2() - archwayWall.getY1() ) ) )>= 15)
             {
-               this.wallList.remove(archwayWallObj);
-               flag = true;
-               break;
+               if((archwayWall.getX1() == archwayWall.getX2())  || (archwayWall.getY1() == archwayWall.getY2())) {
+                  this.wallList.remove(archwayWallObj);
+                  flag = true;
+                  break;
+               }
+               else
+               {
+                  throw new Throwable("Archway must be placed on a rectilinear wall");
+               }
             }
             else
             {
