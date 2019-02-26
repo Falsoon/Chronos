@@ -132,11 +132,13 @@ public class Room {
 						p3.getX(), p3.getY());
 	}
 
+	// TODO: Restore to previous version when path order is fixed
 	public boolean contains(Point p) {
 		if (this.path == null) {
 			return false;
 		}
-		if (this.path.contains(p)) {
+		// if (this.path.contains(p)) {
+		if (this.path.getBounds().contains(p)) {
 			return true;
 		}
 		return(onBoundary(p));
