@@ -29,7 +29,6 @@ class DescriptionFormTC05Test {
 	private Room room = new Room();
 	private CIV civ = new CIV();
 	private FormCiv fc = new FormCiv() ;
-	//private FormWindow fw = new FormWindow(fc, false);
 	private AuthorWindow aw = new AuthorWindow();
 	private ButtonFactory bf = new ButtonFactory(aw);
 	private JTextArea textArea, titleText;
@@ -39,7 +38,6 @@ class DescriptionFormTC05Test {
 	public void tearDown() {
 		room = null;
 		fc = null;
-		//fw = null;
 		aw = null;
 		bf = null;
 		civ = null;

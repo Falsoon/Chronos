@@ -31,6 +31,15 @@ class SimplePortalsDoorsTC06Test {
 		bf = null;
 		civ = null;
 		RoomList.getInstance().reset();
+		DoorList.reset();
+	}
+
+	@BeforeEach
+	public void setUp() {
+		civ = new CIV();
+		map = new Map();
+		aw = new AuthorWindow();
+		bf = new ButtonFactory(aw);
 	}
 	
 	@Test
