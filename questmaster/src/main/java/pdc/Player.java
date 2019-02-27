@@ -15,7 +15,7 @@ public class Player {
 	private String representation;
 	private final int XOFFSET = 2;
 	private final int YOFFSET = 4;
-	private final double COLLISION_MARGIN = 10;
+	private final double COLLISION_MARGIN = 13.01;
 	
 	public Player(MapLayer mapLayer){
 		placed = false;
