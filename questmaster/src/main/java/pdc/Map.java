@@ -183,6 +183,7 @@ public class Map implements StateEditable {
 		transparentWallMode = false;
 		dooring = false;
 		archwayAdd = false;
+		mapLayer.stopDrawing();
 	}
 
 	public void drawRoom(String str) {

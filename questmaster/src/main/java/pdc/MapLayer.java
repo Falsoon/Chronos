@@ -31,12 +31,13 @@ public abstract class MapLayer implements StateEditable {
 	protected Room selectedRoom;
 	protected ArrayList<Wall> wallList;
 	private boolean firstClick;
-	private Point firstPoint;
    private Wall lastWall;
    private Room roomToDivide;
    private UndoableEditSupport undoSupport;
    private UndoManager undoManager;
    private StateEdit stateEdit;
+   private Point lastPoint;
+   private boolean wasFirstClick;
 
    public MapLayer() {
       undoSupport = new UndoableEditSupport(this);
@@ -47,7 +48,7 @@ public abstract class MapLayer implements StateEditable {
 		wallList = new ArrayList<>();
 		this.drawingTransparent = false;
 		this.selectedRoom = null;
-		firstClick = false;
+		firstClick = true;
 		roomToDivide = null;
 	}
 
@@ -59,19 +60,24 @@ public abstract class MapLayer implements StateEditable {
     */
 	public void drawOpaqueWalls(Point p) {
 
-	   firstClick = !firstClick;
 	   if(firstClick){
-	      firstPoint = p;
+	      lastPoint = p;
+	      firstClick = false;
+	      wasFirstClick = true;
       }else{
          startStateEdit();
-	      lastWall = new Wall(new Line2D.Double(firstPoint,p),Type.OPAQUE);
+	      lastWall = new Wall(new Line2D.Double(lastPoint,p),Type.OPAQUE);
 	      wallList.add(lastWall);
          detectRooms();
-         pointList.add(firstPoint);
+         //add lastPoint if it hasn't been added yet
+         if(wasFirstClick){
+            pointList.add(lastPoint);
+            wasFirstClick = false;
+         }
          pointList.add(p);
+         lastPoint = p;
          endStateEdit();
       }
-
 
 	}
 
@@ -449,14 +455,14 @@ public abstract class MapLayer implements StateEditable {
             walling = false;
             firstClick = false;
          }else {
-            firstPoint = p;
+            lastPoint = p;
          }
       } else {
-         if(roomToDivide.onBoundary(p)) {
+         if(roomToDivide!=null&&roomToDivide.onBoundary(p)) {
             StateEdit stateEdit = new StateEdit(MapLayer.this);
-            pointList.add(firstPoint);
+            pointList.add(lastPoint);
             pointList.add(p);
-            lastWall = new Wall(new Line2D.Double(firstPoint, p), Type.TRANSPARENT);
+            lastWall = new Wall(new Line2D.Double(lastPoint, p), Type.TRANSPARENT);
             wallList.add(lastWall);
             detectRooms();
             stateEdit.end();
@@ -465,7 +471,7 @@ public abstract class MapLayer implements StateEditable {
             //TODO error message that the author must divide a room with transparent walls
             walling = false;
          }
-         roomToDivide=null;
+         roomToDivide = null;
       }
 
 
@@ -552,6 +558,16 @@ public abstract class MapLayer implements StateEditable {
     {
        return wallList;
     }
+
+   /**
+    * Represents changes of state when the author stops drawing
+    */
+   public void stopDrawing() {
+	   firstClick = true;
+	   lastPoint = null;
+	   wasFirstClick = false;
+   }
+
    /**
     * Custom comparator used to sort points when breaking up walls.
     */

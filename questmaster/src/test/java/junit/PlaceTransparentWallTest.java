@@ -222,7 +222,6 @@ public class PlaceTransparentWallTest {
       civ.mousePressed(point1, false, true, false);
       civ.mousePressed(point2, false, true, false);
 
-
       assertTrue(civ.getRoomList().isEmpty());
       assertFalse(civ.map.isCreating());
       assertFalse(civ.map.mapLayer.pointList.contains(point1));

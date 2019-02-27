@@ -89,7 +89,7 @@ class DetectRoomsTest {
       assertTrue(civ.map.mapLayer.pointList.contains(point2));
       assertTrue(civ.map.mapLayer.pointList.contains(point3));
       assertTrue(civ.map.mapLayer.pointList.contains(point4));
-      assertFalse(civ.map.mapLayer.pointList.contains(point5));
+      assertTrue(civ.map.mapLayer.pointList.contains(point5));
    }
 
    // N - User clicks the corners to make an L-shaped room
@@ -349,6 +349,29 @@ class DetectRoomsTest {
       assertTrue(civ.map.mapLayer.pointList.contains(new Point(300, 300)));
       assertTrue(civ.map.mapLayer.pointList.contains(new Point(105, 300)));
       assertTrue(civ.map.mapLayer.pointList.contains(new Point(105, 90)));
+   }
+
+   //N - Author draws a room with continuous lines
+   @Test
+   void testN9() {
+      civ.outlining();
+      Point point1 = new Point(15, 15);
+      Point point2 = new Point(15, 75);
+      Point point3 = new Point(75, 75);
+      Point point4 = new Point(75, 15);
+
+      civ.mousePressed(point1, false, true,false);
+      civ.mousePressed(point2, false, true,false);
+      civ.mousePressed(point3, false, true,false);
+      civ.mousePressed(point4, false, true,false);
+      civ.mousePressed(point1, false, true,false);
+
+      assertEquals(1, civ.getRoomList().size());
+      assertTrue(civ.map.isCreating());
+      assertTrue(civ.map.mapLayer.pointList.contains(point1));
+      assertTrue(civ.map.mapLayer.pointList.contains(point2));
+      assertTrue(civ.map.mapLayer.pointList.contains(point3));
+      assertTrue(civ.map.mapLayer.pointList.contains(point4));
    }
 
 	// B - User makes a small room (1x1)
