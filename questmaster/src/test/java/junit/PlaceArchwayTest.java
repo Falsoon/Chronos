@@ -37,17 +37,17 @@ public class PlaceArchwayTest {
 
       Point point5 = new Point(15, 45);
 
-      civ.mousePressed(point1, false, true);
-      civ.mousePressed(point2, false, true);
+      civ.mousePressed(point1, false, true,false);
+      civ.mousePressed(point2, false, true,false);
 
-      civ.mousePressed(point2, false, true);
-      civ.mousePressed(point3, false, true);
+      civ.mousePressed(point2, false, true,false);
+      civ.mousePressed(point3, false, true,false);
 
-      civ.mousePressed(point3, false, true);
-      civ.mousePressed(point4, false, true);
+      civ.mousePressed(point3, false, true,false);
+      civ.mousePressed(point4, false, true,false);
 
-      civ.mousePressed(point4, false, true);
-      civ.mousePressed(point1, false, true);
+      civ.mousePressed(point4, false, true,false);
+      civ.mousePressed(point1, false, true,false);
 
       assertEquals(1, civ.getRoomList().size());
       assertTrue(civ.map.isCreating());
@@ -58,7 +58,7 @@ public class PlaceArchwayTest {
 
       civ.archwayAdd();
 
-      civ.mousePressed(point5, false, true);
+      civ.mousePressed(point5, false, true,false);
 
       assertEquals(1, civ.getRoomList().size());
       assertTrue(civ.map.isCreating());
@@ -80,17 +80,17 @@ public class PlaceArchwayTest {
 
       Point point5 = new Point(75, 45);
 
-      civ.mousePressed(point1, false, true);
-      civ.mousePressed(point2, false, true);
+      civ.mousePressed(point1, false, true,false);
+      civ.mousePressed(point2, false, true,false);
 
-      civ.mousePressed(point2, false, true);
-      civ.mousePressed(point3, false, true);
+      civ.mousePressed(point2, false, true,false);
+      civ.mousePressed(point3, false, true,false);
 
-      civ.mousePressed(point3, false, true);
-      civ.mousePressed(point4, false, true);
+      civ.mousePressed(point3, false, true,false);
+      civ.mousePressed(point4, false, true,false);
 
-      civ.mousePressed(point4, false, true);
-      civ.mousePressed(point1, false, true);
+      civ.mousePressed(point4, false, true,false);
+      civ.mousePressed(point1, false, true,false);
 
       assertEquals(1, civ.getRoomList().size());
       assertTrue(civ.map.isCreating());
@@ -101,7 +101,7 @@ public class PlaceArchwayTest {
 
       civ.archwayAdd();
 
-      civ.mousePressed(point5, false, true);
+      civ.mousePressed(point5, false, true,false);
 
       assertEquals(1, civ.getRoomList().size());
       assertTrue(civ.map.isCreating());
@@ -123,17 +123,17 @@ public class PlaceArchwayTest {
 
       Point point5 = new Point(45, 15);
 
-      civ.mousePressed(point1, false, true);
-      civ.mousePressed(point2, false, true);
+      civ.mousePressed(point1, false, true,false);
+      civ.mousePressed(point2, false, true,false);
 
-      civ.mousePressed(point2, false, true);
-      civ.mousePressed(point3, false, true);
+      civ.mousePressed(point2, false, true,false);
+      civ.mousePressed(point3, false, true,false);
 
-      civ.mousePressed(point3, false, true);
-      civ.mousePressed(point4, false, true);
+      civ.mousePressed(point3, false, true,false);
+      civ.mousePressed(point4, false, true,false);
 
-      civ.mousePressed(point4, false, true);
-      civ.mousePressed(point1, false, true);
+      civ.mousePressed(point4, false, true,false);
+      civ.mousePressed(point1, false, true,false);
 
       assertEquals(1, civ.getRoomList().size());
       assertTrue(civ.map.isCreating());
@@ -144,7 +144,7 @@ public class PlaceArchwayTest {
 
       civ.archwayAdd();
 
-      civ.mousePressed(point5, false, true);
+      civ.mousePressed(point5, false, true,false);
 
       assertEquals(1, civ.getRoomList().size());
       assertTrue(civ.map.isCreating());
@@ -166,17 +166,17 @@ public class PlaceArchwayTest {
 
       Point point5 = new Point(45, 75);
 
-      civ.mousePressed(point1, false, true);
-      civ.mousePressed(point2, false, true);
+      civ.mousePressed(point1, false, true,false);
+      civ.mousePressed(point2, false, true,false);
 
-      civ.mousePressed(point2, false, true);
-      civ.mousePressed(point3, false, true);
+      civ.mousePressed(point2, false, true,false);
+      civ.mousePressed(point3, false, true,false);
 
-      civ.mousePressed(point3, false, true);
-      civ.mousePressed(point4, false, true);
+      civ.mousePressed(point3, false, true,false);
+      civ.mousePressed(point4, false, true,false);
 
-      civ.mousePressed(point4, false, true);
-      civ.mousePressed(point1, false, true);
+      civ.mousePressed(point4, false, true,false);
+      civ.mousePressed(point1, false, true,false);
 
       assertEquals(1, civ.getRoomList().size());
       assertTrue(civ.map.isCreating());
@@ -187,7 +187,7 @@ public class PlaceArchwayTest {
 
       civ.archwayAdd();
 
-      civ.mousePressed(point5, false, true);
+      civ.mousePressed(point5, false, true,false);
 
       assertEquals(1, civ.getRoomList().size());
       assertTrue(civ.map.isCreating());
@@ -214,26 +214,26 @@ public class PlaceArchwayTest {
 
       Point point7 = new Point(105, 75);
 
-      civ.mousePressed(point1, false, true);
-      civ.mousePressed(point2, false, true);
+      civ.mousePressed(point1, false, true, false);
+      civ.mousePressed(point2, false, true, false);
 
-      civ.mousePressed(point2, false, true);
-      civ.mousePressed(point3, false, true);
+      civ.mousePressed(point2, false, true, false);
+      civ.mousePressed(point3, false, true, false);
 
-      civ.mousePressed(point3, false, true);
-      civ.mousePressed(point4, false, true);
+      civ.mousePressed(point3, false, true, false);
+      civ.mousePressed(point4, false, true, false);
 
-      civ.mousePressed(point4, false, true);
-      civ.mousePressed(point1, false, true);
+      civ.mousePressed(point4, false, true, false);
+      civ.mousePressed(point1, false, true, false);
 
-      civ.mousePressed(point3, false, true);
-      civ.mousePressed(point5, false, true);
+      civ.mousePressed(point3, false, true, false);
+      civ.mousePressed(point5, false, true, false);
 
-      civ.mousePressed(point5, false, true);
-      civ.mousePressed(point6, false, true);
+      civ.mousePressed(point5, false, true, false);
+      civ.mousePressed(point6, false, true, false);
 
-      civ.mousePressed(point6, false, true);
-      civ.mousePressed(point4, false, true);
+      civ.mousePressed(point6, false, true, false);
+      civ.mousePressed(point4, false, true, false);
 
       assertEquals(2, civ.getRoomList().size());
       assertTrue(civ.map.isCreating());
@@ -246,7 +246,7 @@ public class PlaceArchwayTest {
 
       civ.archwayAdd();
 
-      civ.mousePressed(point7, false, true);
+      civ.mousePressed(point7, false, true, false);
 
       assertEquals(2, civ.getRoomList().size());
       assertTrue(civ.map.isCreating());
@@ -269,17 +269,17 @@ public class PlaceArchwayTest {
 
       Point point5 = new Point(10, 0);
 
-      civ.mousePressed(point1, false, true);
-      civ.mousePressed(point2, false, true);
+      civ.mousePressed(point1, false, true, false);
+      civ.mousePressed(point2, false, true, false);
 
-      civ.mousePressed(point2, false, true);
-      civ.mousePressed(point3, false, true);
+      civ.mousePressed(point2, false, true, false);
+      civ.mousePressed(point3, false, true, false);
 
-      civ.mousePressed(point3, false, true);
-      civ.mousePressed(point4, false, true);
+      civ.mousePressed(point3, false, true, false);
+      civ.mousePressed(point4, false, true, false);
 
-      civ.mousePressed(point4, false, true);
-      civ.mousePressed(point1, false, true);
+      civ.mousePressed(point4, false, true, false);
+      civ.mousePressed(point1, false, true, false);
 
       assertEquals(1, civ.getRoomList().size());
       assertTrue(civ.map.isCreating());
@@ -290,7 +290,7 @@ public class PlaceArchwayTest {
 
       civ.archwayAdd();
 
-      civ.mousePressed(point5, false, true);
+      civ.mousePressed(point5, false, true, false);
 
       assertEquals(1, civ.getRoomList().size());
       assertTrue(civ.map.mapLayer.pointList.contains(point1));
@@ -312,17 +312,17 @@ public class PlaceArchwayTest {
 
       Point point5 = new Point(20, 45);
 
-      civ.mousePressed(point1, false, true);
-      civ.mousePressed(point2, false, true);
+      civ.mousePressed(point1, false, true, false);
+      civ.mousePressed(point2, false, true, false);
 
-      civ.mousePressed(point2, false, true);
-      civ.mousePressed(point3, false, true);
+      civ.mousePressed(point2, false, true, false);
+      civ.mousePressed(point3, false, true, false);
 
-      civ.mousePressed(point3, false, true);
-      civ.mousePressed(point4, false, true);
+      civ.mousePressed(point3, false, true, false);
+      civ.mousePressed(point4, false, true, false);
 
-      civ.mousePressed(point4, false, true);
-      civ.mousePressed(point1, false, true);
+      civ.mousePressed(point4, false, true, false);
+      civ.mousePressed(point1, false, true, false);
 
       assertEquals(1, civ.getRoomList().size());
       assertTrue(civ.map.isCreating());
@@ -333,7 +333,7 @@ public class PlaceArchwayTest {
 
       civ.archwayAdd();
 
-      civ.mousePressed(point5, false, true);
+      civ.mousePressed(point5, false, true, false);
 
       assertEquals(1, civ.getRoomList().size());
       assertTrue(civ.map.mapLayer.pointList.contains(point1));
