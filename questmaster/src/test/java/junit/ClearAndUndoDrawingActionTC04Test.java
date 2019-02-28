@@ -43,14 +43,8 @@ class ClearAndUndoDrawingActionTC04Test {
 		civ.outlining();
 		civ.mousePressed(p0, false, true,false);
 		civ.mousePressed(p1, false, true,false);
-
-      civ.mousePressed(p1, false, true,false);
 		civ.mousePressed(p2, false, true,false);
-
-      civ.mousePressed(p2, false, true,false);
 		civ.mousePressed(p3, false, true,false);
-
-      civ.mousePressed(p3, false, true,false);
       civ.mousePressed(p0, false, true,false);
 
       assertTrue(civ.undo());
@@ -58,7 +52,7 @@ class ClearAndUndoDrawingActionTC04Test {
       assertTrue(civ.map.mapLayer.pointList.contains(p1));
       assertTrue(civ.map.mapLayer.pointList.contains(p2));
       assertTrue(civ.map.mapLayer.pointList.contains(p3));
-		assertEquals(6, civ.map.mapLayer.pointList.size());
+		assertEquals(4, civ.map.mapLayer.pointList.size());
 		
 	}
 	

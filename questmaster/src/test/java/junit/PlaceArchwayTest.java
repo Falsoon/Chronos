@@ -34,18 +34,11 @@ public class PlaceArchwayTest {
       Point point2 = new Point(15, 75);
       Point point3 = new Point(75, 75);
       Point point4 = new Point(75, 15);
-
       Point point5 = new Point(15, 45);
 
       civ.mousePressed(point1, false, true,false);
       civ.mousePressed(point2, false, true,false);
-
-      civ.mousePressed(point2, false, true,false);
       civ.mousePressed(point3, false, true,false);
-
-      civ.mousePressed(point3, false, true,false);
-      civ.mousePressed(point4, false, true,false);
-
       civ.mousePressed(point4, false, true,false);
       civ.mousePressed(point1, false, true,false);
 
@@ -82,13 +75,7 @@ public class PlaceArchwayTest {
 
       civ.mousePressed(point1, false, true,false);
       civ.mousePressed(point2, false, true,false);
-
-      civ.mousePressed(point2, false, true,false);
       civ.mousePressed(point3, false, true,false);
-
-      civ.mousePressed(point3, false, true,false);
-      civ.mousePressed(point4, false, true,false);
-
       civ.mousePressed(point4, false, true,false);
       civ.mousePressed(point1, false, true,false);
 
@@ -125,13 +112,7 @@ public class PlaceArchwayTest {
 
       civ.mousePressed(point1, false, true,false);
       civ.mousePressed(point2, false, true,false);
-
-      civ.mousePressed(point2, false, true,false);
       civ.mousePressed(point3, false, true,false);
-
-      civ.mousePressed(point3, false, true,false);
-      civ.mousePressed(point4, false, true,false);
-
       civ.mousePressed(point4, false, true,false);
       civ.mousePressed(point1, false, true,false);
 
@@ -168,13 +149,7 @@ public class PlaceArchwayTest {
 
       civ.mousePressed(point1, false, true,false);
       civ.mousePressed(point2, false, true,false);
-
-      civ.mousePressed(point2, false, true,false);
       civ.mousePressed(point3, false, true,false);
-
-      civ.mousePressed(point3, false, true,false);
-      civ.mousePressed(point4, false, true,false);
-
       civ.mousePressed(point4, false, true,false);
       civ.mousePressed(point1, false, true,false);
 
@@ -216,21 +191,24 @@ public class PlaceArchwayTest {
 
       civ.mousePressed(point1, false, true, false);
       civ.mousePressed(point2, false, true, false);
-
-      civ.mousePressed(point2, false, true, false);
       civ.mousePressed(point3, false, true, false);
-
-      civ.mousePressed(point3, false, true, false);
-      civ.mousePressed(point4, false, true, false);
-
       civ.mousePressed(point4, false, true, false);
       civ.mousePressed(point1, false, true, false);
 
+      civ.stopDrawing();
+      civ.outlining();
+
       civ.mousePressed(point3, false, true, false);
       civ.mousePressed(point5, false, true, false);
 
+      civ.stopDrawing();
+      civ.outlining();
+
       civ.mousePressed(point5, false, true, false);
       civ.mousePressed(point6, false, true, false);
+
+      civ.stopDrawing();
+      civ.outlining();
 
       civ.mousePressed(point6, false, true, false);
       civ.mousePressed(point4, false, true, false);
@@ -271,13 +249,7 @@ public class PlaceArchwayTest {
 
       civ.mousePressed(point1, false, true, false);
       civ.mousePressed(point2, false, true, false);
-
-      civ.mousePressed(point2, false, true, false);
       civ.mousePressed(point3, false, true, false);
-
-      civ.mousePressed(point3, false, true, false);
-      civ.mousePressed(point4, false, true, false);
-
       civ.mousePressed(point4, false, true, false);
       civ.mousePressed(point1, false, true, false);
 
@@ -314,13 +286,7 @@ public class PlaceArchwayTest {
 
       civ.mousePressed(point1, false, true, false);
       civ.mousePressed(point2, false, true, false);
-
-      civ.mousePressed(point2, false, true, false);
       civ.mousePressed(point3, false, true, false);
-
-      civ.mousePressed(point3, false, true, false);
-      civ.mousePressed(point4, false, true, false);
-
       civ.mousePressed(point4, false, true, false);
       civ.mousePressed(point1, false, true, false);
 
