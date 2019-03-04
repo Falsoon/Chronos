@@ -221,4 +221,12 @@ public class Map implements StateEditable {
 	public void setSelectedRoom(String str) {
 		mapLayer.setSelectedRoom(RoomList.getInstance().getRoomByStr(str));
 	}
+
+   /**
+    * Method to set whether the MapLayer is for the player mode
+    * @param setting the value to give to player mode
+    */
+   public void setPlayerMode(boolean setting) {
+      mapLayer.setPlayerMode(setting);
+   }
 }

@@ -216,4 +216,12 @@ public class CIV {
 	public void showDialog(){
 
    }
+
+   /**
+    * Method to set whether the MapLayer is for the player mode
+    * @param setting the value to give to player mode
+    */
+   public void setPlayerMode(boolean setting) {
+      map.setPlayerMode(setting);
+   }
 }

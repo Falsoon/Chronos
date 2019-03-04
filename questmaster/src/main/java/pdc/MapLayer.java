@@ -542,9 +542,9 @@ public abstract class MapLayer implements StateEditable {
                        DoorList.add(d);
                        r.addDoor(d);
                    }
-                }
-            }
-        }
+               }
+           }
+       }
 
     }
 
@@ -552,6 +552,13 @@ public abstract class MapLayer implements StateEditable {
     {
        return wallList;
     }
+
+   /**
+    * Abstract method to set whether the MapLayer is for the player mode
+    * @param setting the value to give to player mode
+    */
+   public abstract void setPlayerMode(boolean setting);
+
    /**
     * Custom comparator used to sort points when breaking up walls.
     */
@@ -565,5 +572,7 @@ public abstract class MapLayer implements StateEditable {
              return (int) (o1.getY() - o2.getY());
           }
        }
-    }
+   }
+
+
 }
