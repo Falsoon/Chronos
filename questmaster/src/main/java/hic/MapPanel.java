@@ -38,7 +38,7 @@ public class MapPanel extends JPanel {
 			public void mousePressed(MouseEvent e) {
 
 				try {
-					civ.mousePressed(e.getPoint(), e.isAltDown(), SwingUtilities.isLeftMouseButton(e));
+					civ.mousePressed(e.getPoint(), e.isAltDown(), SwingUtilities.isLeftMouseButton(e), SwingUtilities.isRightMouseButton(e));
 				} catch (Throwable error) {
 					dialog(error.getMessage());
 					error.printStackTrace();
@@ -185,4 +185,12 @@ public class MapPanel extends JPanel {
 			}
 		}
 	}
+
+   /**
+    * Method to set whether the MapLayer is for the player mode
+    * @param setting the value to give to player mode
+    */
+   public void setPlayerMode(boolean setting) {
+	   civ.setPlayerMode(setting);
+   }
 }

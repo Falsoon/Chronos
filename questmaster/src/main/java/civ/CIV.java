@@ -4,9 +4,6 @@ import hic.FormWindow;
 import pdc.*;
 
 import java.awt.*;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.PrintStream;
 import java.util.ArrayList;
 
 /**
@@ -21,7 +18,14 @@ public class CIV {
 		formCiv = new FormCiv();
 	}
 
-	public void mousePressed(Point point,boolean isAltDown, boolean isLeftButton){
+   /**
+    * Handles the mouse click event in a Swing component
+    * @param point the point where the mouse was clicked
+    * @param isAltDown if the alt button is down.  If so, the author can draw off the grid
+    * @param isLeftButton if the left mouse button was pressed.  If so, draw under the current drawing mode
+    * @param isRightButton if the right mouse button was pressed.  If so, stop drawing
+    */
+	public void mousePressed(Point point,boolean isAltDown, boolean isLeftButton, boolean isRightButton){
 	   System.out.println(RoomList.getInstance().list.size());
 		if (!isAltDown) {
 			point.setLocation(Math.round(((double) point.x) / Constants.GRIDDISTANCE) * Constants.GRIDDISTANCE,
@@ -48,7 +52,10 @@ public class CIV {
 					}
 				}
 			}
-		}else {
+		}else if(isRightButton){
+         map.stopDrawing();
+      } else {
+		   //some other mouse button was pressed (scrollwheel, side buttons)
 		   System.out.println("Mouse Position: " + point);
 			map.stopDrawing();
 		}
@@ -69,11 +76,11 @@ public class CIV {
 	}
 
 	public void outlining() {
-		map.outlining();
+		map.opaqueWalling();
 	}
 
 	public void walling() {
-		map.walling();
+		map.transparentWalling();
 	}
 
 	public void startGame() {
@@ -215,5 +222,13 @@ public class CIV {
 
 	public void showDialog(){
 
+   }
+
+   /**
+    * Method to set whether the MapLayer is for the player mode
+    * @param setting the value to give to player mode
+    */
+   public void setPlayerMode(boolean setting) {
+      map.setPlayerMode(setting);
    }
 }

@@ -12,20 +12,25 @@ import java.util.Hashtable;
  */
 public class MapWallLayer extends MapLayer {
 
+   private boolean playerMode;
+
 	@Override
 	public void draw(Graphics g) {
 		Graphics2D g2d = (Graphics2D) g;
 		g2d.setColor(Color.BLACK);
 		wallList.forEach(wall-> {
-         setDrawMode(g2d,wall.getType());
-         g2d.draw(wall.getLineRepresentation());
+		   Type wallType = wall.getType();
+		   //don't draw transparent walls if in player mode
+		   if(!playerMode||(playerMode&&wallType.equals(Type.OPAQUE))) {
+            setDrawMode(g2d, wallType);
+            g2d.draw(wall.getLineRepresentation());
+         }
 		});
 		if (selectedRoom != null) {
 			g2d.setColor(Color.RED);
 			setDrawMode(g2d,Type.OPAQUE);
 			selectedRoom.walls.forEach(wall -> g2d.draw(wall.getLineRepresentation()));
 		}
-
 	}
 
    private void setDrawMode(Graphics2D g2d,Type type) {
@@ -73,6 +78,11 @@ public class MapWallLayer extends MapLayer {
 	   //TODO need to fix this now that we've changed how rooms are created
 
 	}
+
+   @Override
+   public void setPlayerMode(boolean setting) {
+      playerMode = setting;
+   }
 
    @Override
    public void storeState(Hashtable<Object, Object> state) {

@@ -18,16 +18,13 @@ public class Map implements StateEditable {
 	public Player player;
 	public MapLayer mapLayer;
 	public MapLayer mapLayer3;
-	public boolean transparentWallMode, opaqueWallMode, dooring, archwayAdd;
+	private boolean transparentWallMode, opaqueWallMode, dooring, archwayAdd;
 	UndoableEditSupport undoSupport = new UndoableEditSupport(this);
 	UndoManager manager = new UndoManager();
 	private final Object MAP_KEY = "MAPKEY";
-	private Room room;
 
 	public Map() {
-		layers = new ArrayList<MapLayer>();
-		opaqueWallMode = false;
-		dooring = false;
+		layers = new ArrayList<>();
 		mapLayer = new MapWallLayer();
 		mapLayer3 = new MapDoorLayer();
 		addUndoableEditListener(manager);
@@ -47,8 +44,7 @@ public class Map implements StateEditable {
 		 */
 	}
 
-	public void outlining() {
-		room = null;
+	public void opaqueWalling() {
 		opaqueWallMode = true;
 		transparentWallMode = false;
 		dooring = false;
@@ -59,29 +55,10 @@ public class Map implements StateEditable {
 	public void mousePressed(Point p) {
 		StateEdit stateEdit = new StateEdit(Map.this);
 		if (opaqueWallMode) {
-			if (mapLayer == null) {
-				mapLayer = new MapWallLayer();
-			}
-
 			mapLayer.drawOpaqueWalls(p);
-			if (!opaqueWallMode) {
-				layers.add(mapLayer);
-			}
 		}
 		if (transparentWallMode) {
-			/*if (getRoom(p) != null) {
-			* */
-				transparentWallMode = mapLayer.drawTransparentWalls(p);
-				/*
-				if (!transparentWallMode) {
-					layers.add(mapLayer2);
-				}
-				*/
-			/*}else {
-				mapLayer2.pointList.clear();
-				Throwable e = new Throwable("Transparent walls must be drawn in bounded rooms");
-				throw e;
-			}*/
+		   transparentWallMode = mapLayer.drawTransparentWalls(p);
 		}
 		if (dooring) {
 			try {
@@ -109,7 +86,7 @@ public class Map implements StateEditable {
 		}
 	}
 
-	public void walling() {
+	public void transparentWalling() {
 		transparentWallMode = true;
 		opaqueWallMode = false;
 		mapLayer.start = null;
@@ -206,10 +183,10 @@ public class Map implements StateEditable {
 		transparentWallMode = false;
 		dooring = false;
 		archwayAdd = false;
+		mapLayer.stopDrawing();
 	}
 
 	public void drawRoom(String str) {
-		room = RoomList.getInstance().getRoomByStr(str);
 		opaqueWallMode = true;
 		transparentWallMode = false;
 		dooring = false;
@@ -221,4 +198,12 @@ public class Map implements StateEditable {
 	public void setSelectedRoom(String str) {
 		mapLayer.setSelectedRoom(RoomList.getInstance().getRoomByStr(str));
 	}
+
+   /**
+    * Method to set whether the MapLayer is for the player mode
+    * @param setting the value to give to player mode
+    */
+   public void setPlayerMode(boolean setting) {
+      mapLayer.setPlayerMode(setting);
+   }
 }

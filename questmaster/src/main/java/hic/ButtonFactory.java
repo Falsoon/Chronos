@@ -104,11 +104,12 @@ public class ButtonFactory implements ActionListener  {
 					EventQueue.invokeLater(new Runnable() {
 						public void run() {
 							try {
+							   authorWindow.mapPanel.setPlayerMode(true);
 								PlayerWindow window = new PlayerWindow(authorWindow.mapPanel);
 								window.frame.setVisible(true);
 								AuthorWindow.civ.setSelectedRoom(null);
 								authorWindow.mapPanel.repaint();
-								// AuthorWindow.civ.outputStory();
+
 							} catch (Exception e) {
 								e.printStackTrace();
 							}
