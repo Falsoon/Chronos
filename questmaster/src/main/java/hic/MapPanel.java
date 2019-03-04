@@ -38,7 +38,7 @@ public class MapPanel extends JPanel {
 			public void mousePressed(MouseEvent e) {
 
 				try {
-					civ.mousePressed(e.getPoint(), e.isAltDown(), SwingUtilities.isLeftMouseButton(e));
+					civ.mousePressed(e.getPoint(), e.isAltDown(), SwingUtilities.isLeftMouseButton(e), SwingUtilities.isRightMouseButton(e));
 				} catch (Throwable error) {
 					dialog(error.getMessage());
 					error.printStackTrace();

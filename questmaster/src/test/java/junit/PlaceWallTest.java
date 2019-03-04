@@ -32,8 +32,8 @@ public class PlaceWallTest {
       civ.outlining();
       Point point1 = new Point(15,15);
       Point point2 = new Point(30, 15);
-      civ.mousePressed(point1, false, true);
-      civ.mousePressed(point2, false, true);
+      civ.mousePressed(point1, false, true, false);
+      civ.mousePressed(point2, false, true, false);
       assertTrue(civ.map.isCreating());
       assertTrue(civ.getRoomList().isEmpty());
       assertTrue(civ.map.mapLayer.pointList.contains(point1));
@@ -44,10 +44,10 @@ public class PlaceWallTest {
    @Test
    void testN2() {
       civ.outlining();
-      civ.mousePressed(new Point(15,15), false, true);
-      civ.mousePressed(new Point(75, 15), false, true);
-      civ.mousePressed(new Point(90, 90), false, true);
-      civ.mousePressed(new Point(90, 105), false, true);
+      civ.mousePressed(new Point(15,15), false, true, false);
+      civ.mousePressed(new Point(75, 15), false, true, false);
+      civ.mousePressed(new Point(90, 90), false, true, false);
+      civ.mousePressed(new Point(90, 105), false, true, false);
       assertTrue(civ.getRoomList().isEmpty());
       assertTrue(civ.map.isCreating());
       assertTrue(civ.map.mapLayer.pointList.contains(new Point(15,15)));
@@ -62,10 +62,10 @@ public class PlaceWallTest {
       Point point2 = new Point(75, 15);
       Point point3 = new Point(90,90);
       Point point4 = new Point(90,105);
-      civ.mousePressed(point1, false, true);
-      civ.mousePressed(point2, false, true);
-      civ.mousePressed(point3, false, true);
-      civ.mousePressed(point4, false, true);
+      civ.mousePressed(point1, false, true, false);
+      civ.mousePressed(point2, false, true, false);
+      civ.mousePressed(point3, false, true, false);
+      civ.mousePressed(point4, false, true, false);
       assertTrue(civ.getRoomList().isEmpty());
       assertTrue(civ.map.isCreating());
       assertTrue(civ.map.mapLayer.pointList.contains(point1));
@@ -81,10 +81,10 @@ public class PlaceWallTest {
       Point point1 = new Point(15, 15);
       Point point2 = new Point(75, 15);
       Point point3 = new Point(75,30);
-      civ.mousePressed(point1, false, true);
-      civ.mousePressed(point2, false, true);
-      civ.mousePressed(point2, false, true);
-      civ.mousePressed(point3, false, true);
+      civ.mousePressed(point1, false, true, false);
+      civ.mousePressed(point2, false, true, false);
+      civ.mousePressed(point2, false, true, false);
+      civ.mousePressed(point3, false, true, false);
       assertTrue(civ.getRoomList().isEmpty());
       assertTrue(civ.map.isCreating());
       assertTrue(civ.map.mapLayer.pointList.contains(point1));
@@ -92,11 +92,29 @@ public class PlaceWallTest {
       assertTrue(civ.map.mapLayer.pointList.contains(point3));
    }
 
+   // N -  Right mouse button stops drawing
+   @Test
+   void testN5() {
+      civ.outlining();
+      Point point1 = new Point(15, 15);
+      Point point2 = new Point(75, 15);
+      Point point3 = new Point(75,30);
+      civ.mousePressed(point1, false, true, false);
+      civ.mousePressed(point2, false, true, false);
+      civ.mousePressed(point2, false, false, true);
+      civ.mousePressed(point3, false, true, false);
+      assertTrue(civ.getRoomList().isEmpty());
+      assertFalse(civ.map.isCreating());
+      assertTrue(civ.map.mapLayer.pointList.contains(point1));
+      assertTrue(civ.map.mapLayer.pointList.contains(point2));
+      assertFalse(civ.map.mapLayer.pointList.contains(point3));
+   }
+
    // E - User clicks points on map without pressing draw button
    @Test
    void testE1() {
-      civ.mousePressed(new Point(15,15), false, true);
-      civ.mousePressed(new Point(15, 30), false, true);
+      civ.mousePressed(new Point(15,15), false, true, false);
+      civ.mousePressed(new Point(15, 30), false, true, false);
       assertTrue(civ.getRoomList().isEmpty());
       assertFalse(civ.map.isCreating());
       assertTrue(civ.map.mapLayer.pointList.isEmpty());
@@ -108,8 +126,8 @@ public class PlaceWallTest {
       civ.outlining();
       Point point1 = new Point(15, 15);
       Point point2 = new Point(Integer.MAX_VALUE, 15);
-      civ.mousePressed(point1, false, true);
-      civ.mousePressed(point2, false, true);
+      civ.mousePressed(point1, false, true, false);
+      civ.mousePressed(point2, false, true, false);
       assertTrue(civ.getRoomList().isEmpty());
       assertTrue(civ.map.isCreating());
       assertTrue(civ.map.mapLayer.pointList.contains(point1));
@@ -122,8 +140,8 @@ public class PlaceWallTest {
       civ.outlining();
       Point point1 = new Point(15, 15);
       Point point2 = new Point(15, Integer.MAX_VALUE);
-      civ.mousePressed(point1, false, true);
-      civ.mousePressed(point2, false, true);
+      civ.mousePressed(point1, false, true, false);
+      civ.mousePressed(point2, false, true, false);
       assertTrue(civ.getRoomList().isEmpty());
       assertTrue(civ.map.isCreating());
       assertTrue(civ.map.mapLayer.pointList.contains(point1));

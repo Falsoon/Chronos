@@ -164,11 +164,11 @@ class DescriptionFormTC05Test {
 	void testFormEditingViaDrawMode() throws Throwable {
 		//author can edit room desc and title when in drawingTransparent mode
 		civ.outlining();
-		civ.mousePressed(new Point(), true, true);
-		civ.mousePressed(new Point(87, 95), true, true);
-		civ.mousePressed(new Point(300, 90), false, true);
-		civ.mousePressed(new Point(), false, true);
-		civ.mousePressed(new Point(100, 50), false, true);
+		civ.mousePressed(new Point(), true, true,false);
+		civ.mousePressed(new Point(87, 95), true, true,false);
+		civ.mousePressed(new Point(300, 90), false, true,false);
+		civ.mousePressed(new Point(), false, true,false);
+		civ.mousePressed(new Point(100, 50), false, true,false);
 		
 		fc.setRoomReference(room.toString());
 		FormWindow fw = new FormWindow(fc, true);
@@ -213,7 +213,7 @@ class DescriptionFormTC05Test {
 		
 		
 		
-		civ.outlining();
+		civ.opaqueWalling();
 		civ.mousePressed(new Point(), true, true);
 		civ.mousePressed(new Point(87, 95), true, true);
 		civ.mousePressed(new Point(300, 90), false, true);

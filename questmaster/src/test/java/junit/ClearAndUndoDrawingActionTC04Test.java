@@ -41,24 +41,18 @@ class ClearAndUndoDrawingActionTC04Test {
 		
 		
 		civ.outlining();
-		civ.mousePressed(p0, false, true);
-		civ.mousePressed(p1, false, true);
-
-      civ.mousePressed(p1, false, true);
-		civ.mousePressed(p2, false, true);
-
-      civ.mousePressed(p2, false, true);
-		civ.mousePressed(p3, false, true);
-
-      civ.mousePressed(p3, false, true);
-      civ.mousePressed(p0, false, true);
+		civ.mousePressed(p0, false, true,false);
+		civ.mousePressed(p1, false, true,false);
+		civ.mousePressed(p2, false, true,false);
+		civ.mousePressed(p3, false, true,false);
+      civ.mousePressed(p0, false, true,false);
 
       assertTrue(civ.undo());
       assertTrue(civ.map.mapLayer.pointList.contains(p0));
       assertTrue(civ.map.mapLayer.pointList.contains(p1));
       assertTrue(civ.map.mapLayer.pointList.contains(p2));
       assertTrue(civ.map.mapLayer.pointList.contains(p3));
-		assertEquals(6, civ.map.mapLayer.pointList.size());
+		assertEquals(4, civ.map.mapLayer.pointList.size());
 		
 	}
 	
@@ -68,7 +62,7 @@ class ClearAndUndoDrawingActionTC04Test {
 		bf.setMode2();
 		
 		civ.outlining();
-		civ.mousePressed(new Point(50, 50), true, true);
+		civ.mousePressed(new Point(50, 50), true, true,false);
 		
 		assertEquals(true, civ.undo());
 		assertEquals(false, civ.map.mapLayer.pointList.contains(new Point(50, 50)));
@@ -87,9 +81,9 @@ class ClearAndUndoDrawingActionTC04Test {
 		
 		
 		civ.outlining();
-		civ.mousePressed(p0, false, true);
-		civ.mousePressed(p1, true, true);
-		civ.mousePressed(p2, false, true);
+		civ.mousePressed(p0, false, true,false);
+		civ.mousePressed(p1, true, true,false);
+		civ.mousePressed(p2, false, true,false);
 		
 		assertEquals(true, civ.undo());
 		assertEquals(true, civ.map.mapLayer.pointList.contains(p0));
@@ -118,13 +112,13 @@ class ClearAndUndoDrawingActionTC04Test {
 		Point p3 = new Point(50, 50);
 		
 		civ.outlining();
-		civ.mousePressed(p0, false, true);
-		civ.mousePressed(p1, true, true);
-		civ.mousePressed(p2, false, true);
-		civ.mousePressed(p3, false, true);
+		civ.mousePressed(p0, false, true,false);
+		civ.mousePressed(p1, true, true,false);
+		civ.mousePressed(p2, false, true,false);
+		civ.mousePressed(p3, false, true,false);
 		
 		civ.placedPlayer();
-		civ.mousePressed(new Point(75, 35), false, true);
+		civ.mousePressed(new Point(75, 35), false, true,false);
 		
 		assertEquals(true, civ.undo());
 		assertEquals(true, civ.map.mapLayer.pointList.contains(p0));
@@ -155,10 +149,10 @@ class ClearAndUndoDrawingActionTC04Test {
 		
 		
 		civ.outlining();
-		civ.mousePressed(p0, false, true);
-		civ.mousePressed(p1, true, true);
-		civ.mousePressed(p2, false, true);
-		civ.mousePressed(p3, false, true);
+		civ.mousePressed(p0, false, true,false);
+		civ.mousePressed(p1, true, true,false);
+		civ.mousePressed(p2, false, true,false);
+		civ.mousePressed(p3, false, true,false);
 		
 		assertEquals(true, civ.clear());
 		assertEquals(false, civ.map.mapLayer.pointList.contains(p0));
@@ -178,9 +172,9 @@ class ClearAndUndoDrawingActionTC04Test {
 		
 		
 		civ.outlining();
-		civ.mousePressed(p0, false, true);
-		civ.mousePressed(p1, true, true);
-		civ.mousePressed(p2, false, true);
+		civ.mousePressed(p0, false, true,false);
+		civ.mousePressed(p1, true, true,false);
+		civ.mousePressed(p2, false, true,false);
 		
 		assertEquals(true, civ.clear());
 		assertEquals(false, civ.map.mapLayer.pointList.contains(p0));
@@ -205,15 +199,15 @@ class ClearAndUndoDrawingActionTC04Test {
 		
 		
 		civ.outlining();
-		civ.mousePressed(p0, false, true);
-		civ.mousePressed(p1, true, true);
-		civ.mousePressed(p2, false, true);
-		civ.mousePressed(p3, false, true);
+		civ.mousePressed(p0, false, true,false);
+		civ.mousePressed(p1, true, true,false);
+		civ.mousePressed(p2, false, true,false);
+		civ.mousePressed(p3, false, true,false);
 		
-		civ.mousePressed(pA, false, true);
-		civ.mousePressed(pB, true, true);
-		civ.mousePressed(pC, false, true);
-		civ.mousePressed(pD, false, true);
+		civ.mousePressed(pA, false, true,false);
+		civ.mousePressed(pB, true, true,false);
+		civ.mousePressed(pC, false, true,false);
+		civ.mousePressed(pD, false, true,false);
 		
 		assertEquals(true, civ.clear());
 		assertEquals(false, civ.map.mapLayer.pointList.contains(p0));
@@ -237,13 +231,13 @@ class ClearAndUndoDrawingActionTC04Test {
 		Point p3 = new Point(50, 50);
 		
 		civ.outlining();
-		civ.mousePressed(p0, false, true);
-		civ.mousePressed(p1, true, true);
-		civ.mousePressed(p2, false, true);
-		civ.mousePressed(p3, false, true);
+		civ.mousePressed(p0, false, true,false);
+		civ.mousePressed(p1, true, true,false);
+		civ.mousePressed(p2, false, true,false);
+		civ.mousePressed(p3, false, true,false);
 		
 		civ.placedPlayer();
-		civ.mousePressed(new Point(75, 35), false, true);
+		civ.mousePressed(new Point(75, 35), false, true,false);
 		
 		assertEquals(true, civ.clear());
 		assertEquals(false, civ.map.mapLayer.pointList.contains(p0));
