@@ -1,6 +1,9 @@
 package hic;
 
+import javax.swing.*;
+
 public class PlayerTopBar implements TopBar {
+   private JPanel mainJPanel = TopBar.mainJPanel;
    private void initialize(){
       northButton.addActionListener(e -> goNorthRoom());
       southButton.addActionListener(e -> goSouthRoom());
@@ -19,6 +22,10 @@ public class PlayerTopBar implements TopBar {
       buttonsPanel.add(TopBar.northButton);
 
       mainJPanel.add(buttonsPanel);
+   }
+
+   public JPanel getMainJPanel(){
+      return mainJPanel;
    }
 
    private void goNorthRoom() {

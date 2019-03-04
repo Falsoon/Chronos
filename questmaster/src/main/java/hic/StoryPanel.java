@@ -36,6 +36,7 @@ public class StoryPanel extends JPanel {
                VBox root = new VBox();
                ///TODO add top bar here
                PlayerTopBar topBar = new PlayerTopBar();
+               //root.getChildren().add(topBar.getMainJPanel());
                root.getChildren().add(t);
                root.setPrefSize(400, 400);
                t.setTextAlignment(TextAlignment.LEFT);
