@@ -1,77 +1,85 @@
 package hic;
 
-import javafx.application.Platform;
-import javafx.embed.swing.JFXPanel;
-import javafx.scene.Scene;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.layout.VBox;
-import javafx.scene.text.Text;
-import javafx.scene.text.TextAlignment;
-
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
 /**
  * Presenter class used to update playerWindow and player data.
  */
 @SuppressWarnings("serial")
 public class StoryPanel extends JPanel {
-	private final JFXPanel jfxPanel = new JFXPanel();
+	private final JPanel jPanel = new JPanel(new BorderLayout());
 	private MapPanel mapPanel;
+	private JTextArea textArea;
 
    public StoryPanel(MapPanel mp) {
 		mapPanel = mp;		
-		createScene();
-		this.add(jfxPanel, BorderLayout.CENTER);
+		initialize();
+		this.add(jPanel, BorderLayout.CENTER);
       JPanel disPanel = new JPanel();
       this.add(disPanel, BorderLayout.SOUTH);
 	}
 
-	private void createScene() {
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-               Text t = new Text("Begin exploring with WASD.");
-               printDetails(mapPanel.getRoomName(), mapPanel.getRoomDesc(), t);
-               VBox root = new VBox();
-               ///TODO add top bar here
-               PlayerTopBar topBar = new PlayerTopBar();
-               //root.getChildren().add(topBar.getMainJPanel());
-               root.getChildren().add(t);
-               root.setPrefSize(400, 400);
-               t.setTextAlignment(TextAlignment.LEFT);
-               t.setWrappingWidth(375);
-               ScrollPane pane = new ScrollPane(root);
-               pane.setFitToWidth(true);
-               Scene scene = new Scene(pane);
-               scene.setOnKeyPressed(event->{
-                   switch (event.getCode()) {
-                       case A:
-                           mapPanel.goLeft();
-                           printDetails(mapPanel.getRoomName(), mapPanel.getRoomDesc(), t);
-                           break;
-                       case D:
-                           mapPanel.goRight();
-                           printDetails(mapPanel.getRoomName(), mapPanel.getRoomDesc(), t);
-                           break;
-                       case W:
-                           mapPanel.goUp();
-                           printDetails(mapPanel.getRoomName(), mapPanel.getRoomDesc(), t);
-                           break;
-                       case S:
-                           mapPanel.goDown();
-                           printDetails(mapPanel.getRoomName(), mapPanel.getRoomDesc(), t);
-                           break;
-                       default:
-                           break;
-                   }
-               });
-               jfxPanel.setScene(scene);
-            }
+	private void initialize() {
+      textArea = new JTextArea("Begin exploring with WASD.");
+      printDetails(mapPanel.getRoomName(), mapPanel.getRoomDesc(), textArea);
+      JPanel root = new JPanel(new BorderLayout());
+      ///TODO add top bar here
+      PlayerTopBar topBar = new PlayerTopBar();
+      textArea.setLineWrap(true);
+      textArea.setEditable(false);
+      textArea.setSize(400,400);
+      root.add(textArea);
+      root.setSize(400,400);
+      JScrollPane pane = new JScrollPane(root);
+      KeyListener keyListener = new KeyListener() {
+         @Override
+         public void keyTyped(KeyEvent e) {
 
-            private void printDetails(String name, String desc, Text t) {
-                t.setText(name + "\n\n" + desc);
-            }
-        });
-    }
+         }
+
+         @Override
+         public void keyPressed(KeyEvent e) {
+            handleKeyPressed(e);
+         }
+
+         @Override
+         public void keyReleased(KeyEvent e) {
+
+         }
+      };
+      pane.addKeyListener(keyListener);
+      pane.setFocusable(true);
+      jPanel.add(pane);
+
+   }
+   private void handleKeyPressed(KeyEvent e){
+      switch (e.getKeyChar()){
+         case 'a':
+            mapPanel.goLeft();
+            printDetails(mapPanel.getRoomName(), mapPanel.getRoomDesc(), textArea);
+            break;
+         case 'd':
+            mapPanel.goRight();
+            printDetails(mapPanel.getRoomName(), mapPanel.getRoomDesc(), textArea);
+            break;
+         case 'w':
+            mapPanel.goUp();
+            printDetails(mapPanel.getRoomName(), mapPanel.getRoomDesc(), textArea);
+            break;
+         case 's':
+            mapPanel.goDown();
+            printDetails(mapPanel.getRoomName(), mapPanel.getRoomDesc(), textArea);
+            break;
+         default:
+            break;
+
+      }
+   }
+
+   private void printDetails(String name, String desc, JTextArea textArea) {
+      textArea.setText(name + "\n\n" + desc);
+   }
 }
