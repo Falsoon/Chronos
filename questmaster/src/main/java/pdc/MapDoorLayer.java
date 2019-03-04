@@ -4,6 +4,7 @@ import java.awt.*;
 import java.util.Hashtable;
 
 public class MapDoorLayer extends MapLayer {
+   private boolean playerMode;
 	@Override
 	public void draw(Graphics g) {
 		Graphics2D g2d = (Graphics2D) g;
@@ -42,6 +43,11 @@ public class MapDoorLayer extends MapLayer {
 	@Override
 	public void undo() {		
 	}
+
+   @Override
+   public void setPlayerMode(boolean setting) {
+      playerMode = setting;
+   }
 
 
    @Override
