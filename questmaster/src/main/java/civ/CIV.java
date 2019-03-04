@@ -38,17 +38,15 @@ public class CIV {
 				if (!map.getPlayer().isPlaying()) {
 					Room room = RoomList.getInstance().getRoom(point);
 					if (room != null) {
-						EventQueue.invokeLater(new Runnable() {
-							public void run() {
-								try {
-									formCiv.setRoomReference(room.toString());
-									FormWindow window = new FormWindow(formCiv, true);
-									window.frame.setVisible(true);
-								} catch (Exception e) {
-									e.printStackTrace();
-								}
-							}
-						});
+						EventQueue.invokeLater(() -> {
+                     try {
+                        formCiv.setRoomReference(room.toString());
+                        FormWindow window = new FormWindow(formCiv, true);
+                        window.frame.setVisible(true);
+                     } catch (Exception e) {
+                        e.printStackTrace();
+                     }
+                  });
 					}
 				}
 			}
