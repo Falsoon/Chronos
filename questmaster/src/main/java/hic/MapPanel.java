@@ -4,8 +4,6 @@ import civ.CIV;
 import pdc.Constants;
 
 import javax.swing.*;
-import javax.swing.undo.UndoManager;
-import javax.swing.undo.UndoableEditSupport;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
