@@ -568,7 +568,7 @@ public abstract class MapLayer implements StateEditable {
 	   wasFirstClick = false;
    }
 
-    * Abstract method to set whether the MapLayer is for the player mode
+    /** Abstract method to set whether the MapLayer is for the player mode
     * @param setting the value to give to player mode
     */
    public abstract void setPlayerMode(boolean setting);
