@@ -1,25 +1,33 @@
 package hic;
 
 import javax.swing.*;
+import java.awt.*;
 
-public class PlayerTopBar implements TopBar {
+public class PlayerTopBar extends JComponent implements TopBar{
    private JPanel mainJPanel = TopBar.mainJPanel;
-   private void initialize(){
+
+   public PlayerTopBar(){
+      mainJPanel.setLayout(new BoxLayout(mainJPanel,BoxLayout.PAGE_AXIS));
+      labelJPanel.add(panelLabel);
+      mainJPanel.add(labelJPanel);
+
       northButton.addActionListener(e -> goNorthRoom());
       southButton.addActionListener(e -> goSouthRoom());
       eastButton.addActionListener(e -> goEastRoom());
       westButton.addActionListener(e -> goWestRoom());
       upButton.addActionListener(e -> goUpRoom());
       downButton.addActionListener(e -> goDownRoom());
-      labelJPanel.add(panelLabel);
-      mainJPanel.add(labelJPanel);
 
-      buttonsPanel.add(TopBar.northButton);
-      buttonsPanel.add(TopBar.northButton);
-      buttonsPanel.add(TopBar.northButton);
-      buttonsPanel.add(TopBar.northButton);
-      buttonsPanel.add(TopBar.northButton);
-      buttonsPanel.add(TopBar.northButton);
+      cardinalDirectionButtonsPanel.add(TopBar.northButton);
+      cardinalDirectionButtonsPanel.add(TopBar.southButton);
+      cardinalDirectionButtonsPanel.add(TopBar.eastButton);
+      cardinalDirectionButtonsPanel.add(TopBar.westButton);
+      verticalButtonsPanel.add(TopBar.upButton);
+      verticalButtonsPanel.add(TopBar.downButton);
+
+      buttonsPanel.setLayout(new BoxLayout(buttonsPanel,BoxLayout.PAGE_AXIS));
+      buttonsPanel.add(cardinalDirectionButtonsPanel);
+      buttonsPanel.add(verticalButtonsPanel);
 
       mainJPanel.add(buttonsPanel);
    }
