@@ -179,8 +179,8 @@ public class Map implements StateEditable {
 	}
 
 	public void stopDrawing() {
-		opaqueWallMode = false;
-		transparentWallMode = false;
+		//opaqueWallMode = false;
+		//transparentWallMode = false;
 		dooring = false;
 		archwayAdd = false;
 		mapLayer.stopDrawing();

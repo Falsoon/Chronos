@@ -50,11 +50,11 @@ public class CIV {
 					}
 				}
 			}
-		}else if(isRightButton){
-         map.stopDrawing();
-      } else {
-		   //some other mouse button was pressed (scrollwheel, side buttons)
-		   System.out.println("Mouse Position: " + point);
+		} else if(isRightButton){
+        	map.stopDrawing();
+        } else {
+		    //some other mouse button was pressed (scrollwheel, side buttons)
+		    System.out.println("Mouse Position: " + point);
 			map.stopDrawing();
 		}
 	}

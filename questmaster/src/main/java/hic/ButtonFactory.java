@@ -6,6 +6,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
 /**
  * This class is used to encapsulate the creation of buttons and the logic behind
  * action listeners of each button 
@@ -23,6 +24,7 @@ public class ButtonFactory implements ActionListener  {
 	
 	private void initialize() {
 		authorWindow.authorPanel = new AuthorPanel();
+		/*
 		JComboBox<String> authorModeBox = new JComboBox<String>(authorWindow.authorModes);
 		authorModeBox.addActionListener(e -> {
          if (authorWindow.modeSelected == 0) {
@@ -36,15 +38,111 @@ public class ButtonFactory implements ActionListener  {
             setMode1();
             authorWindow.authorPanel.update();
             break;
-         case "Draw Rooms":
+			case "Draw Rooms":
+			
             authorWindow.modeSelected = 2;
             setMode2();
-            authorWindow.authorPanel.update();
+				authorWindow.authorPanel.update();
+				
             break;
          }
-      });
+		});
+		
 		authorWindow.authorPanel.add(authorModeBox);
+		*/
 
+		// @author Ryan - and now, the proper buttons
+		JToggleButton btnOpaqueWalls = new JToggleButton("Opaque Walls");
+		btnOpaqueWalls.setAlignmentX(Component.CENTER_ALIGNMENT);
+		JToggleButton btnTransWalls = new JToggleButton("Transparent Walls");
+		btnTransWalls.setAlignmentX(Component.CENTER_ALIGNMENT);
+		JToggleButton btnArchways = new JToggleButton("Archways");
+		btnArchways.setAlignmentX(Component.CENTER_ALIGNMENT);
+		JToggleButton btnProp = new JToggleButton("Set Properties");
+		btnProp.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+		JButton btnPlayer = new JButton("Set Start Point");
+		btnPlayer.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+		JSeparator line1 = new JSeparator(SwingConstants.HORIZONTAL);
+
+		JButton btnVoid = new JButton("area to be filled later");
+		btnVoid.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+		JSeparator line2 = new JSeparator(SwingConstants.HORIZONTAL);
+
+		JButton btnUndo = new JButton("Undo");
+		btnUndo.setAlignmentX(Component.CENTER_ALIGNMENT);
+		JButton btnClear = new JButton("Clear");
+		btnClear.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+		authorWindow.authorPanel.add(btnOpaqueWalls);
+		authorWindow.authorPanel.add(btnTransWalls);
+		authorWindow.authorPanel.add(btnArchways);
+		authorWindow.authorPanel.add(btnPlayer);
+		authorWindow.authorPanel.add(btnProp);
+		authorWindow.authorPanel.add(line1);
+		authorWindow.authorPanel.add(btnVoid);
+		authorWindow.authorPanel.add(line2);
+		authorWindow.authorPanel.add(btnUndo);
+		authorWindow.authorPanel.add(btnClear);
+
+		btnOpaqueWalls.addItemListener(e -> {
+			if (e.getStateChange() == ItemEvent.SELECTED) {
+				authorWindow.mapPanel.stopDrawing();
+				authorWindow.mapPanel.paintRooms();
+				btnTransWalls.setSelected(false);
+				btnArchways.setSelected(false);
+				btnProp.setSelected(false);
+			}
+		});
+
+		btnTransWalls.addItemListener(e -> {
+			if (e.getStateChange() == ItemEvent.SELECTED) {
+				authorWindow.mapPanel.stopDrawing();
+				authorWindow.mapPanel.paintWalls();
+				btnOpaqueWalls.setSelected(false);
+				btnArchways.setSelected(false);
+				btnProp.setSelected(false);
+			}
+		});
+
+		btnArchways.addItemListener(e -> {
+			if (e.getStateChange() == ItemEvent.SELECTED) {
+				authorWindow.mapPanel.stopDrawing();
+				authorWindow.mapPanel.paintArchway();
+				btnOpaqueWalls.setSelected(false);
+				btnTransWalls.setSelected(false);
+				btnProp.setSelected(false);
+			}
+		});
+
+		btnProp.addItemListener(e -> {
+			if (e.getStateChange() == ItemEvent.SELECTED) {
+				authorWindow.mapPanel.stopDrawing();
+				btnOpaqueWalls.setSelected(false);
+				btnTransWalls.setSelected(false);
+				btnArchways.setSelected(false);
+			}
+		});
+
+		btnPlayer.addActionListener(e -> {
+			authorWindow.mapPanel.placePlayerStart();
+			authorWindow.mapPanel.stopDrawing();
+			btnOpaqueWalls.setSelected(false);
+			btnTransWalls.setSelected(false);
+			btnArchways.setSelected(false);
+		});
+
+		
+
+
+		// btnWalls.addActionListener(e -> {
+		// 	authorWindow.mapPanel.paintRooms();
+		// 	authorWindow.authorPanel.update();
+		// });
+
+		/*
 		authorWindow.wallCombo = new JComboBox<>(authorWindow.wallTypes);
 		authorWindow.wallCombo.addActionListener(this);
 		authorWindow.wallCombo.setVisible(false);
@@ -56,6 +154,7 @@ public class ButtonFactory implements ActionListener  {
 		authorWindow.portalCombo.setVisible(false);
 
 		// button resets the map
+		
 		btnClear = new JButton("Clear");
 		btnClear.addActionListener(e -> {
          authorWindow.mapPanel.clear();
@@ -65,6 +164,7 @@ public class ButtonFactory implements ActionListener  {
       });
 		authorWindow.authorPanel.add(btnClear);
 		btnClear.setVisible(false);
+		
 
 		// button allows author to undo last action.
 		// ctrl+z is preferred design
@@ -154,8 +254,10 @@ public class ButtonFactory implements ActionListener  {
          } else {
             authorWindow.mapPanel.drawRoom(str);
          }
-      });
+		});
+		*/
 	}
+	
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {

@@ -60,7 +60,7 @@ public abstract class MapLayer implements StateEditable {
     */
 	public void drawOpaqueWalls(Point p) {
 
-	   if(firstClick){
+	   if(firstClick || lastPoint == null){
 	      lastPoint = p;
 	      firstClick = false;
 	      wasFirstClick = true;
