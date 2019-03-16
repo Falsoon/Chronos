@@ -134,6 +134,10 @@ public class MapPanel extends JPanel {
 		civ.placeStart();
 	}
 
+	public void stopPlacingPlayer() {
+		civ.stopPlacingPlayer();
+	}
+
 	public boolean placedPlayer() {
 		return civ.placedPlayer();
 	}

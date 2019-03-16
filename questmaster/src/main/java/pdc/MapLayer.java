@@ -1,5 +1,7 @@
 package pdc;
 
+import javax.swing.JDialog;
+import javax.swing.JOptionPane;
 import javax.swing.undo.StateEdit;
 import javax.swing.undo.StateEditable;
 import javax.swing.undo.UndoManager;
@@ -60,7 +62,7 @@ public abstract class MapLayer implements StateEditable {
     */
 	public void drawOpaqueWalls(Point p) {
 
-	   if(firstClick || lastPoint == null){
+	   if(firstClick){
 	      lastPoint = p;
 	      firstClick = false;
 	      wasFirstClick = true;
@@ -440,7 +442,6 @@ public abstract class MapLayer implements StateEditable {
     */
 	public boolean drawTransparentWalls(Point p) {
 		this.walling = true;
-      firstClick = !firstClick;
 
       if (firstClick) {
          //check that the player has clicked on the boundary of a room
@@ -451,11 +452,12 @@ public abstract class MapLayer implements StateEditable {
             }
          }
          if(roomToDivide==null){
-            //TODO error message that the author must divide a room with transparent walls
-            walling = false;
-            firstClick = false;
-         }else {
+            //walling = false;
+            //firstClick = false;
+            dialog("Transparent walls must start on the edge of a room.");
+         } else {
             lastPoint = p;
+            firstClick = false;
          }
       } else {
          if(roomToDivide!=null&&roomToDivide.onBoundary(p)) {
@@ -467,13 +469,14 @@ public abstract class MapLayer implements StateEditable {
             detectRooms();
             stateEdit.end();
             undoManager.addEdit(stateEdit);
+            firstClick = true;
          }else {
-            //TODO error message that the author must divide a room with transparent walls
-            walling = false;
+            dialog("Transparent walls must divide one room into two pieces.");
+            //walling = false;
+            firstClick = true;
          }
          roomToDivide = null;
       }
-
 
 		return this.walling;
 	}
@@ -587,6 +590,13 @@ public abstract class MapLayer implements StateEditable {
           }
        }
    }
+
+   private void dialog(String message) {
+		JOptionPane jop = new JOptionPane(message);
+		final JDialog d = jop.createDialog("Error");
+		d.setLocation(250, 250);
+		d.setVisible(true);
+	}
 
 
 }

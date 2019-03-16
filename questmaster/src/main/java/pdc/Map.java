@@ -170,6 +170,14 @@ public class Map implements StateEditable {
 		archwayAdd = false;
 	}
 
+	public void stopPlacingPlayer() {
+		player.stopPlacing();
+		opaqueWallMode = false;
+		transparentWallMode = false;
+		dooring = false;
+		archwayAdd = false;
+	}
+
 	public void startGame() {
 		player.startPlaying();
 	}

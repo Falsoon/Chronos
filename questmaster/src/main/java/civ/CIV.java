@@ -39,14 +39,14 @@ public class CIV {
 					Room room = RoomList.getInstance().getRoom(point);
 					if (room != null) {
 						EventQueue.invokeLater(() -> {
-                     try {
+                    try {
                         formCiv.setRoomReference(room.toString());
                         FormWindow window = new FormWindow(formCiv, true);
                         window.frame.setVisible(true);
-                     } catch (Exception e) {
-                        e.printStackTrace();
-                     }
-                  });
+                    } catch (Exception e) {
+                    	e.printStackTrace();
+                    }
+                });
 					}
 				}
 			}
@@ -87,6 +87,10 @@ public class CIV {
 
 	public void placeStart() {
 		map.placePlayerStart();
+	}
+
+	public void stopPlacingPlayer()  {
+		map.stopPlacingPlayer();
 	}
 
 	public boolean placedPlayer() {
