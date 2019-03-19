@@ -1,5 +1,6 @@
 package civ;
 
+import hic.AuthorWindow;
 import hic.FormWindow;
 import pdc.*;
 
@@ -12,10 +13,18 @@ import java.util.ArrayList;
 public class CIV {
 	public Map map;
 	public FormCiv formCiv;
+	private AuthorWindow authorWindow;
 
 	public CIV() {
 		map = new Map();
 		formCiv = new FormCiv();
+		authorWindow = null;
+	}
+
+	public CIV(AuthorWindow aw) {
+		map = new Map();
+		formCiv = new FormCiv();
+		authorWindow = aw;
 	}
 
    /**
@@ -40,9 +49,11 @@ public class CIV {
 					if (room != null) {
 						EventQueue.invokeLater(() -> {
                     try {
-                        formCiv.setRoomReference(room.toString());
-                        FormWindow window = new FormWindow(formCiv, true);
-                        window.frame.setVisible(true);
+						formCiv.setRoomReference(room.toString());
+						authorWindow.buttonFactory.rdi.updateRoom();
+						map.setSelectedRoom(room.toString());
+                        //FormWindow window = new FormWindow(formCiv, true);
+						//window.frame.setVisible(true);
                     } catch (Exception e) {
                     	e.printStackTrace();
                     }

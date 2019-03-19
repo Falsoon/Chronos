@@ -1,7 +1,5 @@
 package hic;
 
-import civ.FormCiv;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -16,10 +14,12 @@ import java.awt.event.ItemEvent;
 public class ButtonFactory {
 	
 	private AuthorWindow authorWindow;
+	public RoomDescInsert rdi;
 	public JButton start, placeStart, undoButton, btnClear, addRoombtn1, addRoombtn2;
 	
 	public ButtonFactory(AuthorWindow aw) {
 		this.authorWindow = aw;
+		rdi = new RoomDescInsert(aw);
 		initialize();
 	}
 	
@@ -61,9 +61,12 @@ public class ButtonFactory {
 		authorWindow.authorPanel.add(btnProp);
 		authorWindow.authorPanel.add(btnPlayer);
 		authorWindow.authorPanel.add(line1);
-		authorWindow.authorPanel.add(btnVoid);
+
+		authorWindow.authorPanel.add(rdi);
+
 		authorWindow.authorPanel.add(line2);
 		authorWindow.authorPanel.add(btnUndo);
+		authorWindow.authorPanel.add(line2);
 		authorWindow.authorPanel.add(btnPlay);
 		authorWindow.authorPanel.add(line3);
 		authorWindow.authorPanel.add(btnClear);

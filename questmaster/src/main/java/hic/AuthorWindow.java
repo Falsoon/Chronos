@@ -22,6 +22,7 @@ public class AuthorWindow extends JPanel {
 	public JComboBox<String> wallCombo, portalCombo;
 	public JButton start, placeStart, undoButton, btnClear, addRoombtn1, addRoombtn2;
 	public int modeSelected = 0;
+	public ButtonFactory buttonFactory;
 	private JScrollPane scrollPane;
 
 	/**
@@ -45,7 +46,7 @@ public class AuthorWindow extends JPanel {
 	 * Create the application.
 	 */
 	public AuthorWindow() {
-		civ = new CIV();
+		civ = new CIV(this);
 		initialize();
 	}
 
@@ -72,7 +73,7 @@ public class AuthorWindow extends JPanel {
 
 		// Author panel holds the buttons for authors use
 		authorPanel = new AuthorPanel();
-		new ButtonFactory(this);
+		buttonFactory = new ButtonFactory(this);
 		splitPane.setLeftComponent(authorPanel);
 		authorPanel.update();
 

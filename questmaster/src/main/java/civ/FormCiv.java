@@ -64,6 +64,20 @@ public class FormCiv {
 		room.title = title;
 		room.desc = desc;
 	}
+
+	public void adjustRoomTitle(String title) {
+		if(room ==null) {
+			room = new Room();
+		}
+		room.title = title;
+	}
+
+	public void adjustRoomDesc(String desc) {
+		if(room ==null) {
+			room = new Room();
+		}
+		room.desc = desc;
+	}
 	
 	public void addRoomToRoomList() {
 		if(room ==null) {
