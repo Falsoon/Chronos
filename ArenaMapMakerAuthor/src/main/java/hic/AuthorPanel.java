@@ -1,9 +1,8 @@
 package hic;
+
+import javax.swing.*;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-
-import javax.swing.JComboBox;
-import javax.swing.JPanel;
 /**
  * Used for encapsulating the author UI
  */
@@ -29,7 +28,6 @@ public class AuthorPanel extends JPanel {
 		Rooms.setSelectedIndex(index);
 		Rooms.addActionListener(al[0]);
 	}
-
 
 	public void reset() {
 		

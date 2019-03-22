@@ -1,21 +1,13 @@
 package hic;
 
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JTextField;
-
-import civ.*;
+import civ.FormCiv;
 import pdc.Door;
 import pdc.DoorList;
 
+import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
 
 /**
  * Handles UI of form window
@@ -72,10 +64,15 @@ public class FormWindow  {
 		frame.getContentPane().add(roomIdText);
 		roomIdText.setColumns(10);
 		roomIdText.setEditable(false);
-		
+
+		portalCombo = new JComboBox<>();
 		portalCombo.addItem("Select Door");
-		ArrayList<Door> doorList = formCiv.getRoomDoors();
-		for (int i = 0; i < doorList.size();i++) {
+		//ArrayList<Door> doorList = formCiv.getRoomDoors();
+		ArrayList<Door> doorList = new ArrayList<Door>();
+		if (formCiv.getRoomDoors() != null) {
+			doorList = formCiv.getRoomDoors();
+		}
+		for (int i = 0; i < doorList.size(); i++) {
 			portalCombo.addItem(DoorList.list.get(i).toString());
 		}
 		portalCombo.setBounds(250, 50, 90, 20);

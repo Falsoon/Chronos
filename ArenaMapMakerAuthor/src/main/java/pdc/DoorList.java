@@ -1,11 +1,10 @@
 package pdc;
-import java.awt.Point;
+
 import java.util.ArrayList;
-import java.util.Iterator;
 
 
 /**
- * Encapsulates all the doors into a list
+ * Encapsulates all the doors into a pointList
  */
 public class DoorList {
 	public static ArrayList<Door> list = new ArrayList<Door>();
@@ -45,6 +44,5 @@ public class DoorList {
 
 	public static void undo() {
 		list.remove(mostRecent);
-		
 	}
 }

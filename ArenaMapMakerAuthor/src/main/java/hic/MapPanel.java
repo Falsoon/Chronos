@@ -1,20 +1,13 @@
 package hic;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Point;
-import java.awt.Rectangle;
-import java.awt.event.*;
-
-import javax.swing.JDialog;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
-
 import civ.CIV;
 import pdc.Constants;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 /**
  * the presenter class for the mapWindow handles updating both data on the map
@@ -36,13 +29,14 @@ public class MapPanel extends JPanel {
 	public MapPanel(AuthorWindow authorWindow) {
 		civ = AuthorWindow.civ;
 		aw = authorWindow;
+
 		// Anonymous class was used to access MapPanel fields
 		MouseListener mousehandler = new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent e) {
 
 				try {
-					civ.mousePressed(e.getPoint(), e.isAltDown(), SwingUtilities.isLeftMouseButton(e));
+					civ.mousePressed(e.getPoint(), e.isAltDown(), SwingUtilities.isLeftMouseButton(e), SwingUtilities.isRightMouseButton(e));
 				} catch (Throwable error) {
 					dialog(error.getMessage());
 					error.printStackTrace();
@@ -53,7 +47,7 @@ public class MapPanel extends JPanel {
 		};
 		addMouseListener(mousehandler);
 	}
-
+	
 	protected void dialog(String message) {
 		JOptionPane jop = new JOptionPane(message);
 		final JDialog d = jop.createDialog((JFrame) null, "Error");
@@ -87,11 +81,28 @@ public class MapPanel extends JPanel {
 		civ.dooring();
 	}
 
+   /**
+    * Changes state of MapPanel to add Archway
+    */
+   public void paintArchway() {
+      civ.archwayAdd();
+   }
+
 	/**
 	 * Resets state of MapPanel
 	 */
 	public void clear() {
 		civ.clear();
+		repaint();
+	}
+	
+	public void save() {
+		civ.save();
+	}
+	
+	public void restore() {
+		civ.restore();
+		aw.authorPanel.update();
 		repaint();
 	}
 
@@ -157,6 +168,14 @@ public class MapPanel extends JPanel {
 		repaint();
 	}
 
+	public String getRoomName() {
+		return civ.getRoomName();
+	}
+
+	public String getRoomDesc() {
+		return civ.getRoomDesc();
+	}
+
 	public void stopDrawing() {
 		civ.stopDrawing();
 	}
@@ -174,4 +193,12 @@ public class MapPanel extends JPanel {
 			}
 		}
 	}
+
+   /**
+    * Method to set whether the MapLayer is for the player mode
+    * @param setting the value to give to player mode
+    */
+   public void setPlayerMode(boolean setting) {
+	   civ.setPlayerMode(setting);
+   }
 }

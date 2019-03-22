@@ -1,18 +1,9 @@
 package hic;
-import java.awt.Color;
-import java.awt.EventQueue;
 
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JSplitPane;
+import civ.CIV;
 
-
-import civ.*;
-
-import java.awt.BorderLayout;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JComboBox;
+import javax.swing.*;
+import java.awt.*;
 
 /**
  * UI class for entire application
@@ -26,7 +17,7 @@ public class AuthorWindow extends JPanel {
 	public AuthorPanel authorPanel;
 	public MapPanel mapPanel;
 	public String[] wallTypes = { "Walls", "Opaque", "Transparent" };
-	public String[] portalTypes = { "Portals", "Doors" };
+	public String[] portalTypes = { "Portals", "Doors", "Archway" };
 	public String[] authorModes = { "Select Authoring Mode", "Author Room descriptions", "Draw Rooms" };
 	public JComboBox<String> wallCombo, portalCombo;
 	public JButton start, placeStart, undoButton, btnClear, addRoombtn1, addRoombtn2;
@@ -84,6 +75,5 @@ public class AuthorWindow extends JPanel {
 		new ButtonFactory(this);
 		splitPane.setLeftComponent(authorPanel);
 		authorPanel.update();
-
 	}
 }
