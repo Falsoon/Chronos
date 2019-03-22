@@ -8,10 +8,8 @@ import java.awt.*;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 
 /**
@@ -65,18 +63,23 @@ public abstract class MapLayer implements StateEditable {
 	      firstClick = false;
 	      wasFirstClick = true;
       }else{
+	      //check that the last 2 points clicked are not the same
+         if(!lastPoint.equals(p)) {
          startStateEdit();
-	      lastWall = new Wall(new Line2D.Double(lastPoint,p),Type.OPAQUE);
-	      wallList.add(lastWall);
+
+         lastWall = new Wall(new Line2D.Double(lastPoint, p), Type.OPAQUE);
+         wallList.add(lastWall);
          detectRooms();
          //add lastPoint if it hasn't been added yet
-         if(wasFirstClick){
+         if (wasFirstClick) {
             pointList.add(lastPoint);
             wasFirstClick = false;
          }
          pointList.add(p);
          lastPoint = p;
+
          endStateEdit();
+         }
       }
 
 	}
@@ -294,6 +297,8 @@ public abstract class MapLayer implements StateEditable {
          wallList.remove(key);
          breakUpWallAndAddToList(key, value);
       });
+      //remove duplicate walls
+      wallList = (ArrayList<Wall>) wallList.stream().distinct().collect(Collectors.toList());
    }
 
    /**

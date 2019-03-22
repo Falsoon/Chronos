@@ -621,7 +621,6 @@ class DetectRoomsTest {
       assertTrue(civ.map.mapLayer.pointList.contains(point8));
    }
 
-   /*
    //B - Author draws duplicate walls over existing walls (e.g. by double clicking)
    @Test
    void testB9() {
@@ -649,7 +648,7 @@ class DetectRoomsTest {
       assertTrue(civ.map.mapLayer.pointList.contains(point2));
       assertTrue(civ.map.mapLayer.pointList.contains(point3));
       assertTrue(civ.map.mapLayer.pointList.contains(point4));
+      assertEquals(5,civ.map.mapLayer.pointList.size());
    }
-   */
 
 }
