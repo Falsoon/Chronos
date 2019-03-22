@@ -109,48 +109,133 @@ public class Room {
 	}
 
 	private void makePath() {
-		if (this.path == null) {
-			this.path = new GeneralPath();
+		if (path == null) {
+			path = new GeneralPath();
 		}
-		if (this.path.getCurrentPoint() == null) {
-			this.path.moveTo(this.pointList.get(0).getX(), this.pointList.get(0).getY());
-			for (int i = 1; i < this.pointList.size(); i++) {
-				this.path.lineTo(this.pointList.get(i).getX(), this.pointList.get(i).getY());
-			}
-		} else {
-			this.path.reset();
-			this.path.moveTo(this.pointList.get(0).getX(), this.pointList.get(0).getY());
-			for (int i = 1; i < this.pointList.size(); i++) {
-				this.path.lineTo(this.pointList.get(i).getX(), this.pointList.get(i).getY());
-			}
-		}
+		if (path.getCurrentPoint() != null) {
+         path.reset();
+      }
+      addWallsInOrder();
+
 	}
 
-	private boolean pointBetween(Point p1, Point p2, Point p3) {
+   /**
+    * Helper method for makePath, adds walls in the correct order to avoid errors with GeneralPath
+    */
+   private void addWallsInOrder() {
+      ArrayList<Wall> addedWalls = new ArrayList<>();
+      boolean isFirstWall = true;
+      Point lastAddedPoint = null;
+      while(addedWalls.size() != walls.size()){
+         if(isFirstWall){
+            isFirstWall = false;
+            Wall firstWall = walls.get(0);
+            path.moveTo(firstWall.getX1(),firstWall.getY1());
+            path.lineTo(firstWall.getX2(),firstWall.getY2());
+            lastAddedPoint = new Point((int)firstWall.getX2(),(int)firstWall.getY2());
+            addedWalls.add(firstWall);
+            for(int i = 1;i<walls.size();i++){
+               Wall wall = walls.get(i);
+               lastAddedPoint = addWallToPath(addedWalls, lastAddedPoint, wall);
+            }
+         }else{
+            for (Wall wall : walls) {
+               lastAddedPoint = addWallToPath(addedWalls, lastAddedPoint, wall);
+            }
+         }
+      }
+   }
+
+   /**
+    * Helper method for addWallsInOrder, adds the wall to the path if it's the next wall in order
+    * @param addedWalls the list of addedWalls
+    * @param lastAddedPoint the last point added to path
+    * @param wall the wall to check
+    * @return the last added point
+    */
+   private Point addWallToPath(ArrayList<Wall> addedWalls, Point lastAddedPoint, Wall wall) {
+      if(!addedWalls.contains(wall)) {
+         if (wall.getP1().equals(lastAddedPoint)) {
+            path.lineTo(wall.getX2(), wall.getY2());
+            addedWalls.add(wall);
+            lastAddedPoint = new Point((int)wall.getX2(),(int)wall.getY2());
+         } else if (wall.getP2().equals(lastAddedPoint)) {
+            path.lineTo(wall.getX1(), wall.getY1());
+            addedWalls.add(wall);
+            lastAddedPoint = new Point((int)wall.getX1(),(int)wall.getY1());
+         }
+      }
+      return lastAddedPoint;
+   }
+
+   private boolean pointBetween(Point p1, Point p2, Point p3) {
 		return Point.distance(p2.getX(), p2.getY(), p1.getX(), p1.getY())
 				+ Point.distance(p1.getX(), p1.getY(), p3.getX(), p3.getY()) == Point.distance(p2.getX(), p2.getY(),
 						p3.getX(), p3.getY());
 	}
 
-	// TODO: Restore to previous version when path order is fixed
 	public boolean contains(Point p) {
 		if (this.path == null) {
 			return false;
 		}
-		// if (this.path.contains(p)) {
-		if (this.path.getBounds().contains(p)) {
-			return true;
-		}
-		return(onBoundary(p));
+      return this.path.contains(p);
+		//return(onBoundary(p));
 	}
 
    /**
-    * Checks if this room contains the specified room
-    * @param r the room to check is contained by this room
-    * @return true if r is contained by this room
+    * Checks if this contains and shares a wall with r
+    * @param r the Room to check is contained by this
+    * @return true if r is contained by and shares a wall with this
     */
-	public boolean contains (Room r){
-      return r.pointList.stream().allMatch(this::contains);
+	public boolean sharesWallAndContains(Room r){
+      boolean hasSharedWall = false;
+      for(Point p:r.pointList){
+         if(this.onBoundary(p)){
+            hasSharedWall = true;
+            break;
+         }
+      }
+      if(hasSharedWall){
+         return contains(r);
+      }else{
+         return false;
+      }
+   }
+
+   /**
+    * Checks if this contains the specified Room r
+    * @param r the Room to check is contained by this
+    * @return true if r is contained by this
+    */
+	private boolean contains (Room r){
+	   //for each point p of r, check that each point immediately northwest, northeast, southeast, and southwest of p is
+      // contained by r.  If p is contained by r but not by this, then this does not contain r
+      for (Point p : r.pointList) {
+         if(!(bothContain(r,p,-1,-1)
+            && bothContain(r,p,1,-1)
+            && bothContain(r,p,1,1)
+            && bothContain(r,p,-1,1))){
+            return false;
+         }
+      }
+      return true;
+	}
+
+   /**
+    * Helper method for contains(Room r).  Checks that r and this contain the point p offset by xOffset and yOffset
+    * @param r the Room to check is contained by this
+    * @param point the current point to check
+    * @param xOffset the x offset for the point
+    * @param yOffset the y offset for the point
+    * @return true if r does not contain point offset by xOffset and yOffset, or both r and this contain point offset
+    * by xOffset and yOffset
+    */
+	private boolean bothContain(Room r, Point point, int xOffset, int yOffset){
+	   Point p = new Point(point.x+xOffset,point.y+yOffset);
+	   if(r.contains(p)){
+         return this.contains(p);
+      }
+	   return true;
    }
 
 	@Override
@@ -162,6 +247,11 @@ public class Room {
 		}
 	}
 
+   /**
+    * Checks if the specified point lies on the boundary of this
+    * @param p the point to check
+    * @return true if the specified point lies on the boundary of this
+    */
 	public boolean onBoundary(Point p) {
 		boolean found = false;
 		for (int i = 0; !found && i < this.pointList.size() - 1; i++) {

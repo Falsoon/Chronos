@@ -1,6 +1,7 @@
 package pdc;
 
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.Iterator;
 
 /*
@@ -71,25 +72,37 @@ public class Player {
 		if (playing && !collides(new Point(position.x, position.y - GRIDDISTANCE))) {
 			position.move(position.x, position.y - GRIDDISTANCE);
 		}
-	}
+      positionDebug();
+   }
 
-	public void goDown() {
+   private void positionDebug() {
+      System.out.println("Player position: " + position);
+      ArrayList<Room> rl = RoomList.getInstance().list;
+      for (Room room : rl) {
+         System.out.println("Room#" + room.ROOMID + "contains player: " + room.contains(position));
+      }
+   }
+
+   public void goDown() {
 		if (playing && !collides(new Point(position.x, position.y + GRIDDISTANCE))) {
 			position.move(position.x, position.y + GRIDDISTANCE);
 		}
-	}
+      positionDebug();
+   }
 
 	public void goLeft() {
 		if (playing && !collides(new Point(position.x - GRIDDISTANCE, position.y))) {
 			position.move(position.x - GRIDDISTANCE, position.y);
 		}
-	}
+      positionDebug();
+   }
 
 	public void goRight() {
 		if (playing && !collides(new Point(position.x + GRIDDISTANCE, position.y))) {
 			position.move(position.x + GRIDDISTANCE, position.y);
 		}
-	}
+      positionDebug();
+   }
 	
 	/**
 	 * Returns true if there is no collision at point p, false otherwise
