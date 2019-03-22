@@ -586,9 +586,10 @@ class DetectRoomsTest {
       Point point3 = new Point(45, 45);
       Point point4 = new Point(45, 30);
 
-      Point point5 = new Point(15,150);
-      Point point6 = new Point(150,150);
-      Point point7 = new Point(150,15);
+      Point point5 = new Point(15,15);
+      Point point6 = new Point(150,15);
+      Point point7 = new Point(150,150);
+      Point point8 = new Point(15,150);
 
       //Room 1
       civ.mousePressed(point1, false, true,false);
@@ -597,11 +598,16 @@ class DetectRoomsTest {
       civ.mousePressed(point4, false, true,false);
       civ.mousePressed(point1, false, true,false);
 
+      civ.stopDrawing();
+      civ.outlining();
+
       //Room 2
       civ.mousePressed(point5, false, true,false);
       civ.mousePressed(point6, false, true,false);
       civ.mousePressed(point7, false, true,false);
-      civ.mousePressed(point1, false, true,false);
+      civ.mousePressed(point8, false, true,false);
+      civ.mousePressed(point5, false, true,false);
+
 
       assertEquals(2, civ.getRoomList().size());
       assertTrue(civ.map.isCreating());
@@ -612,6 +618,7 @@ class DetectRoomsTest {
       assertTrue(civ.map.mapLayer.pointList.contains(point5));
       assertTrue(civ.map.mapLayer.pointList.contains(point6));
       assertTrue(civ.map.mapLayer.pointList.contains(point7));
+      assertTrue(civ.map.mapLayer.pointList.contains(point8));
    }
 
    /*
