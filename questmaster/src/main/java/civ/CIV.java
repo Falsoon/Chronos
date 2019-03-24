@@ -229,4 +229,11 @@ public class CIV {
    public void setPlayerMode(boolean setting) {
       map.setPlayerMode(setting);
    }
+
+   /**
+    * Method to delete walls and passageways
+    */
+   public void delete() {
+      map.delete();
+   }
 }

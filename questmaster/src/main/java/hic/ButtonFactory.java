@@ -14,7 +14,7 @@ import java.awt.event.ActionListener;
 public class ButtonFactory implements ActionListener  {
 	
 	private AuthorWindow authorWindow;
-	public JButton start, placeStart, undoButton, btnClear, addRoombtn1, addRoombtn2;
+	public JButton start, placeStart, undoButton, btnClear, addRoombtn1, addRoombtn2, deleteBtn;
 	
 	public ButtonFactory(AuthorWindow aw) {
 		this.authorWindow = aw;
@@ -154,6 +154,12 @@ public class ButtonFactory implements ActionListener  {
          } else {
             authorWindow.mapPanel.drawRoom(str);
          }
+      });
+		deleteBtn = new JButton("Delete Walls/Passageways");
+		authorWindow.authorPanel.add(deleteBtn);
+		deleteBtn.setVisible(false);
+		deleteBtn.addActionListener(e->{
+		   authorWindow.mapPanel.delete();
       });
 	}
 	

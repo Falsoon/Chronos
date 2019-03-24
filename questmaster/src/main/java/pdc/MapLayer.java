@@ -19,9 +19,7 @@ import java.util.stream.Collectors;
  *
  */
 public abstract class MapLayer implements StateEditable {
-	protected boolean drawingTransparent;
 	protected Point start;
-	private boolean drawingOpaque;
 	protected ArrayList<GeneralPath> pathList;
 	public ArrayList<Point> pointList;
 	public GeneralPath guiPath;
@@ -44,7 +42,6 @@ public abstract class MapLayer implements StateEditable {
 		this.pathList = new ArrayList<>();
 		this.pointList = new ArrayList<>();
 		wallList = new ArrayList<>();
-		this.drawingTransparent = false;
 		this.selectedRoom = null;
 		firstClick = true;
 		roomToDivide = null;
@@ -576,6 +573,21 @@ public abstract class MapLayer implements StateEditable {
     * @param setting the value to give to player mode
     */
    public abstract void setPlayerMode(boolean setting);
+
+   /**
+    * Deletes the wall or passageway at p, if there is a wall or passageway at p
+    * @param p the point of the wall or passageway to delete
+    */
+   public void delete(Point p) {
+      for(Wall wall:wallList){
+         if(wall.getDistance(p)==0){
+            //TODO find a good way to do this. What if the author clicks at the intersection of 2 walls?
+            // Handle clicking a door vs a wall. If the author clicks a wall that contains an archway, need to handle
+            // deleting that entire wall (check if wall shares intersection with passageway, delete the wall,
+            // the passageway, and the wall on the other side of the passageway)
+         }
+      }
+   }
 
    /**
     * Custom comparator used to sort points when breaking up walls.

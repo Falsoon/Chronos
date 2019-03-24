@@ -191,4 +191,11 @@ public class MapPanel extends JPanel {
    public void setPlayerMode(boolean setting) {
 	   civ.setPlayerMode(setting);
    }
+
+   /**
+    * Method to delete walls and passageways
+    */
+   public void delete() {
+      civ.delete();
+   }
 }
