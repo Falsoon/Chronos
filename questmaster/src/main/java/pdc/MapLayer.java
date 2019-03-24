@@ -8,10 +8,8 @@ import java.awt.*;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 
 /**
@@ -65,18 +63,23 @@ public abstract class MapLayer implements StateEditable {
 	      firstClick = false;
 	      wasFirstClick = true;
       }else{
+	      //check that the last 2 points clicked are not the same
+         if(!lastPoint.equals(p)) {
          startStateEdit();
-	      lastWall = new Wall(new Line2D.Double(lastPoint,p),Type.OPAQUE);
-	      wallList.add(lastWall);
+
+         lastWall = new Wall(new Line2D.Double(lastPoint, p), Type.OPAQUE);
+         wallList.add(lastWall);
          detectRooms();
          //add lastPoint if it hasn't been added yet
-         if(wasFirstClick){
+         if (wasFirstClick) {
             pointList.add(lastPoint);
             wasFirstClick = false;
          }
          pointList.add(p);
          lastPoint = p;
+
          endStateEdit();
+         }
       }
 
 	}
@@ -119,7 +122,7 @@ public abstract class MapLayer implements StateEditable {
          boolean unique = true;
          for (int j = 0; unique && j < RoomList.getInstance().list.size(); j++) {
             Room roomB = RoomList.getInstance().list.get(j);
-            if (roomA.pointList.containsAll(roomB.pointList)) {
+            if (roomA.walls.size()==roomB.walls.size()&&roomA.walls.containsAll(roomB.walls)) {
                unique = false;
             }
          }
@@ -127,7 +130,6 @@ public abstract class MapLayer implements StateEditable {
             newRooms.add(roomA);
          }
       }
-
       //check which if any of the new rooms are from splitting a room, handle that if so
       ArrayList<Room> roomsToRemove = new ArrayList<>();
       ArrayList<Room> subRooms = new ArrayList<>();
@@ -135,7 +137,7 @@ public abstract class MapLayer implements StateEditable {
          ArrayList<Room> containedRooms = new ArrayList<>();
          Room roomA = RoomList.getInstance().list.get(i);
          for (Room roomB : newRooms) {
-            if (roomA.contains(roomB)) {
+            if (roomA.sharesWallAndContains(roomB)) {
                containedRooms.add(roomB);
             }
          }
@@ -201,10 +203,10 @@ public abstract class MapLayer implements StateEditable {
          for(int j = i+1;j<tempRoomList.size();j++){
             Room roomA = tempRoomList.get(i);
             Room roomB = tempRoomList.get(j);
-            if (!roomsToRemove.contains(roomB)&&roomB.contains(roomA)) {
+            if (!roomsToRemove.contains(roomB)&&roomB.sharesWallAndContains(roomA)) {
 
                roomsToRemove.add(roomB);
-            }else if(!roomsToRemove.contains(roomA)&&roomA.contains(roomB)){
+            }else if(!roomsToRemove.contains(roomA)&&roomA.sharesWallAndContains(roomB)){
                roomsToRemove.add(roomA);
             }
          }
@@ -295,6 +297,8 @@ public abstract class MapLayer implements StateEditable {
          wallList.remove(key);
          breakUpWallAndAddToList(key, value);
       });
+      //remove duplicate walls
+      wallList = (ArrayList<Wall>) wallList.stream().distinct().collect(Collectors.toList());
    }
 
    /**

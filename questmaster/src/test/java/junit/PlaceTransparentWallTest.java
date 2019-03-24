@@ -40,13 +40,7 @@ public class PlaceTransparentWallTest {
 
       civ.mousePressed(point1, false, true, false);
       civ.mousePressed(point2, false, true, false);
-
-      civ.mousePressed(point2, false, true, false);
       civ.mousePressed(point3, false, true, false);
-
-      civ.mousePressed(point3, false, true, false);
-      civ.mousePressed(point4, false, true, false);
-
       civ.mousePressed(point4, false, true, false);
       civ.mousePressed(point1, false, true, false);
 
@@ -86,13 +80,7 @@ public class PlaceTransparentWallTest {
 
       civ.mousePressed(point1, false, true, false);
       civ.mousePressed(point2, false, true, false);
-
-      civ.mousePressed(point2, false, true, false);
       civ.mousePressed(point3, false, true, false);
-
-      civ.mousePressed(point3, false, true, false);
-      civ.mousePressed(point4, false, true, false);
-
       civ.mousePressed(point4, false, true, false);
       civ.mousePressed(point1, false, true, false);
 
@@ -133,13 +121,7 @@ public class PlaceTransparentWallTest {
 
       civ.mousePressed(point1, false, true, false);
       civ.mousePressed(point2, false, true, false);
-
-      civ.mousePressed(point2, false, true, false);
       civ.mousePressed(point3, false, true, false);
-
-      civ.mousePressed(point3, false, true, false);
-      civ.mousePressed(point4, false, true, false);
-
       civ.mousePressed(point4, false, true, false);
       civ.mousePressed(point1, false, true, false);
 
@@ -179,13 +161,7 @@ public class PlaceTransparentWallTest {
 
       civ.mousePressed(point1, false, true, false);
       civ.mousePressed(point2, false, true, false);
-
-      civ.mousePressed(point2, false, true, false);
       civ.mousePressed(point3, false, true, false);
-
-      civ.mousePressed(point3, false, true, false);
-      civ.mousePressed(point4, false, true, false);
-
       civ.mousePressed(point4, false, true, false);
       civ.mousePressed(point1, false, true, false);
 
