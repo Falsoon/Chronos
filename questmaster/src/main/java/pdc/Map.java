@@ -83,17 +83,25 @@ public class Map implements StateEditable {
 				throw e;
 			}*/
 		}
-		if (dooring) {
-			try {
-				mapLayer3.placeDoor(p);
-			} catch (Throwable e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
+//		if (dooring) {
+//			try {
+//				mapLayer3.placeDoor(p);
+//			} catch (Throwable e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//		}
       if (archwayAdd) {
          try {
             mapLayer.placeArchway(p);
+         } catch (Throwable e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+         }
+      }
+      if (dooring) {
+         try {
+            mapLayer.placeDoor(p);
          } catch (Throwable e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

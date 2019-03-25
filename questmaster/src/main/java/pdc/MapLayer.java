@@ -506,65 +506,92 @@ public abstract class MapLayer implements StateEditable {
        this.selectedRoom = r;
 	}
 
-   public void placeDoor(Point p) throws Throwable {
-       this.guiPath = new GeneralPath();
-       ArrayList<Room> l = RoomList.getInstance().list;
-       for (int j = 0; j < l.size(); j++) { // For each room
-           Room r = l.get(j);
-           if (r.doorCount() < 8) { // Limit to 8 doors per room
-               ArrayList<Point> list = r.pointList;
-               if(list.contains(p)) {
-               	throw new Throwable("Door must be placed on a wall");
+   public void placeDoor(Point point) throws Throwable
+   {
+      Line2D doorWall= new Line2D.Double();
+      boolean flag = false;
+      for(int i = 0; i< this.wallList.size(); i++)
+      {
+         if (this.wallList.get(i).getDistance(point) ==0)
+         {
+            Wall doorWallObj = this.wallList.get(i);
+            doorWall = doorWallObj.getLineRepresentation();
+            //System.out.println(Math.sqrt( ( ( archwayWall.getX2() - archwayWall.getX1() ) * ( doorWall.getX2() -
+            // doorWall.getX1() ) ) + ( ( doorWall.getY2() - doorWall.getY1() ) * ( doorWall.getY2() - doorWall.getY1() ) ) ));
+            if(Math.sqrt( ( ( doorWall.getX2() - doorWall.getX1() ) * ( doorWall.getX2() - doorWall.getX1() ) ) + ( ( doorWall.getY2() - doorWall.getY1() ) * ( doorWall.getY2() - doorWall.getY1() ) ) )>= 15){
+               if((doorWall.getX1() == doorWall.getX2())) {
+                  if ((Math.abs(point.getY() - doorWall.getY1()) > 15) && (Math.abs(point.getY() - doorWall.getY2()) > 15)) {
+                     this.wallList.remove(doorWallObj);
+                     flag = true;
+                     break;
+                  }
+                  else
+                  {
+                     throw new Throwable("Door cannot be placed in a corner.");
+                  }
                }
-               for (int i = 0; i < list.size(); i++) { // Iterate over each pair of points
-                   Point a = list.get(i);
-                   Point b;
-                   if (i == list.size() - 1) {
-                       b = list.get(0);
-                   } else {
-                       b = list.get(i + 1);
-                   }
-                   // Create a shape matching the line between by points a and b
-                   GeneralPath line = new GeneralPath();
-                   double m;
-                   line.moveTo(a.x, a.y);
-                   line.lineTo(b.x, b.y);
-                   Stroke s = new BasicStroke(4, BasicStroke.CAP_ROUND,
-                           BasicStroke.JOIN_BEVEL);
-                   Shape sh = s.createStrokedShape(line);
-                   if (sh.contains(p)) { // Point is on the line
-                       if (b.x != a.x) { // Case the line is not vertical
-                           // M = slope between a and b
-                           m = ((double)b.y - a.y) / ((double)b.x - a.x);
-                           // Theta = angle between line with slope m and x axis
-                           double theta = Math.toDegrees(Math.atan(m));
-                           // Start path at point clicked
-                           this.guiPath.moveTo(p.x, p.y);
-                           this.guiPath.lineTo(
-                                   p.x + Constants.GRIDDISTANCE
-                                           * Math.cos(Math.toRadians(theta)),
-                                   p.y + Constants.GRIDDISTANCE
-                                           * Math.sin(Math.toRadians(theta)));
-                           // Add path to doorList
-                       } else { // Case the line is vertical
-                           System.out.println("here");
-                           this.guiPath.moveTo(p.x, p.y);
-                           this.guiPath.lineTo(p.x,
-                                   p.y + Constants.GRIDDISTANCE);
-                       }
-                       //TODO: Make door objects and store them
-                       Door d = new Door(this.guiPath);
-                       d.room = r;
-                       d.title = "Room Title";
-                       DoorList.add(d);
-                       r.addDoor(d);
-                   }
-                }
+               else if(doorWall.getY1() == doorWall.getY2())
+               {
+                  if ((Math.abs(point.getX() - doorWall.getX1()) > 15) && (Math.abs(point.getX() - doorWall.getX2()) > 15)) {
+                     this.wallList.remove(doorWallObj);
+                     flag = true;
+                     break;
+                  }
+                  else
+                  {
+                     throw new Throwable("Door cannot be placed in a corner.");
+                  }
+               }
+               else
+               {
+                  throw new Throwable("Door must be placed on a rectilinear wall");
+               }
             }
-        }
+            else
+            {
+               throw new Throwable("Door must be placed on a large enough wall");
+            }
 
-    }
+         }
+      }
+      if(flag)
+      {
 
+         Point2D start = doorWall.getP1();
+         Point2D end = doorWall.getP2();
+         Wall newStartWall = new Wall(new Line2D.Double(start, point),Type.OPAQUE);
+         //TODO: Limit number of doors on wall?
+         Point2D endDoor;
+         if(doorWall.getX1() == doorWall.getX2())
+         {
+            endDoor = new Point2D.Double(doorWall.getX2(), point.getY()-15);
+            if(start.getY() < end.getY())
+            {
+               endDoor = new Point2D.Double(doorWall.getX2(), point.getY()+15);
+            }
+         }
+         else
+         {
+            endDoor = new Point2D.Double(point.getX()-15, doorWall.getY2());
+            if(start.getX() < end.getX())
+            {
+               endDoor = new Point2D.Double(point.getX()+15, doorWall.getY2());
+            }
+         }
+         Wall newEndWall = new Wall(new Line2D.Double(endDoor, end),Type.OPAQUE);
+         Wall doorSeg = new Wall(new Line2D.Double(point, endDoor),Type.DOOR);
+         //System.out.println("Start: " + start + "\nPoint: " + point + "\nEndArch: " + endDoor + "\nEnd: " + end);
+         //System.out.println("StartWall: " + newStartWall.getLineRepresentation() + "\nDoor:" + doorSeg
+         // .getLineRepresentation() + "\nEnd: "+ newEndWall.getLineRepresentation());
+         this.wallList.add(newStartWall);
+         this.wallList.add(doorSeg);
+         this.wallList.add(newEndWall);
+      }
+      else
+      {
+         throw new Throwable("Door must be placed on a wall");
+      }
+   }
     public ArrayList<Wall> getWallList()
     {
        return wallList;
