@@ -2,5 +2,3 @@
 .status
 ArenaMapMakerAuthor/bin/Release/*
 bin
-questmaster/bin
-explorer/bin
