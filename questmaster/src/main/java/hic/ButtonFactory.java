@@ -159,7 +159,7 @@ public class ButtonFactory {
                }
             });
 			authorWindow.mapPanel.startGame();
-			authorWindow.setEnabled(false);
+			authorWindow.frame.setVisible(false);
          }
 		});
 		

@@ -31,7 +31,7 @@ public class PlayerWindow {
 		//frame.setBounds(200, 200, 800, 450);
 		frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
 		//TODO: figure out how to not crash the map when returning to the editor
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		frame.setTitle("PlayerWindow");
 
 		JSplitPane splitPane = new JSplitPane();
@@ -69,13 +69,13 @@ public class PlayerWindow {
 			@Override
 			public void windowClosing(WindowEvent e) {
 				
-				
 				EventQueue.invokeLater(new Runnable() {
 					public void run() {
 						try {
 							AuthorWindow window = new AuthorWindow();
 							window.frame.setTitle("ArenaMapMaker");
 							window.frame.setVisible(true);
+							window.mapPanel.restore();
 						} catch (Exception e) {
 							e.printStackTrace();
 						}
