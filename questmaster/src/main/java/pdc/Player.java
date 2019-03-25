@@ -60,10 +60,7 @@ public class Player {
 	public void startPlacing() {
 		placing = true;
 	}
-	public void stopPlacing() {
-		placing = false;
-	}
-	
+
 	public Point getPosition() {
 		return position;
 	}

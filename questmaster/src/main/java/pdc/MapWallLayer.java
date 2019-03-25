@@ -5,6 +5,7 @@ import javax.swing.undo.UndoableEditSupport;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.function.Predicate;
 
 
 /*
@@ -13,6 +14,7 @@ import java.util.Hashtable;
 public class MapWallLayer extends MapLayer {
 
    private boolean playerMode;
+   private Point playerStartingPosition;
 
 	@Override
 	public void draw(Graphics g) {
@@ -21,11 +23,22 @@ public class MapWallLayer extends MapLayer {
 		wallList.forEach(wall-> {
 		   Type wallType = wall.getType();
 		   //don't draw transparent walls if in player mode
-		   if(!playerMode||(playerMode&&wallType.equals(Type.OPAQUE))) {
+		   if(!playerMode||wallType.equals(Type.OPAQUE)) {
             setDrawMode(g2d, wallType);
             g2d.draw(wall.getLineRepresentation());
          }
 		});
+		//black out inaccessible rooms
+      if(playerMode) {
+         RoomList.getInstance().list.forEach(room -> {
+            Predicate<Wall> isPortal = wall -> wall.getType().equals(Type.ARCHWAY) || wall.getType().equals(Type.DOOR);
+            boolean hasPortal = room.walls.stream().anyMatch(isPortal);
+            if (!room.contains(playerStartingPosition)&&!hasPortal) {
+               g2d.setColor(Color.BLACK);
+               g2d.fill(room.path);
+            }
+         });
+      }
 		if (selectedRoom != null) {
 			g2d.setColor(Color.RED);
 			setDrawMode(g2d,Type.OPAQUE);
@@ -48,6 +61,10 @@ public class MapWallLayer extends MapLayer {
          Stroke dashed = new BasicStroke(3, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{9}, 0);
          g2d.setStroke(dashed);
       }
+   }
+
+   public void setPlayerStartingPosition(Point p){
+	   playerStartingPosition = new Point(p);
    }
 
    @Override

@@ -78,6 +78,7 @@ public class Map implements StateEditable {
       }
 		if (player.isPlacing()) {
 			player.place(p);
+			mapLayer.setPlayerStartingPosition(p);
 		}
 		stateEdit.end();
 		manager.addEdit(stateEdit);

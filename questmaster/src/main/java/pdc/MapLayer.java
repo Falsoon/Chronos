@@ -30,12 +30,12 @@ public abstract class MapLayer implements StateEditable {
 	protected ArrayList<Wall> wallList;
 	private boolean firstClick;
    private Wall lastWall;
-   private Room roomToDivide;
    private UndoableEditSupport undoSupport;
    private UndoManager undoManager;
    private StateEdit stateEdit;
    private Point lastPoint;
    private boolean wasFirstClick;
+   private ArrayList<Room> candidateRoomsForTransparent;
 
    public MapLayer() {
       undoSupport = new UndoableEditSupport(this);
@@ -47,10 +47,12 @@ public abstract class MapLayer implements StateEditable {
 		this.drawingTransparent = false;
 		this.selectedRoom = null;
 		firstClick = true;
-		roomToDivide = null;
+		candidateRoomsForTransparent = new ArrayList<>();
 	}
 
 	public abstract void draw(Graphics g);
+
+   public abstract void setPlayerStartingPosition(Point p);
 
    /**
     * Method called to draw opaque walls
@@ -445,16 +447,15 @@ public abstract class MapLayer implements StateEditable {
 	public boolean drawTransparentWalls(Point p) {
 		this.walling = true;
       firstClick = !firstClick;
-
       if (firstClick) {
          //check that the player has clicked on the boundary of a room
-         for(int i = 0; roomToDivide==null && i<RoomList.getInstance().list.size();i++){
+         for(int i = 0; i<RoomList.getInstance().list.size();i++){
             Room room = RoomList.getInstance().list.get(i);
             if(room.onBoundary(p)){
-               roomToDivide = room;
+               candidateRoomsForTransparent.add(room);
             }
          }
-         if(roomToDivide==null){
+         if(candidateRoomsForTransparent.size()==0){
             //TODO error message that the author must divide a room with transparent walls
             walling = false;
             firstClick = false;
@@ -462,23 +463,29 @@ public abstract class MapLayer implements StateEditable {
             lastPoint = p;
          }
       } else {
-         if(roomToDivide!=null&&roomToDivide.onBoundary(p)) {
-            StateEdit stateEdit = new StateEdit(MapLayer.this);
-            pointList.add(lastPoint);
-            pointList.add(p);
-            lastWall = new Wall(new Line2D.Double(lastPoint, p), Type.TRANSPARENT);
-            wallList.add(lastWall);
-            detectRooms();
-            stateEdit.end();
-            undoManager.addEdit(stateEdit);
+         if(candidateRoomsForTransparent.size()>0) {
+            boolean secondClickValid=false;
+            for(int i = 0;!secondClickValid&&i<candidateRoomsForTransparent.size();i++){
+               secondClickValid = candidateRoomsForTransparent.get(i).onBoundary(p);
+            }
+            if(secondClickValid) {
+               StateEdit stateEdit = new StateEdit(MapLayer.this);
+               pointList.add(lastPoint);
+               pointList.add(p);
+               lastWall = new Wall(new Line2D.Double(lastPoint, p), Type.TRANSPARENT);
+               wallList.add(lastWall);
+               detectRooms();
+               stateEdit.end();
+               undoManager.addEdit(stateEdit);
+            }else{
+               //TODO error message that the author must divide a room with transparent walls
+               walling = false;
+            }
          }else {
             //TODO error message that the author must divide a room with transparent walls
             walling = false;
          }
-         roomToDivide = null;
       }
-
-
 		return this.walling;
 	}
 
