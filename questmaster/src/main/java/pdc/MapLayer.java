@@ -343,12 +343,29 @@ public abstract class MapLayer implements StateEditable {
             archwayWall = archwayWallObj.getLineRepresentation();
             //System.out.println(Math.sqrt( ( ( archwayWall.getX2() - archwayWall.getX1() ) * ( archwayWall.getX2() -
             // archwayWall.getX1() ) ) + ( ( archwayWall.getY2() - archwayWall.getY1() ) * ( archwayWall.getY2() - archwayWall.getY1() ) ) ));
-            if(Math.sqrt( ( ( archwayWall.getX2() - archwayWall.getX1() ) * ( archwayWall.getX2() - archwayWall.getX1() ) ) + ( ( archwayWall.getY2() - archwayWall.getY1() ) * ( archwayWall.getY2() - archwayWall.getY1() ) ) )>= 15)
-            {
-               if((archwayWall.getX1() == archwayWall.getX2())  || (archwayWall.getY1() == archwayWall.getY2())) {
-                  this.wallList.remove(archwayWallObj);
-                  flag = true;
-                  break;
+            if(Math.sqrt( ( ( archwayWall.getX2() - archwayWall.getX1() ) * ( archwayWall.getX2() - archwayWall.getX1() ) ) + ( ( archwayWall.getY2() - archwayWall.getY1() ) * ( archwayWall.getY2() - archwayWall.getY1() ) ) )>= 15){
+               if((archwayWall.getX1() == archwayWall.getX2())) {
+                  if ((Math.abs(point.getY() - archwayWall.getY1()) > 15) && (Math.abs(point.getY() - archwayWall.getY2()) > 15)) {
+                     this.wallList.remove(archwayWallObj);
+                     flag = true;
+                     break;
+                  }
+                  else
+                  {
+                     throw new Throwable("Archway cannot be placed in a corner.");
+                  }
+               }
+               else if(archwayWall.getY1() == archwayWall.getY2())
+               {
+                  if ((Math.abs(point.getX() - archwayWall.getX1()) > 15) && (Math.abs(point.getX() - archwayWall.getX2()) > 15)) {
+                     this.wallList.remove(archwayWallObj);
+                     flag = true;
+                     break;
+                  }
+                  else
+                  {
+                     throw new Throwable("Archway cannot be placed in a corner.");
+                  }
                }
                else
                {
