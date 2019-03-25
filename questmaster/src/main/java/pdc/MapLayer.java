@@ -28,7 +28,8 @@ public abstract class MapLayer implements StateEditable {
 	private boolean drawingOpaque;
 	protected ArrayList<GeneralPath> pathList;
 	public ArrayList<Point> pointList;
-	public GeneralPath guiPath;
+   public GeneralPath guiPath;
+   public boolean throwAlerts;
 	private boolean walling;
 	protected Room selectedRoom;
 	protected ArrayList<Wall> wallList;
@@ -48,7 +49,8 @@ public abstract class MapLayer implements StateEditable {
 		this.pathList = new ArrayList<>();
 		this.pointList = new ArrayList<>();
 		wallList = new ArrayList<>();
-		this.drawingTransparent = false;
+      this.drawingTransparent = false;
+      throwAlerts = true;
 		this.selectedRoom = null;
 		firstClick = true;
 		roomToDivide = null;
@@ -592,11 +594,11 @@ public abstract class MapLayer implements StateEditable {
    }
 
    private void dialog(String message) {
-		JOptionPane jop = new JOptionPane(message);
-		final JDialog d = jop.createDialog("Error");
-		d.setLocation(250, 250);
-		d.setVisible(true);
-	}
-
-
+      if(throwAlerts) {
+         JOptionPane jop = new JOptionPane(message);
+         final JDialog d = jop.createDialog("Error");
+         d.setLocation(250, 250);
+         d.setVisible(true);
+      }
+   }
 }

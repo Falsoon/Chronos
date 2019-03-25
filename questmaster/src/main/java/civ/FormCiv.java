@@ -13,7 +13,7 @@ import java.util.ArrayList;
  */
 public class FormCiv {
 	
-	private Room room;
+	public Room room;
 	private Door door;
 	
 	public FormCiv() {

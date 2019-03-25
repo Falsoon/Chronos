@@ -85,18 +85,26 @@ public class CIV {
 	}
 
 	public void outlining() {
+		stopDrawing();
+		stopPlacingPlayer();
 		map.opaqueWalling();
 	}
 
 	public void walling() {
+		stopDrawing();
+		stopPlacingPlayer();
 		map.transparentWalling();
 	}
 
 	public void startGame() {
+		stopDrawing();
+		stopPlacingPlayer();
 		map.startGame();
 	}
 
 	public void placeStart() {
+		stopDrawing();
+		stopPlacingPlayer();
 		map.placePlayerStart();
 	}
 
@@ -140,7 +148,11 @@ public class CIV {
 		map.dooring();
 	}
 
-	public void archwayAdd() { map.archwayAdd();}
+	public void archwayAdd() {
+		stopDrawing();
+		stopPlacingPlayer();
+		map.archwayAdd();
+	}
 	//look into creating door pointList
 	public int numOfDoors() {
 		return map.numOfDoors();
@@ -232,10 +244,6 @@ public class CIV {
 		}
 	}
 	*/
-
-	public void showDialog(){
-
-   }
 
    /**
     * Method to set whether the MapLayer is for the player mode

@@ -15,7 +15,8 @@ public class ButtonFactory {
 	
 	private AuthorWindow authorWindow;
 	public RoomDescInsert rdi;
-	public JButton start, placeStart, undoButton, btnClear, addRoombtn1, addRoombtn2;
+	public JButton btnPlay, btnPlayer, btnUndo, btnClear; //addRoombtn1, addRoombtn2;
+	public JToggleButton btnOpaqueWalls, btnTransWalls, btnArchways, btnProp;
 	
 	public ButtonFactory(AuthorWindow aw) {
 		this.authorWindow = aw;
@@ -26,33 +27,33 @@ public class ButtonFactory {
 	private void initialize() {
 		authorWindow.authorPanel = new AuthorPanel();
 
-		JToggleButton btnOpaqueWalls = new JToggleButton("Opaque Walls");
+		btnOpaqueWalls = new JToggleButton("Opaque Walls");
 		btnOpaqueWalls.setAlignmentX(Component.CENTER_ALIGNMENT);
-		JToggleButton btnTransWalls = new JToggleButton("Transparent Walls");
+		btnTransWalls = new JToggleButton("Transparent Walls");
 		btnTransWalls.setAlignmentX(Component.CENTER_ALIGNMENT);
-		JToggleButton btnArchways = new JToggleButton("Archways");
+		btnArchways = new JToggleButton("Archways");
 		btnArchways.setAlignmentX(Component.CENTER_ALIGNMENT);
-		JToggleButton btnProp = new JToggleButton("Set Properties");
+		btnProp = new JToggleButton("Set Properties");
 		btnProp.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-		JButton btnPlayer = new JButton("Set Start Point");
+		btnPlayer = new JButton("Set Start Point");
 		btnPlayer.setAlignmentX(Component.CENTER_ALIGNMENT);
 
 		JSeparator line1 = new JSeparator(SwingConstants.HORIZONTAL);
 
-		JButton btnVoid = new JButton("area to be filled later");
-		btnVoid.setAlignmentX(Component.CENTER_ALIGNMENT);
-
 		JSeparator line2 = new JSeparator(SwingConstants.HORIZONTAL);
 
-		JButton btnUndo = new JButton("Undo");
+		btnUndo = new JButton("Undo");
 		btnUndo.setAlignmentX(Component.CENTER_ALIGNMENT);
-		JButton btnPlay = new JButton("Play");
-		btnPlay.setAlignmentX(Component.CENTER_ALIGNMENT);
 
 		JSeparator line3 = new JSeparator(SwingConstants.HORIZONTAL);
 
-		JButton btnClear = new JButton("Clear");
+		btnPlay = new JButton("Play");
+		btnPlay.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+		JSeparator line4 = new JSeparator(SwingConstants.HORIZONTAL);
+
+		btnClear = new JButton("Clear");
 		btnClear.setAlignmentX(Component.CENTER_ALIGNMENT);
 
 		authorWindow.authorPanel.add(btnOpaqueWalls);
@@ -66,9 +67,9 @@ public class ButtonFactory {
 
 		authorWindow.authorPanel.add(line2);
 		authorWindow.authorPanel.add(btnUndo);
-		authorWindow.authorPanel.add(line2);
-		authorWindow.authorPanel.add(btnPlay);
 		authorWindow.authorPanel.add(line3);
+		authorWindow.authorPanel.add(btnPlay);
+		authorWindow.authorPanel.add(line4);
 		authorWindow.authorPanel.add(btnClear);
 
 		ButtonGroup btnList = new ButtonGroup();
@@ -79,24 +80,24 @@ public class ButtonFactory {
 
 		btnOpaqueWalls.addItemListener(e -> {
 			if (e.getStateChange() == ItemEvent.SELECTED) {
-				authorWindow.mapPanel.stopDrawing();
-				authorWindow.mapPanel.stopPlacingPlayer();
+				//authorWindow.mapPanel.stopDrawing();
+				//authorWindow.mapPanel.stopPlacingPlayer();
 				authorWindow.mapPanel.paintRooms();
 			}
 		});
 
 		btnTransWalls.addItemListener(e -> {
 			if (e.getStateChange() == ItemEvent.SELECTED) {
-				authorWindow.mapPanel.stopDrawing();
-				authorWindow.mapPanel.stopPlacingPlayer();
+				//authorWindow.mapPanel.stopDrawing();
+				//authorWindow.mapPanel.stopPlacingPlayer();
 				authorWindow.mapPanel.paintWalls();
 			}
 		});
 
 		btnArchways.addItemListener(e -> {
 			if (e.getStateChange() == ItemEvent.SELECTED) {
-				authorWindow.mapPanel.stopDrawing();
-				authorWindow.mapPanel.stopPlacingPlayer();
+				//authorWindow.mapPanel.stopDrawing();
+				//authorWindow.mapPanel.stopPlacingPlayer();
 				authorWindow.mapPanel.paintArchway();
 			}
 		});
@@ -115,8 +116,8 @@ public class ButtonFactory {
 		});
 
 		btnUndo.addActionListener(e -> {
-         authorWindow.mapPanel.undo();
-         authorWindow.authorPanel.grabFocus();
+        	authorWindow.mapPanel.undo();
+        	authorWindow.authorPanel.grabFocus();
 		});
 		
 		btnPlay.addActionListener(e -> {

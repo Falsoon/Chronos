@@ -20,8 +20,8 @@ import java.util.ArrayList;
 
 public class RoomDescInsert extends JPanel{
 
-    private FormCiv formCiv;
-    JTextArea titleText, descArea;
+    public FormCiv formCiv;
+    public JTextArea titleText, descArea;
     JTextField roomIdText;
 
     public RoomDescInsert(AuthorWindow aw) {
