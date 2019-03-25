@@ -587,7 +587,7 @@ public abstract class MapLayer implements StateEditable {
             // Handle clicking a portal vs a wall. If the author clicks a wall that contains an archway, need to handle
             // deleting that entire wall (check if wall shares intersection with passageway, delete the wall,
             // the passageway, and the wall on the other side of the passageway)
-            //if th author clicked on the endpoint of 2 walls, ignore it.  The endpoint of a wall is often shared by
+            //if the author clicked on the endpoint of 2 walls, ignore it.  The endpoint of a wall is often shared by
             // 2 walls, so it's ambiguous which wall was clicked.
             if(!wall.hasEndpoint(p)){
                WallType wallType = wall.getWallType();
