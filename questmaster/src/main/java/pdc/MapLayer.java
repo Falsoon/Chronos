@@ -1,5 +1,6 @@
 package pdc;
-
+import javax.swing.JDialog;
+import javax.swing.JOptionPane;
 import javax.swing.undo.StateEdit;
 import javax.swing.undo.StateEditable;
 import javax.swing.undo.UndoManager;
@@ -36,6 +37,7 @@ public abstract class MapLayer implements StateEditable {
    private Room roomToDivide;
    private UndoableEditSupport undoSupport;
    private UndoManager undoManager;
+   public boolean throwAlerts;
    private StateEdit stateEdit;
 
    public MapLayer() {
@@ -45,6 +47,7 @@ public abstract class MapLayer implements StateEditable {
 		this.pathList = new ArrayList<>();
 		this.pointList = new ArrayList<>();
 		wallList = new ArrayList<>();
+      throwAlerts = true;
 		this.drawingTransparent = false;
 		this.selectedRoom = null;
 		firstClick = false;
@@ -344,7 +347,7 @@ public abstract class MapLayer implements StateEditable {
                   }
                   else
                   {
-                     throw new Throwable("Archway cannot be placed in a corner.");
+                     dialog("Archway cannot be placed in a corner.");
                   }
                }
                else if(archwayWall.getY1() == archwayWall.getY2())
@@ -355,18 +358,19 @@ public abstract class MapLayer implements StateEditable {
                      break;
                   }
                   else
+                     //TODO: why does this repeat
                   {
-                     throw new Throwable("Archway cannot be placed in a corner.");
+                     dialog("Archway cannot be placed in a corner.");
                   }
                }
                else
                {
-                  throw new Throwable("Archway must be placed on a rectilinear wall");
+                  dialog("Archway must be placed on a rectilinear wall");
                }
             }
             else
             {
-               throw new Throwable("Archway must be placed on a large enough wall");
+               dialog("Archway must be placed on a large enough wall");
             }
 
          }
@@ -406,7 +410,7 @@ public abstract class MapLayer implements StateEditable {
       }
       else
       {
-         throw new Throwable("Archway must be placed on a wall");
+         dialog("Archway must be placed on a wall");
       }
    }
 
@@ -527,7 +531,7 @@ public abstract class MapLayer implements StateEditable {
                   }
                   else
                   {
-                     throw new Throwable("Door cannot be placed in a corner.");
+                     dialog("Door cannot be placed in a corner.");
                   }
                }
                else if(doorWall.getY1() == doorWall.getY2())
@@ -539,17 +543,17 @@ public abstract class MapLayer implements StateEditable {
                   }
                   else
                   {
-                     throw new Throwable("Door cannot be placed in a corner.");
+                     dialog("Door cannot be placed in a corner.");
                   }
                }
                else
                {
-                  throw new Throwable("Door must be placed on a rectilinear wall");
+                  dialog("Door must be placed on a rectilinear wall");
                }
             }
             else
             {
-               throw new Throwable("Door must be placed on a large enough wall");
+               dialog("Door must be placed on a large enough wall");
             }
 
          }
@@ -589,7 +593,7 @@ public abstract class MapLayer implements StateEditable {
       }
       else
       {
-         throw new Throwable("Door must be placed on a wall");
+         dialog("Door must be placed on a wall");
       }
    }
     public ArrayList<Wall> getWallList()
@@ -610,4 +614,12 @@ public abstract class MapLayer implements StateEditable {
           }
        }
     }
+   private void dialog(String message) {
+      if(throwAlerts) {
+         JOptionPane jop = new JOptionPane(message);
+         final JDialog d = jop.createDialog("Error");
+         d.setLocation(250, 250);
+         d.setVisible(true);
+      }
+   }
 }
