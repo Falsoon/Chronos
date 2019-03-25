@@ -332,75 +332,68 @@ public abstract class MapLayer implements StateEditable {
    //TODO: improve Java Doc, detect if the wall divides two rooms?
    /**
     * Method to add archway onto map.
-    * @param point
-    * @throws Throwable
+    * @param point the point that was clicked
+    * @throws Throwable if the author attempts to place an archway at an invalid point
     */
-   public void placeArchway(Point point) throws Throwable
-   {
+   public void placeArchway(Point point) throws Throwable {
       Line2D archwayWall= new Line2D.Double();
+      Wall archwayWallObj = null;
+      ArrayList<Room> roomsToUpdate = new ArrayList<>();
       boolean flag = false;
-      for(int i = 0; i< this.wallList.size(); i++)
-      {
-         if (this.wallList.get(i).getDistance(point) ==0)
-         {
-            Wall archwayWallObj = this.wallList.get(i);
+      for(int i = 0; i< this.wallList.size(); i++) {
+         if (this.wallList.get(i).getDistance(point) ==0) {
+            archwayWallObj = this.wallList.get(i);
             archwayWall = archwayWallObj.getLineRepresentation();
-            //System.out.println(Math.sqrt( ( ( archwayWall.getX2() - archwayWall.getX1() ) * ( archwayWall.getX2() -
-            // archwayWall.getX1() ) ) + ( ( archwayWall.getY2() - archwayWall.getY1() ) * ( archwayWall.getY2() - archwayWall.getY1() ) ) ));
-            if(Math.sqrt( ( ( archwayWall.getX2() - archwayWall.getX1() ) * ( archwayWall.getX2() - archwayWall.getX1() ) ) + ( ( archwayWall.getY2() - archwayWall.getY1() ) * ( archwayWall.getY2() - archwayWall.getY1() ) ) )>= 15)
-            {
+            if(Math.sqrt( ( ( archwayWall.getX2() - archwayWall.getX1() ) * ( archwayWall.getX2() - archwayWall.getX1() ) ) + ( ( archwayWall.getY2() - archwayWall.getY1() ) * ( archwayWall.getY2() - archwayWall.getY1() ) ) )>= 15) {
                if((archwayWall.getX1() == archwayWall.getX2())  || (archwayWall.getY1() == archwayWall.getY2())) {
                   this.wallList.remove(archwayWallObj);
+                  for(Room room : RoomList.getInstance().list){
+                     if(room.walls.contains(archwayWallObj)){
+                        roomsToUpdate.add(room);
+                     }
+                  }
                   flag = true;
                   break;
-               }
-               else
-               {
+               } else {
                   throw new Throwable("Archway must be placed on a rectilinear wall");
                }
-            }
-            else
-            {
+            } else {
                throw new Throwable("Archway must be placed on a large enough wall");
             }
-
          }
       }
-      if(flag)
-      {
-
+      if(flag) {
          Point2D start = archwayWall.getP1();
          Point2D end = archwayWall.getP2();
          Wall newStartWall = new Wall(new Line2D.Double(start, point),Type.OPAQUE);
          //TODO: Limit number of archways on wall?
          Point2D endArchway;
-         if(archwayWall.getX1() == archwayWall.getX2())
-         {
+         if(archwayWall.getX1() == archwayWall.getX2()) {
             endArchway = new Point2D.Double(archwayWall.getX2(), point.getY()-15);
-            if(start.getY() < end.getY())
-            {
+            if(start.getY() < end.getY()) {
               endArchway = new Point2D.Double(archwayWall.getX2(), point.getY()+15);
             }
          }
-         else
-         {
+         else {
             endArchway = new Point2D.Double(point.getX()-15, archwayWall.getY2());
-            if(start.getX() < end.getX())
-            {
+            if(start.getX() < end.getX()) {
                endArchway = new Point2D.Double(point.getX()+15, archwayWall.getY2());
             }
          }
          Wall newEndWall = new Wall(new Line2D.Double(endArchway, end),Type.OPAQUE);
          Wall archwaySeg = new Wall(new Line2D.Double(point, endArchway),Type.ARCHWAY);
-         //System.out.println("Start: " + start + "\nPoint: " + point + "\nEndArch: " + endArchway + "\nEnd: " + end);
-         //System.out.println("StartWall: " + newStartWall.getLineRepresentation() + "\nArchway:" + archwaySeg
-         // .getLineRepresentation() + "\nEnd: "+ newEndWall.getLineRepresentation());
          this.wallList.add(newStartWall);
          this.wallList.add(archwaySeg);
          this.wallList.add(newEndWall);
-      }
-      else
-      {
+         for(Room room:roomsToUpdate){
+            room.walls.remove(archwayWallObj);
+            ArrayList<Wall> newWallList = room.walls;
+            newWallList.add(newStartWall);
+            newWallList.add(archwaySeg);
+            newWallList.add(newEndWall);
+            room.updatePath(newWallList);
+         }
+      } else {
          throw new Throwable("Archway must be placed on a wall");
       }
    }
@@ -456,7 +449,6 @@ public abstract class MapLayer implements StateEditable {
             }
          }
          if(candidateRoomsForTransparent.size()==0){
-            //TODO error message that the author must divide a room with transparent walls
             walling = false;
             firstClick = false;
          }else {
@@ -478,11 +470,9 @@ public abstract class MapLayer implements StateEditable {
                stateEdit.end();
                undoManager.addEdit(stateEdit);
             }else{
-               //TODO error message that the author must divide a room with transparent walls
                walling = false;
             }
          }else {
-            //TODO error message that the author must divide a room with transparent walls
             walling = false;
          }
       }

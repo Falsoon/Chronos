@@ -27,7 +27,7 @@ public class Room {
 		ROOMID = idCount;
 		idCount++;
       pointList = new ArrayList<>();
-		makeList(walls);
+		makePointList(walls);
 		doors = new ArrayList<>();
 		makePath();
 	}
@@ -53,7 +53,7 @@ public class Room {
       this.title = title;
       this.desc = desc;
       pointList = new ArrayList<>();
-      makeList(walls);
+      makePointList(walls);
       doors = new ArrayList<>();
       makePath();
    }
@@ -71,7 +71,7 @@ public class Room {
       this.title = title;
       this.desc = desc;
       pointList = new ArrayList<>();
-      makeList(walls);
+      makePointList(walls);
       doors = new ArrayList<>();
       makePath();
    }
@@ -84,12 +84,12 @@ public class Room {
    public Room(ArrayList<Wall> walls, boolean assignId){
       this.walls = walls;
       pointList = new ArrayList<>();
-      makeList(walls);
+      makePointList(walls);
       doors = new ArrayList<>();
       makePath();
    }
 
-	private void makeList(ArrayList<Wall> walls) {
+	private void makePointList(ArrayList<Wall> walls) {
 		walls.forEach(wall->{
          pointList.add(new Point((int)wall.getX2(),(int)wall.getY2()));
          pointList.add(new Point((int)wall.getX1(),(int)wall.getY1()));
@@ -340,4 +340,15 @@ public class Room {
 			}
 		}
 	}
+
+   /**
+    * Updates the walls of the room (e.g. if a portal is added to the room)
+    * @param newWalls the new list of walls
+    */
+	public void updatePath(ArrayList<Wall> newWalls){
+	   walls = newWalls;
+	   pointList.clear();
+	   makePointList(walls);
+	   makePath();
+   }
 }
