@@ -330,6 +330,7 @@ public abstract class MapLayer implements StateEditable {
    {
       Line2D archwayWall= new Line2D.Double();
       boolean flag = false;
+      int flagerror = 0;
       for(int i = 0; i< this.wallList.size(); i++)
       {
          if (this.wallList.get(i).getDistance(point) ==0)
@@ -347,7 +348,7 @@ public abstract class MapLayer implements StateEditable {
                   }
                   else
                   {
-                     dialog("Archway cannot be placed in a corner.");
+                     flagerror = 1;
                   }
                }
                else if(archwayWall.getY1() == archwayWall.getY2())
@@ -360,17 +361,17 @@ public abstract class MapLayer implements StateEditable {
                   else
                      //TODO: why does this repeat
                   {
-                     dialog("Archway cannot be placed in a corner.");
+                    flagerror = 1; //corner
                   }
                }
                else
                {
-                  dialog("Archway must be placed on a rectilinear wall");
+                  flagerror = 1; //rectilinear
                }
             }
             else
             {
-               dialog("Archway must be placed on a large enough wall");
+               flagerror = 1; //large enough
             }
 
          }
@@ -410,7 +411,13 @@ public abstract class MapLayer implements StateEditable {
       }
       else
       {
-         dialog("Archway must be placed on a wall");
+         if(flagerror ==1)
+         {
+            dialog("Archway cannot be placed here.");
+         }
+         else {
+            dialog("Archway must be placed on a wall.");
+         }
       }
    }
 
@@ -514,6 +521,7 @@ public abstract class MapLayer implements StateEditable {
    {
       Line2D doorWall= new Line2D.Double();
       boolean flag = false;
+      int flagerror = 0;
       for(int i = 0; i< this.wallList.size(); i++)
       {
          if (this.wallList.get(i).getDistance(point) ==0)
@@ -531,7 +539,7 @@ public abstract class MapLayer implements StateEditable {
                   }
                   else
                   {
-                     dialog("Door cannot be placed in a corner.");
+                     flagerror = 1;
                   }
                }
                else if(doorWall.getY1() == doorWall.getY2())
@@ -543,17 +551,17 @@ public abstract class MapLayer implements StateEditable {
                   }
                   else
                   {
-                     dialog("Door cannot be placed in a corner.");
+                     flagerror = 1;
                   }
                }
                else
                {
-                  dialog("Door must be placed on a rectilinear wall");
+                  flagerror = 1;
                }
             }
             else
             {
-               dialog("Door must be placed on a large enough wall");
+               flagerror = 1;
             }
 
          }
@@ -592,8 +600,14 @@ public abstract class MapLayer implements StateEditable {
          this.wallList.add(newEndWall);
       }
       else
-      {
-         dialog("Door must be placed on a wall");
+         {
+            if(flagerror ==1)
+            {
+               dialog("Door cannot be placed here.");
+            }
+            else {
+               dialog("Door must be placed on a wall.");
+            }
       }
    }
     public ArrayList<Wall> getWallList()
