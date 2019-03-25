@@ -30,7 +30,8 @@ public class PlayerWindow {
 		frame = new JFrame();
 		//frame.setBounds(200, 200, 800, 450);
 		frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
-		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		//TODO: figure out how to not crash the map when returning to the editor
+		//frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		frame.setTitle("PlayerWindow");
 
 		JSplitPane splitPane = new JSplitPane();

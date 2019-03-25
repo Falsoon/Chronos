@@ -130,12 +130,16 @@ public class ButtonFactory {
 
 		btnSave.addActionListener(e -> {
 			authorWindow.mapPanel.save();
+			AuthorWindow.civ.setSelectedRoom(null);
 			authorWindow.authorPanel.grabFocus();
+			btnProp.doClick();
 });
 
 		btnRestore.addActionListener(e -> {
 			authorWindow.mapPanel.restore();
+			AuthorWindow.civ.setSelectedRoom(null);
 			authorWindow.authorPanel.grabFocus();
+			btnProp.doClick();
 		});
 		
 		btnPlay.addActionListener(e -> {
@@ -164,9 +168,9 @@ public class ButtonFactory {
 		
 		btnClear.addActionListener(e -> {
 			btnProp.doClick();
-         	authorWindow.mapPanel.clear();
-        	//authorWindow.authorPanel.Rooms.setSelectedIndex(0);
-         	authorWindow.wallCombo.setSelectedItem(authorWindow.wallTypes[0]);
+			authorWindow.mapPanel.clear();
+        	// authorWindow.authorPanel.Rooms.setSelectedIndex(0);
+         	// authorWindow.wallCombo.setSelectedItem(authorWindow.wallTypes[0]);
          	authorWindow.authorPanel.grabFocus();
 		});
 	}
