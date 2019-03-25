@@ -14,7 +14,13 @@ import java.awt.event.ActionListener;
 public class ButtonFactory implements ActionListener  {
 	
 	private AuthorWindow authorWindow;
-	public JButton start, placeStart, undoButton, btnClear, addRoombtn1, addRoombtn2, deleteBtn;
+	private JButton start;
+   private JButton placeStart;
+   private JButton undoButton;
+   private JButton btnClear;
+   public JButton addRoomDescriptionBtn;
+   private JButton addRoomDrawBtn;
+   private JButton deleteBtn;
 	
 	public ButtonFactory(AuthorWindow aw) {
 		this.authorWindow = aw;
@@ -33,12 +39,12 @@ public class ButtonFactory implements ActionListener  {
          switch (cb.getSelectedItem().toString()) {
          case "Author Room descriptions":
             authorWindow.modeSelected = 1;
-            setMode1();
+            setModeDescription();
             authorWindow.authorPanel.update();
             break;
          case "Draw Rooms":
             authorWindow.modeSelected = 2;
-            setMode2();
+            setModeDraw();
             authorWindow.authorPanel.update();
             break;
          }
@@ -133,13 +139,13 @@ public class ButtonFactory implements ActionListener  {
       });
 		authorWindow.authorPanel.add(authorWindow.authorPanel.Rooms);
 
-		addRoombtn1 = new JButton("Add Room");
-		authorWindow.authorPanel.add(addRoombtn1);
-		addRoombtn2 = new JButton("Add Room");
-		authorWindow.authorPanel.add(addRoombtn2);
-		addRoombtn2.setVisible(false);
-		addRoombtn1.setVisible(false);
-		addRoombtn1.addActionListener(e -> EventQueue.invokeLater(() -> {
+		addRoomDescriptionBtn = new JButton("Add Room");
+		authorWindow.authorPanel.add(addRoomDescriptionBtn);
+		addRoomDrawBtn = new JButton("Add Room");
+		authorWindow.authorPanel.add(addRoomDrawBtn);
+		addRoomDrawBtn.setVisible(false);
+		addRoomDescriptionBtn.setVisible(false);
+		addRoomDescriptionBtn.addActionListener(e -> EventQueue.invokeLater(() -> {
          try {
             FormWindow window = new FormWindow(new FormCiv(), false);
             window.frame.setVisible(true);
@@ -147,7 +153,7 @@ public class ButtonFactory implements ActionListener  {
             e12.printStackTrace();
          }
       }));
-		addRoombtn2.addActionListener(e -> {
+		addRoomDrawBtn.addActionListener(e -> {
          String str = (String) authorWindow.authorPanel.Rooms.getSelectedItem();
          if ("Select Room".equals(str)) {
             authorWindow.mapPanel.paintRooms();
@@ -158,9 +164,7 @@ public class ButtonFactory implements ActionListener  {
 		deleteBtn = new JButton("Delete Walls/Passageways");
 		authorWindow.authorPanel.add(deleteBtn);
 		deleteBtn.setVisible(false);
-		deleteBtn.addActionListener(e->{
-		   authorWindow.mapPanel.delete();
-      });
+		deleteBtn.addActionListener(e-> authorWindow.mapPanel.delete());
 	}
 	
 	@Override
@@ -192,26 +196,28 @@ public class ButtonFactory implements ActionListener  {
 		authorWindow.authorPanel.update();
 	}
 	
-	public void setMode2() {
+	public void setModeDraw() {
 		start.setVisible(true);
 		placeStart.setVisible(true);
 		undoButton.setVisible(true);
 		btnClear.setVisible(true);
 		authorWindow.wallCombo.setVisible(true);
 		authorWindow.portalCombo.setVisible(true);
-		addRoombtn1.setVisible(false);
-		addRoombtn2.setVisible(true);
+		addRoomDescriptionBtn.setVisible(false);
+		addRoomDrawBtn.setVisible(true);
+		deleteBtn.setVisible(true);
 	}
 
-	public void setMode1() {
+	public void setModeDescription() {
 		start.setVisible(false);
 		placeStart.setVisible(false);
 		undoButton.setVisible(false);
 		btnClear.setVisible(false);
 		authorWindow.wallCombo.setVisible(false);
 		authorWindow.portalCombo.setVisible(false);
-		addRoombtn2.setVisible(false);
-		addRoombtn1.setVisible(true);
+		addRoomDrawBtn.setVisible(false);
+		addRoomDescriptionBtn.setVisible(true);
+		deleteBtn.setVisible(false);
 	}
 	
 }

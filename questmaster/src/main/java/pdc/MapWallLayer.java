@@ -1,7 +1,5 @@
 package pdc;
 
-import javax.swing.undo.UndoManager;
-import javax.swing.undo.UndoableEditSupport;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Hashtable;
@@ -19,26 +17,26 @@ public class MapWallLayer extends MapLayer {
 		Graphics2D g2d = (Graphics2D) g;
 		g2d.setColor(Color.BLACK);
 		wallList.forEach(wall-> {
-		   Type wallType = wall.getType();
+		   WallType wallType = wall.getWallType();
 		   //don't draw transparent walls if in player mode
-		   if(!playerMode||(playerMode&&wallType.equals(Type.OPAQUE))) {
+		   if(!playerMode||(playerMode&&wallType.equals(WallType.OPAQUE))) {
             setDrawMode(g2d, wallType);
             g2d.draw(wall.getLineRepresentation());
          }
 		});
 		if (selectedRoom != null) {
 			g2d.setColor(Color.RED);
-			setDrawMode(g2d,Type.OPAQUE);
+			setDrawMode(g2d, WallType.OPAQUE);
 			selectedRoom.walls.forEach(wall -> g2d.draw(wall.getLineRepresentation()));
 		}
 	}
 
-   private void setDrawMode(Graphics2D g2d,Type type) {
-	   if(type.equals(Type.OPAQUE)){
+   private void setDrawMode(Graphics2D g2d, WallType wallType) {
+	   if(wallType.equals(WallType.OPAQUE)){
          g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
          g2d.setStroke(new BasicStroke(4, BasicStroke.CAP_ROUND, BasicStroke.JOIN_BEVEL));
       }
-      else if(type.equals(Type.ARCHWAY)) {
+      else if(wallType.equals(WallType.ARCHWAY)) {
          g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
          Stroke arch = new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{3}, 0);
          g2d.setStroke(arch);

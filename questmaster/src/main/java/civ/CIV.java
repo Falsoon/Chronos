@@ -26,7 +26,8 @@ public class CIV {
     * @param isRightButton if the right mouse button was pressed.  If so, stop drawing
     */
 	public void mousePressed(Point point,boolean isAltDown, boolean isLeftButton, boolean isRightButton){
-	   System.out.println(RoomList.getInstance().list.size());
+	   //keep the original point in case the author is deleting
+	   Point originalPoint = new Point(point);
 		if (!isAltDown) {
 			point.setLocation(Math.round(((double) point.x) / Constants.GRIDDISTANCE) * Constants.GRIDDISTANCE,
 					Math.round(((double) point.y) / Constants.GRIDDISTANCE) * Constants.GRIDDISTANCE);
@@ -34,7 +35,9 @@ public class CIV {
 		if (isLeftButton) {
 			if (map.isCreating()) {
 				map.mousePressed(point);
-			} else {
+			} else if(map.isDeleting()){
+			   map.mousePressed(originalPoint);
+         } else {
 				if (!map.getPlayer().isPlaying()) {
 					Room room = RoomList.getInstance().getRoom(point);
 					if (room != null) {

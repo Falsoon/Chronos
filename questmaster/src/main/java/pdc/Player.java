@@ -113,9 +113,9 @@ public class Player {
 		double closestNonCollision = Double.MAX_VALUE;
 		//TODO would like to not iterate through all walls. CurrentRoom currently does not store archways
 		for (Wall w : mapLayer.wallList) {
-			// System.out.println("Wall Type: " + w.getType());
+			// System.out.println("Wall WallType: " + w.getWallType());
 			double distance = w.getDistance(p);
-			if (w.getType() == Type.OPAQUE) {
+			if (w.getWallType() == WallType.OPAQUE) {
 				if (distance < closestCollision) {
 					closestCollision = distance;
 				}

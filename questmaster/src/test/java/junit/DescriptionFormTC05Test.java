@@ -1,18 +1,14 @@
 package junit;
 import static org.junit.Assert.assertEquals;
-import static org.junit.jupiter.api.Assertions.*;
 
 import java.awt.Point;
-import java.awt.event.WindowEvent;
 
-import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import civ.CIV;
@@ -47,7 +43,7 @@ class DescriptionFormTC05Test {
 	@Test
 	void testAuthorSelectsDescriptionMode() {
 		bf = new ButtonFactory(aw);
-		bf.setMode1();
+		bf.setModeDescription();
 		assertEquals(false, aw.wallCombo.isVisible());
 		assertEquals(false, aw.portalCombo.isVisible());
 	}
@@ -55,7 +51,7 @@ class DescriptionFormTC05Test {
 	@Test
 	void testAuthorSelectsDrawingMode() {
 		bf = new ButtonFactory(aw);
-		bf.setMode2();
+		bf.setModeDraw();
 		assertEquals(true, aw.wallCombo.isVisible());
 		assertEquals(true, aw.portalCombo.isVisible());
 	}
@@ -63,8 +59,8 @@ class DescriptionFormTC05Test {
 	@Test
 	void testCreateRoomViaForm() {
 		bf = new ButtonFactory(aw);
-		bf.setMode1();
-		bf.addRoombtn1.doClick();
+		bf.setModeDescription();
+		bf.addRoomDescriptionBtn.doClick();
 		FormWindow window = new FormWindow(fc, true);
 		window.frame.setVisible(true);
 		
@@ -152,8 +148,8 @@ class DescriptionFormTC05Test {
 	void testFormPopUpViaDrawMode() {
 		//author brings up form by clicking room in drawingTransparent mode
 		bf = new ButtonFactory(aw);
-		bf.setMode1();
-		bf.addRoombtn1.doClick();
+		bf.setModeDescription();
+		bf.addRoomDescriptionBtn.doClick();
 		FormWindow window = new FormWindow(fc, true);
 		window.frame.setVisible(true);
 		assertEquals(true, window.frame.isVisible());

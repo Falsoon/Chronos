@@ -64,7 +64,7 @@ public abstract class MapLayer implements StateEditable {
          if(!lastPoint.equals(p)) {
          startStateEdit();
 
-         lastWall = new Wall(new Line2D.Double(lastPoint, p), Type.OPAQUE);
+         lastWall = new Wall(new Line2D.Double(lastPoint, p), WallType.OPAQUE);
          wallList.add(lastWall);
          detectRooms();
          //add lastPoint if it hasn't been added yet
@@ -314,21 +314,21 @@ public abstract class MapLayer implements StateEditable {
       for(Point point : points){
          if(lastPoint == null){
             lastPoint = point;
-            wallList.add(new Wall(wallPoints.get(0),lastPoint,wall.getType()));
+            wallList.add(new Wall(wallPoints.get(0),lastPoint,wall.getWallType()));
          }else{
-            wallList.add(new Wall(lastPoint,point,wall.getType()));
+            wallList.add(new Wall(lastPoint,point,wall.getWallType()));
             lastPoint = point;
          }
       }
       //add last segment to complete the wall
-      wallList.add(new Wall(lastPoint,wallPoints.get(1),wall.getType()));
+      wallList.add(new Wall(lastPoint,wallPoints.get(1),wall.getWallType()));
    }
 
    //TODO: improve Java Doc, detect if the wall divides two rooms?
    /**
     * Method to add archway onto map.
-    * @param point
-    * @throws Throwable
+    * @param point the point that was clicked
+    * @throws Throwable if the author attempts to place an archway at an inappropriate point
     */
    public void placeArchway(Point point) throws Throwable
    {
@@ -366,7 +366,7 @@ public abstract class MapLayer implements StateEditable {
 
          Point2D start = archwayWall.getP1();
          Point2D end = archwayWall.getP2();
-         Wall newStartWall = new Wall(new Line2D.Double(start, point),Type.OPAQUE);
+         Wall newStartWall = new Wall(new Line2D.Double(start, point), WallType.OPAQUE);
          //TODO: Limit number of archways on wall?
          Point2D endArchway;
          if(archwayWall.getX1() == archwayWall.getX2())
@@ -385,8 +385,8 @@ public abstract class MapLayer implements StateEditable {
                endArchway = new Point2D.Double(point.getX()+15, archwayWall.getY2());
             }
          }
-         Wall newEndWall = new Wall(new Line2D.Double(endArchway, end),Type.OPAQUE);
-         Wall archwaySeg = new Wall(new Line2D.Double(point, endArchway),Type.ARCHWAY);
+         Wall newEndWall = new Wall(new Line2D.Double(endArchway, end), WallType.OPAQUE);
+         Wall archwaySeg = new Wall(new Line2D.Double(point, endArchway), WallType.ARCHWAY);
          //System.out.println("Start: " + start + "\nPoint: " + point + "\nEndArch: " + endArchway + "\nEnd: " + end);
          //System.out.println("StartWall: " + newStartWall.getLineRepresentation() + "\nArchway:" + archwaySeg
          // .getLineRepresentation() + "\nEnd: "+ newEndWall.getLineRepresentation());
@@ -463,7 +463,7 @@ public abstract class MapLayer implements StateEditable {
             StateEdit stateEdit = new StateEdit(MapLayer.this);
             pointList.add(lastPoint);
             pointList.add(p);
-            lastWall = new Wall(new Line2D.Double(lastPoint, p), Type.TRANSPARENT);
+            lastWall = new Wall(new Line2D.Double(lastPoint, p), WallType.TRANSPARENT);
             wallList.add(lastWall);
             detectRooms();
             stateEdit.end();
@@ -579,14 +579,54 @@ public abstract class MapLayer implements StateEditable {
     * @param p the point of the wall or passageway to delete
     */
    public void delete(Point p) {
+      ArrayList<Wall> wallsToRemove = new ArrayList<>();
+      ArrayList<Wall> portalsToRemove = new ArrayList<>();
       for(Wall wall:wallList){
          if(wall.getDistance(p)==0){
-            //TODO find a good way to do this. What if the author clicks at the intersection of 2 walls?
-            // Handle clicking a door vs a wall. If the author clicks a wall that contains an archway, need to handle
+            //TODO find a good way to do this.
+            // Handle clicking a portal vs a wall. If the author clicks a wall that contains an archway, need to handle
             // deleting that entire wall (check if wall shares intersection with passageway, delete the wall,
             // the passageway, and the wall on the other side of the passageway)
+            //if th author clicked on the endpoint of 2 walls, ignore it.  The endpoint of a wall is often shared by
+            // 2 walls, so it's ambiguous which wall was clicked.
+            if(!wall.hasEndpoint(p)){
+               WallType wallType = wall.getWallType();
+               if(wallType.equals(WallType.OPAQUE)|| wallType.equals(WallType.TRANSPARENT)){
+                  wallsToRemove.add(wall);
+                  //remove any portals that are connected to the wall
+                  //TODO ask if this is desired
+                  /*
+                  Point wallP1 = (Point) wall.getP1();
+                  Point wallP2 = (Point) wall.getP2();
+                  for(Wall portal : wallList){
+                     if(portal.getWallType().equals(WallType.ARCHWAY)||portal.getWallType().equals(WallType.DOOR)||){
+                        if(portal.hasEndpoint(wallP1)||portal.hasEndpoint(wallP2)){
+                           wallsToRemove.add(portal);
+                        }
+                     }
+                  }
+                  */
+                  ArrayList<Room> roomsToRemove = new ArrayList<>();
+                  for(Room room: RoomList.getInstance().list){
+                     if(room.walls.contains(wall)){
+                        roomsToRemove.add(room);
+                     }
+                  }
+                  RoomList.getInstance().list.removeAll(roomsToRemove);
+               }else if(wallType.equals(WallType.ARCHWAY) || wallType.equals(WallType.DOOR)){
+                  portalsToRemove.add(wall);
+               }
+            }
          }
       }
+      for(Wall portal : portalsToRemove){
+         portal.setWallType(WallType.OPAQUE);
+      }
+      if(wallsToRemove.size()>0) {
+         wallList.removeAll(wallsToRemove);
+         detectRooms();
+      }
+
    }
 
    /**

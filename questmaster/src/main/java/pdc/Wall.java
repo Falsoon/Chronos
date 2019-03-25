@@ -1,23 +1,24 @@
 package pdc;
 
+import java.awt.*;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 
 /**
- * Representation of a wall as a Line2D and type of wall
+ * Representation of a wall as a Line2D and wallType of wall
  */
 public class Wall {
    private Line2D lineRepresentation;
-   private Type type;
+   private WallType wallType;
 
-   public Wall(Line2D lineRepresentation,Type type){
+   public Wall(Line2D lineRepresentation, WallType wallType){
       this.lineRepresentation = lineRepresentation;
-      this.type = type;
+      this.wallType = wallType;
    }
 
-   public Wall(Point2D pointA, Point2D pointB, Type type){
+   public Wall(Point2D pointA, Point2D pointB, WallType wallType){
       this.lineRepresentation = new Line2D.Double(pointA,pointB);
-      this.type = type;
+      this.wallType = wallType;
    }
 
    public double getX1(){
@@ -45,7 +46,17 @@ public class Wall {
    public Line2D getLineRepresentation(){
       return lineRepresentation;
    }
-   public Type getType(){
-      return type;
+   public WallType getWallType(){
+      return wallType;
+   }
+   public void setWallType(WallType newType) {this.wallType = newType;}
+
+   /**
+    * Determines if p is an endpoint of this
+    * @param p the point to check
+    * @return true if p is an endpoint of this
+    */
+   public boolean hasEndpoint(Point p) {
+      return this.getP1().equals(p)||this.getP2().equals(p);
    }
 }

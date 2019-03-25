@@ -142,6 +142,10 @@ public class Map implements StateEditable {
 		return transparentWallMode || opaqueWallMode || archwayAdd || dooring || player.isPlacing();
 	}
 
+	public boolean isDeleting(){
+      return deleting;
+   }
+
 	@Override
 	public void storeState(Hashtable<Object, Object> state) {
 		state.put(MAP_KEY, getMap());
