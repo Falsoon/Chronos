@@ -14,7 +14,7 @@ import java.awt.event.ActionListener;
 public class ButtonFactory implements ActionListener  {
 	
 	private AuthorWindow authorWindow;
-	public JButton start, placeStart, undoButton, btnClear, addRoombtn1, addRoombtn2;
+	public JButton start, placeStart, undoButton, btnClear, addRoombtn1, addRoombtn2, btnSave, btnRestore;
 	
 	public ButtonFactory(AuthorWindow aw) {
 		this.authorWindow = aw;
@@ -54,14 +54,30 @@ public class ButtonFactory implements ActionListener  {
 		authorWindow.portalCombo.addActionListener(this);
 		authorWindow.authorPanel.add(authorWindow.portalCombo);
 		authorWindow.portalCombo.setVisible(false);
-
+		
+		btnSave = new JButton("Save");
+		btnSave.addActionListener(e -> {
+			authorWindow.mapPanel.save();
+			authorWindow.authorPanel.grabFocus();
+		});
+		authorWindow.authorPanel.add(btnSave);
+		btnSave.setVisible(false);
+		
+		btnRestore = new JButton("Restore");
+		btnRestore.addActionListener(e -> {
+			authorWindow.mapPanel.restore();
+			authorWindow.authorPanel.grabFocus();
+		});
+		authorWindow.authorPanel.add(btnRestore);
+		btnRestore.setVisible(false);
+		
 		// button resets the map
 		btnClear = new JButton("Clear");
 		btnClear.addActionListener(e -> {
-         authorWindow.mapPanel.clear();
-         authorWindow.authorPanel.Rooms.setSelectedIndex(0);
-         authorWindow.wallCombo.setSelectedItem(authorWindow.wallTypes[0]);
-         authorWindow.authorPanel.grabFocus();
+			authorWindow.mapPanel.clear();
+			authorWindow.authorPanel.Rooms.setSelectedIndex(0);
+			authorWindow.wallCombo.setSelectedItem(authorWindow.wallTypes[0]);
+			authorWindow.authorPanel.grabFocus();
       });
 		authorWindow.authorPanel.add(btnClear);
 		btnClear.setVisible(false);
@@ -70,8 +86,8 @@ public class ButtonFactory implements ActionListener  {
 		// ctrl+z is preferred design
 		undoButton = new JButton("Undo");
 		undoButton.addActionListener(e -> {
-         authorWindow.mapPanel.undo();
-         authorWindow.authorPanel.grabFocus();
+			authorWindow.mapPanel.undo();
+			authorWindow.authorPanel.grabFocus();
       });
 		authorWindow.authorPanel.add(undoButton);
 		undoButton.setVisible(false);
@@ -195,6 +211,8 @@ public class ButtonFactory implements ActionListener  {
 		authorWindow.portalCombo.setVisible(true);
 		addRoombtn1.setVisible(false);
 		addRoombtn2.setVisible(true);
+		btnSave.setVisible(true);
+		btnRestore.setVisible(true);
 	}
 
 	public void setMode1() {
@@ -207,5 +225,4 @@ public class ButtonFactory implements ActionListener  {
 		addRoombtn2.setVisible(false);
 		addRoombtn1.setVisible(true);
 	}
-	
 }

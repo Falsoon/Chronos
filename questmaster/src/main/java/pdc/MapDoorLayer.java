@@ -3,6 +3,7 @@ package pdc;
 import java.awt.*;
 import java.util.Hashtable;
 
+@SuppressWarnings("serial")
 public class MapDoorLayer extends MapLayer {
    private boolean playerMode;
 	@Override
@@ -40,9 +41,9 @@ public class MapDoorLayer extends MapLayer {
 		return new MapDoorLayer();
 	}
 
-	@Override
+	/* @Override
 	public void undo() {		
-	}
+	} */
 
    @Override
    public void setPlayerMode(boolean setting) {

@@ -1,0 +1,12 @@
+-------------------------------------------------------------------------------
+Test set: junit.SimplePortalsDoorsTC06Test
+-------------------------------------------------------------------------------
+Tests run: 2, Failures: 2, Errors: 0, Skipped: 0, Time elapsed: 0.309 sec <<< FAILURE! - in junit.SimplePortalsDoorsTC06Test
+testAddDoorToMap  Time elapsed: 0.043 sec  <<< FAILURE!
+org.opentest4j.AssertionFailedError: expected: <1> but was: <0>
+	at junit.SimplePortalsDoorsTC06Test.testAddDoorToMap(SimplePortalsDoorsTC06Test.java:48)
+
+testAddDoorAndSetOpen  Time elapsed: 0.014 sec  <<< FAILURE!
+org.opentest4j.AssertionFailedError: expected: <1> but was: <0>
+	at junit.SimplePortalsDoorsTC06Test.testAddDoorAndSetOpen(SimplePortalsDoorsTC06Test.java:63)
+

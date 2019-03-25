@@ -1,9 +1,10 @@
 package pdc;
 
-import javax.swing.undo.StateEdit;
+//import javax.swing.undo.StateEdit;
 import javax.swing.undo.StateEditable;
-import javax.swing.undo.UndoManager;
+//import javax.swing.undo.UndoManager;
 import java.awt.*;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -12,7 +13,8 @@ import java.util.Iterator;
 /**
  * Encapsulates all the rooms into a list
  */
-public class RoomList implements StateEditable {
+@SuppressWarnings("serial")
+public class RoomList implements StateEditable, Serializable {
 	public ArrayList<Room> list = new ArrayList<>();
 	private static final String listKey = "list";
    //private UndoManager undoManager;
@@ -77,13 +79,11 @@ public class RoomList implements StateEditable {
 		return r;
 	}
 
-	public void undo() {
-      /*
+	/* public void undo() {
       if(undoManager.canUndo()){
          undoManager.undo();
-      }
-      */
-	}
+      } 
+	} */
 
 	public Iterator<Room> iterator(){
 	   return list.iterator();
@@ -99,7 +99,7 @@ public class RoomList implements StateEditable {
       //undoManager.addEdit(stateEdit);
    }
 
-   @Override
+    @Override
    public void storeState(Hashtable<Object, Object> state) {
       state.put(listKey,list);
    }
@@ -109,5 +109,6 @@ public class RoomList implements StateEditable {
       if(state.contains(listKey)){
          list = (ArrayList) state.get(listKey);
       }
-   }
+   } 
+   
 }

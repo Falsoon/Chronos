@@ -29,7 +29,6 @@ public class AuthorPanel extends JPanel {
 		Rooms.addActionListener(al[0]);
 	}
 
-
 	public void reset() {
 		
 	}

@@ -10,6 +10,11 @@ import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Optional;
 
 
 /**
@@ -18,10 +23,10 @@ import java.util.stream.Collectors;
  * @author Daniel
  *
  */
-public abstract class MapLayer implements StateEditable {
+@SuppressWarnings("serial")
+public abstract class MapLayer implements StateEditable, Serializable {
 	protected boolean drawingTransparent;
 	protected Point start;
-	private boolean drawingOpaque;
 	protected ArrayList<GeneralPath> pathList;
 	public ArrayList<Point> pointList;
 	public GeneralPath guiPath;
@@ -29,18 +34,21 @@ public abstract class MapLayer implements StateEditable {
 	protected Room selectedRoom;
 	protected ArrayList<Wall> wallList;
 	private boolean firstClick;
-   private Wall lastWall;
-   private Room roomToDivide;
-   private UndoableEditSupport undoSupport;
-   private UndoManager undoManager;
-   private StateEdit stateEdit;
-   private Point lastPoint;
-   private boolean wasFirstClick;
-
+    private Wall lastWall;
+    private Room roomToDivide;
+    private Point lastPoint;
+    private boolean wasFirstClick;
+    //private transient UndoableEditSupport undoSupport;
+    //private transient UndoManager undoManager;
+    //private transient StateEdit stateEdit;
+    private boolean drawingOpaque;
+ 
    public MapLayer() {
-      undoSupport = new UndoableEditSupport(this);
-      undoManager = new UndoManager();
-      undoSupport.addUndoableEditListener(undoManager);
+	   
+        /* undoSupport = new UndoableEditSupport(this);
+        undoManager = new UndoManager();
+        undoSupport.addUndoableEditListener(undoManager); */
+	   
 		this.pathList = new ArrayList<>();
 		this.pointList = new ArrayList<>();
 		wallList = new ArrayList<>();
@@ -65,7 +73,7 @@ public abstract class MapLayer implements StateEditable {
       }else{
 	      //check that the last 2 points clicked are not the same
          if(!lastPoint.equals(p)) {
-         startStateEdit();
+         //startStateEdit();
 
          lastWall = new Wall(new Line2D.Double(lastPoint, p), Type.OPAQUE);
          wallList.add(lastWall);
@@ -78,13 +86,13 @@ public abstract class MapLayer implements StateEditable {
          pointList.add(p);
          lastPoint = p;
 
-         endStateEdit();
+         //endStateEdit();
          }
       }
 
 	}
 
-	private void startStateEdit(){
+   /*private void startStateEdit(){
       stateEdit = new StateEdit(MapLayer.this);
       RoomList.getInstance().startStateEdit();
    }
@@ -93,12 +101,13 @@ public abstract class MapLayer implements StateEditable {
       stateEdit.end();
       RoomList.getInstance().endStateEdit();
       undoManager.addEdit(stateEdit);
-   }
+   }*/
 
    /**
     * Method called to detect rooms from lines drawn on the map
     */
-	private void detectRooms(){
+	public void detectRooms(){
+		
       breakUpWallsAtIntersections();
 
       ArrayList<Room> tempRoomList = getRooms();
@@ -463,14 +472,14 @@ public abstract class MapLayer implements StateEditable {
          }
       } else {
          if(roomToDivide!=null&&roomToDivide.onBoundary(p)) {
-            StateEdit stateEdit = new StateEdit(MapLayer.this);
+            //StateEdit stateEdit = new StateEdit(MapLayer.this);
             pointList.add(lastPoint);
             pointList.add(p);
             lastWall = new Wall(new Line2D.Double(lastPoint, p), Type.TRANSPARENT);
             wallList.add(lastWall);
             detectRooms();
-            stateEdit.end();
-            undoManager.addEdit(stateEdit);
+            //stateEdit.end();
+            //undoManager.addEdit(stateEdit);
          }else {
             //TODO error message that the author must divide a room with transparent walls
             walling = false;
@@ -485,11 +494,11 @@ public abstract class MapLayer implements StateEditable {
 
 	public abstract MapLayer copy();
 
-	public void undo(){
+	/*public void undo(){
 	   if(undoManager.canUndo()){
 	      undoManager.undo();
       }
-   }
+   }*/
 
 	public Room getRoom(Point p) {
 		return RoomList.getInstance().getRoom(p);

@@ -95,6 +95,16 @@ public class MapPanel extends JPanel {
 		civ.clear();
 		repaint();
 	}
+	
+	public void save() {
+		civ.save();
+	}
+	
+	public void restore() {
+		civ.restore();
+		aw.authorPanel.update();
+		repaint();
+	}
 
 	/**
 	 * This method is inherited by JPanel paintComponents will draw on the panel

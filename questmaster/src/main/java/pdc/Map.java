@@ -6,6 +6,7 @@ import javax.swing.undo.StateEditable;
 import javax.swing.undo.UndoManager;
 import javax.swing.undo.UndoableEditSupport;
 import java.awt.*;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Hashtable;
 
@@ -13,26 +14,31 @@ import java.util.Hashtable;
  * Handles the data of map overall including data of 3 mapLayers
  */
 
-public class Map implements StateEditable {
+@SuppressWarnings("serial")
+public class Map implements StateEditable, Serializable {
+	public ArrayList<Room> rooms;
 	public ArrayList<MapLayer> layers;
 	public Player player;
 	public MapLayer mapLayer;
 	public MapLayer mapLayer3;
+	//private transient UndoableEditSupport undoSupport;
+    //private transient UndoManager manager;
 	private boolean transparentWallMode, opaqueWallMode, dooring, archwayAdd;
-	UndoableEditSupport undoSupport = new UndoableEditSupport(this);
-	UndoManager manager = new UndoManager();
 	private final Object MAP_KEY = "MAPKEY";
 
 	public Map() {
+		rooms = new ArrayList<Room>();
 		layers = new ArrayList<>();
 		mapLayer = new MapWallLayer();
 		mapLayer3 = new MapDoorLayer();
-		addUndoableEditListener(manager);
+		//undoSupport = new UndoableEditSupport(this);
+		//manager = new UndoManager();
+		//addUndoableEditListener(manager);
 		player = new Player(mapLayer);
 	}
 
 	public void addUndoableEditListener(UndoableEditListener undoableEditListener) {
-		undoSupport.addUndoableEditListener(undoableEditListener);
+		//undoSupport.addUndoableEditListener(undoableEditListener);
 	}
 
 	public void draw(Graphics g) {
@@ -53,7 +59,7 @@ public class Map implements StateEditable {
 	}
 
 	public void mousePressed(Point p) {
-		StateEdit stateEdit = new StateEdit(Map.this);
+		//StateEdit stateEdit = new StateEdit(Map.this);
 		if (opaqueWallMode) {
 			mapLayer.drawOpaqueWalls(p);
 		}
@@ -79,8 +85,8 @@ public class Map implements StateEditable {
 		if (player.isPlacing()) {
 			player.place(p);
 		}
-		stateEdit.end();
-		manager.addEdit(stateEdit);
+		//stateEdit.end();
+		//manager.addEdit(stateEdit);
 		if (player.isPlaced()) {
 			player.rePlace();
 		}
@@ -120,7 +126,7 @@ public class Map implements StateEditable {
 		return copy;
 	}
 
-	public boolean undo() {
+	/*public boolean undo() {
 		boolean undid = false;
 		if (manager.canUndo()) {
 			manager.undo();
@@ -130,7 +136,7 @@ public class Map implements StateEditable {
 			undid = true;
 		}
 		return undid;
-	}
+	} */
 
 	public boolean isCreating() {
 		return transparentWallMode || opaqueWallMode || archwayAdd || dooring || player.isPlacing();

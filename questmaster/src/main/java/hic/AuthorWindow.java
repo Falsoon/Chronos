@@ -75,6 +75,5 @@ public class AuthorWindow extends JPanel {
 		new ButtonFactory(this);
 		splitPane.setLeftComponent(authorPanel);
 		authorPanel.update();
-
 	}
 }
