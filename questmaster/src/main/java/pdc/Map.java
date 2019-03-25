@@ -176,6 +176,14 @@ public class Map implements StateEditable, Serializable {
 		archwayAdd = false;
 	}
 
+	public void stopPlacingPlayer() {
+		player.stopPlacing();
+		opaqueWallMode = false;
+		transparentWallMode = false;
+		dooring = false;
+		archwayAdd = false;
+	}
+
 	public void startGame() {
 		player.startPlaying();
 	}
@@ -185,8 +193,8 @@ public class Map implements StateEditable, Serializable {
 	}
 
 	public void stopDrawing() {
-		opaqueWallMode = false;
-		transparentWallMode = false;
+		//opaqueWallMode = false;
+		//transparentWallMode = false;
 		dooring = false;
 		archwayAdd = false;
 		mapLayer.stopDrawing();

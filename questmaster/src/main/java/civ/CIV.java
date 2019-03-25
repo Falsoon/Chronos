@@ -1,5 +1,6 @@
 package civ;
 
+import hic.AuthorWindow;
 import hic.FormWindow;
 import pdc.*;
 
@@ -23,6 +24,7 @@ public class CIV {
 	public FormCiv formCiv;
 	private UndoableEditSupport undoSupport;
     private UndoManager manager;
+	private AuthorWindow authorWindow;
 
 	public CIV() {
 		map = new Map();
@@ -30,6 +32,16 @@ public class CIV {
 		undoSupport = new UndoableEditSupport(this);
 		manager = new UndoManager();
 		undoSupport.addUndoableEditListener(manager);
+		authorWindow = null;
+	}
+
+	public CIV(AuthorWindow aw) {
+		map = new Map();
+		formCiv = new FormCiv();
+		undoSupport = new UndoableEditSupport(this);
+		manager = new UndoManager();
+		undoSupport.addUndoableEditListener(manager);
+		authorWindow = aw;
 	}
 
    /**
@@ -56,23 +68,25 @@ public class CIV {
 					Room room = RoomList.getInstance().getRoom(point);
 					if (room != null) {
 						EventQueue.invokeLater(() -> {
-                     try {
-                        formCiv.setRoomReference(room.toString());
-                        FormWindow window = new FormWindow(formCiv, true);
-                        window.frame.setVisible(true);
-                     } catch (Exception e) {
-                        e.printStackTrace();
-                     }
-                  });
+							try {
+								formCiv.setRoomReference(room.toString());
+								authorWindow.buttonFactory.rdi.updateRoom();
+								map.setSelectedRoom(room.toString());
+								//FormWindow window = new FormWindow(formCiv, true);
+								//window.frame.setVisible(true);
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
+						});
 					}
 				}
 			}
-		}else if(isRightButton){
-         map.stopDrawing();
-      } else {
-		   //some other mouse button was pressed (scrollwheel, side buttons)
-		   System.out.println("Mouse Position: " + point);
-		   map.stopDrawing();
+		} else if(isRightButton){
+        	map.stopDrawing();
+        } else {
+		    //some other mouse button was pressed (scrollwheel, side buttons)
+		    System.out.println("Mouse Position: " + point);
+			map.stopDrawing();
 		}
 	}
 
@@ -147,19 +161,31 @@ public class CIV {
 	}
 
 	public void outlining() {
+		stopDrawing();
+		stopPlacingPlayer();
 		map.opaqueWalling();
 	}
 
 	public void walling() {
+		stopDrawing();
+		stopPlacingPlayer();
 		map.transparentWalling();
 	}
 
 	public void startGame() {
+		stopDrawing();
+		stopPlacingPlayer();
 		map.startGame();
 	}
 
 	public void placeStart() {
+		stopDrawing();
+		stopPlacingPlayer();
 		map.placePlayerStart();
+	}
+
+	public void stopPlacingPlayer()  {
+		map.stopPlacingPlayer();
 	}
 
 	public boolean placedPlayer() {
@@ -198,10 +224,11 @@ public class CIV {
 		map.dooring();
 	}
 
-	public void archwayAdd() { 
+	public void archwayAdd() {
+		stopDrawing();
+		stopPlacingPlayer();
 		map.archwayAdd();
 	}
-	
 	//look into creating door pointList
 	public int numOfDoors() {
 		return map.numOfDoors();
@@ -293,10 +320,6 @@ public class CIV {
 		}
 	}
 	*/
-
-	public void showDialog(){
-
-   }
 
    /**
     * Method to set whether the MapLayer is for the player mode

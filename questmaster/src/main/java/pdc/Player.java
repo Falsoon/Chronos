@@ -59,6 +59,9 @@ public class Player implements Serializable {
 	public void startPlaying() {
 		playing = true;
 	}
+	public void stopPlaying() {
+		playing = false;
+	}
 	public void startPlacing() {
 		placing = true;
 	}

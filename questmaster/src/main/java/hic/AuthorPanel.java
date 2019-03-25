@@ -10,9 +10,12 @@ import java.util.ArrayList;
 public class AuthorPanel extends JPanel {
 
 	public JComboBox<String> Rooms;
-	
+	public AuthorPanel() {
+		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+	}
 	
 	public void update() {
+		/*
 		int index = Rooms.getSelectedIndex();
 		if(index == -1) {index = 0;}
 		Rooms.removeAllItems();
@@ -27,6 +30,7 @@ public class AuthorPanel extends JPanel {
 		Rooms.removeActionListener(al[0]);
 		Rooms.setSelectedIndex(index);
 		Rooms.addActionListener(al[0]);
+		*/
 	}
 
 	public void reset() {

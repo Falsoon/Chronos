@@ -41,8 +41,8 @@ public class MapPanel extends JPanel {
 					dialog(error.getMessage());
 					error.printStackTrace();
 				}
-				repaint();
 				aw.authorPanel.update();
+				repaint();
 			}
 		};
 		addMouseListener(mousehandler);
@@ -142,6 +142,10 @@ public class MapPanel extends JPanel {
 
 	public void placePlayerStart() {
 		civ.placeStart();
+	}
+
+	public void stopPlacingPlayer() {
+		civ.stopPlacingPlayer();
 	}
 
 	public boolean placedPlayer() {
