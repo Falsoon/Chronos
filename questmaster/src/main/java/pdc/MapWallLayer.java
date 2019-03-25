@@ -31,21 +31,6 @@ public class MapWallLayer extends MapLayer {
 			setDrawMode(g2d,Type.OPAQUE);
 			selectedRoom.walls.forEach(wall -> g2d.draw(wall.getLineRepresentation()));
 		}
-		g2d.setColor(new Color(0f, 0f, 0f, .3f));
-		for (Room room : RoomList.getInstance().list) {
-			boolean noDoors = true;
-			for (Wall wall : room.walls) {
-				if (wall.getType() != Type.OPAQUE) {
-					noDoors = false;
-					break;
-				}
-			}
-			if (noDoors) {
-				g2d.fill(room.path);
-			}
-		}
-		g2d.setColor(Color.BLACK);
-
 	}
 
    private void setDrawMode(Graphics2D g2d,Type type) {
