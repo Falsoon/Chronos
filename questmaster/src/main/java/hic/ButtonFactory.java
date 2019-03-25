@@ -147,17 +147,19 @@ public class ButtonFactory {
             EventQueue.invokeLater(() -> {
                try {
                   authorWindow.mapPanel.civ.stopDrawing();
-                  authorWindow.mapPanel.setPlayerMode(true);
+				  authorWindow.mapPanel.setPlayerMode(true);
+				  authorWindow.mapPanel.save();
                   PlayerWindow window = new PlayerWindow(authorWindow.mapPanel);
                   window.frame.setVisible(true);
                   AuthorWindow.civ.setSelectedRoom(null);
-                  authorWindow.mapPanel.repaint();
+				  authorWindow.mapPanel.repaint();
 
                } catch (Exception e13) {
                   e13.printStackTrace();
                }
             });
-            authorWindow.mapPanel.startGame();
+			authorWindow.mapPanel.startGame();
+			authorWindow.setEnabled(false);
          }
 		});
 		
