@@ -38,9 +38,15 @@ public class MapWallLayer extends MapLayer {
          Stroke arch = new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{3}, 0);
          g2d.setStroke(arch);
       }
-      else if(type.equals(Type.DOOR)) {
+      else if(type.equals(Type.CLOSEDDOOR)) {
          g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
          Stroke arch = new BasicStroke(10, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL);
+         g2d.setStroke(arch);
+      }
+
+      else if(type.equals(Type.OPENDOOR)) {
+         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+         Stroke arch = new BasicStroke(10, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{3}, 0);
          g2d.setStroke(arch);
       }
       else {

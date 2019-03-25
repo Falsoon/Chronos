@@ -1,3 +1,3 @@
 package pdc;
 
-public enum Type {OPAQUE,TRANSPARENT,ARCHWAY,DOOR}
+public enum Type {OPAQUE,TRANSPARENT,ARCHWAY,CLOSEDDOOR, OPENDOOR}

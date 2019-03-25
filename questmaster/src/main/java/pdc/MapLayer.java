@@ -579,7 +579,7 @@ public abstract class MapLayer implements StateEditable {
             }
          }
          Wall newEndWall = new Wall(new Line2D.Double(endDoor, end),Type.OPAQUE);
-         Wall doorSeg = new Wall(new Line2D.Double(point, endDoor),Type.DOOR);
+         Wall doorSeg = new Wall(new Line2D.Double(point, endDoor),Type.CLOSEDDOOR);
          //System.out.println("Start: " + start + "\nPoint: " + point + "\nEndArch: " + endDoor + "\nEnd: " + end);
          //System.out.println("StartWall: " + newStartWall.getLineRepresentation() + "\nDoor:" + doorSeg
          // .getLineRepresentation() + "\nEnd: "+ newEndWall.getLineRepresentation());
