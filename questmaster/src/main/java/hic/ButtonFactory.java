@@ -140,15 +140,16 @@ public class ButtonFactory {
 		});
 		
 		btnUndo.addActionListener(e -> {
-         authorWindow.mapPanel.undo();
-         authorWindow.authorPanel.grabFocus();
+         	authorWindow.mapPanel.undo();
+         	authorWindow.authorPanel.grabFocus();
 		});
 		
 		btnClear.addActionListener(e -> {
-         authorWindow.mapPanel.clear();
-         authorWindow.authorPanel.Rooms.setSelectedIndex(0);
-         authorWindow.wallCombo.setSelectedItem(authorWindow.wallTypes[0]);
-         authorWindow.authorPanel.grabFocus();
+			btnProp.doClick();
+         	authorWindow.mapPanel.clear();
+        	//authorWindow.authorPanel.Rooms.setSelectedIndex(0);
+         	authorWindow.wallCombo.setSelectedItem(authorWindow.wallTypes[0]);
+         	authorWindow.authorPanel.grabFocus();
 		});
 	}
 }

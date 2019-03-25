@@ -48,16 +48,16 @@ public class CIV {
 					Room room = RoomList.getInstance().getRoom(point);
 					if (room != null) {
 						EventQueue.invokeLater(() -> {
-                    try {
-						formCiv.setRoomReference(room.toString());
-						authorWindow.buttonFactory.rdi.updateRoom();
-						map.setSelectedRoom(room.toString());
-                        //FormWindow window = new FormWindow(formCiv, true);
-						//window.frame.setVisible(true);
-                    } catch (Exception e) {
-                    	e.printStackTrace();
-                    }
-                });
+							try {
+								formCiv.setRoomReference(room.toString());
+								authorWindow.buttonFactory.rdi.updateRoom();
+								map.setSelectedRoom(room.toString());
+								//FormWindow window = new FormWindow(formCiv, true);
+								//window.frame.setVisible(true);
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
+						});
 					}
 				}
 			}

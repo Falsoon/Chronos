@@ -68,6 +68,8 @@ public class PlayerWindow {
 			@Override
 			public void windowClosing(WindowEvent e) {
 				mapPanel.setPlayerMode(false);
+				mapPanel.civ.map.player.stopPlaying();
+				// new AuthorWindow();
 			}
 		
 			@Override

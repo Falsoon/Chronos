@@ -396,6 +396,7 @@ public abstract class MapLayer implements StateEditable {
          this.wallList.add(newStartWall);
          this.wallList.add(archwaySeg);
          this.wallList.add(newEndWall);
+         RoomList.getInstance().list = getRooms();
       }
       else
       {

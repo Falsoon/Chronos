@@ -41,8 +41,8 @@ public class MapPanel extends JPanel {
 					dialog(error.getMessage());
 					error.printStackTrace();
 				}
-				repaint();
 				aw.authorPanel.update();
+				repaint();
 			}
 		};
 		addMouseListener(mousehandler);

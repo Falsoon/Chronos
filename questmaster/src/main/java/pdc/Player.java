@@ -56,6 +56,9 @@ public class Player {
 	public void startPlaying() {
 		playing = true;
 	}
+	public void stopPlaying() {
+		playing = false;
+	}
 	public void startPlacing() {
 		placing = true;
 	}
