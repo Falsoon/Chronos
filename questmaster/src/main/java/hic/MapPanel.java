@@ -27,7 +27,7 @@ public class MapPanel extends JPanel {
 	 * @param authorWindow
 	 */
 	public MapPanel(AuthorWindow authorWindow) {
-		civ = AuthorWindow.civ;
+		civ = authorWindow.civ;
 		aw = authorWindow;
 
 		// Anonymous class was used to access MapPanel fields

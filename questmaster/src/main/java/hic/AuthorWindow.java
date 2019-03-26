@@ -14,7 +14,7 @@ import java.awt.event.WindowListener;
 @SuppressWarnings("serial")
 public class AuthorWindow extends JPanel {
 
-	public static CIV civ;
+	public CIV civ;
 	public JFrame frame;
 	public AuthorPanel authorPanel;
 	public MapPanel mapPanel;

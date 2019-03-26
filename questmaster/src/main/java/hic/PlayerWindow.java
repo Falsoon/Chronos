@@ -72,10 +72,16 @@ public class PlayerWindow {
 				EventQueue.invokeLater(new Runnable() {
 					public void run() {
 						try {
+							mapPanel = null;
+							frame = null;
 							AuthorWindow window = new AuthorWindow();
 							window.frame.setTitle("ArenaMapMaker");
 							window.frame.setVisible(true);
 							window.mapPanel.restore();
+							window.mapPanel.civ.stopDrawing();
+							window.civ.setPlayerMode(false);
+							window.civ.map.player.stopPlaying();
+							window.civ.setSelectedRoom(null);
 						} catch (Exception e) {
 							e.printStackTrace();
 						}

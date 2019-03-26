@@ -150,14 +150,14 @@ public class ButtonFactory {
 
 		btnSave.addActionListener(e -> {
 			authorWindow.mapPanel.save();
-			AuthorWindow.civ.setSelectedRoom(null);
+			authorWindow.civ.setSelectedRoom(null);
 			authorWindow.authorPanel.grabFocus();
 			btnProp.doClick();
 });
 
 		btnRestore.addActionListener(e -> {
 			authorWindow.mapPanel.restore();
-			AuthorWindow.civ.setSelectedRoom(null);
+			authorWindow.civ.setSelectedRoom(null);
 			authorWindow.authorPanel.grabFocus();
 			btnProp.doClick();
 		});
@@ -171,7 +171,7 @@ public class ButtonFactory {
 				  authorWindow.mapPanel.save();
                   PlayerWindow window = new PlayerWindow(authorWindow.mapPanel);
                   window.frame.setVisible(true);
-                  AuthorWindow.civ.setSelectedRoom(null);
+                  authorWindow.civ.setSelectedRoom(null);
 				  authorWindow.mapPanel.repaint();
 
                } catch (Exception e13) {
