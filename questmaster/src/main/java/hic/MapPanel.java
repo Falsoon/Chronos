@@ -9,6 +9,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
+import static pdc.Constants.GRIDDISTANCE;
+
 /**
  * the presenter class for the mapWindow handles updating both data on the map
  * and UI of the map
@@ -17,7 +19,6 @@ import java.awt.event.MouseListener;
 public class MapPanel extends JPanel {
 
 	public CIV civ;
-	private final int GRIDDISTANCE = Constants.GRIDDISTANCE;
 	public Point playerPos;
 	private AuthorWindow aw;
 
@@ -27,7 +28,7 @@ public class MapPanel extends JPanel {
 	 * @param authorWindow
 	 */
 	public MapPanel(AuthorWindow authorWindow) {
-		civ = AuthorWindow.civ;
+		civ = authorWindow.civ;
 		aw = authorWindow;
 
 		// Anonymous class was used to access MapPanel fields
@@ -41,8 +42,8 @@ public class MapPanel extends JPanel {
 					dialog(error.getMessage());
 					error.printStackTrace();
 				}
-				repaint();
 				aw.authorPanel.update();
+				repaint();
 			}
 		};
 		addMouseListener(mousehandler);
@@ -78,7 +79,7 @@ public class MapPanel extends JPanel {
 	 * Changes state of MapPanel to add doors
 	 */
 	public void paintDoors() {
-		civ.dooring();
+		civ.doorAdd();
 	}
 
    /**
@@ -88,11 +89,22 @@ public class MapPanel extends JPanel {
       civ.archwayAdd();
    }
 
+
 	/**
 	 * Resets state of MapPanel
 	 */
 	public void clear() {
 		civ.clear();
+		repaint();
+	}
+	
+	public void save() {
+		civ.save();
+	}
+	
+	public void restore() {
+		civ.restore();
+		aw.authorPanel.update();
 		repaint();
 	}
 
@@ -194,5 +206,12 @@ public class MapPanel extends JPanel {
     */
    public void setPlayerMode(boolean setting) {
 	   civ.setPlayerMode(setting);
+   }
+
+   /**
+    * Method to delete walls and passageways
+    */
+   public void delete() {
+      civ.delete();
    }
 }

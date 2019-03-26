@@ -33,7 +33,6 @@ public class AuthorPanel extends JPanel {
 		*/
 	}
 
-
 	public void reset() {
 		
 	}

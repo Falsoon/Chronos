@@ -18,6 +18,7 @@ public class PlaceArchwayTest {
    @BeforeEach
    public void setup() {
       civ = new CIV();
+      civ.map.mapLayer.throwAlerts = false;
    }
 
    @AfterEach
