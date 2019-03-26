@@ -2,12 +2,14 @@ package pdc;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.io.Serializable;
 import java.util.Iterator;
 
 /*
  * encapsulates player's avatar data
  */
-public class Player {
+@SuppressWarnings("serial")
+public class Player implements Serializable {
 	private static final int GRIDDISTANCE = Constants.GRIDDISTANCE;
 	private Point position;
 	private boolean placed, playing, placing;
@@ -51,8 +53,14 @@ public class Player {
 	public void startPlaying() {
 		playing = true;
 	}
+	public void stopPlaying() {
+		playing = false;
+	}
 	public void startPlacing() {
 		placing = true;
+	}
+	public void stopPlacing() {
+		placing = false;
 	}
 
 	public Point getPosition() {

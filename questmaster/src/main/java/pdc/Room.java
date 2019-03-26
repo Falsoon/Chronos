@@ -4,13 +4,15 @@ import javafx.geometry.Point2D;
 
 import java.awt.*;
 import java.awt.geom.GeneralPath;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 
 /**
  * Represents a room on the map
  */
-public class Room {
+@SuppressWarnings("serial")
+public class Room implements Serializable{
 	public ArrayList<Wall> walls;
 	public ArrayList<Point> pointList;
 	public String desc = "", title = "";

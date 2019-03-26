@@ -2,6 +2,7 @@ package pdc;
 
 import javax.swing.undo.StateEditable;
 import java.awt.*;
+import java.io.Serializable;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -9,7 +10,8 @@ import java.util.stream.Collectors;
 /**
  * Encapsulates all the rooms into a list
  */
-public class RoomList implements StateEditable {
+@SuppressWarnings("serial")
+public class RoomList implements StateEditable, Serializable {
 	public ArrayList<Room> list = new ArrayList<>();
 	private static final String listKey = "list";
    //private UndoManager undoManager;
@@ -74,13 +76,11 @@ public class RoomList implements StateEditable {
 		return r;
 	}
 
-	public void undo() {
-      /*
+	/* public void undo() {
       if(undoManager.canUndo()){
          undoManager.undo();
       }
-      */
-	}
+	} */
 
 	public Iterator<Room> iterator(){
 	   return list.iterator();
@@ -166,4 +166,5 @@ public class RoomList implements StateEditable {
          list = (ArrayList) state.get(listKey);
       }
    }
+
 }

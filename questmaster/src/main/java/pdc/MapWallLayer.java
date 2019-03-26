@@ -10,6 +10,7 @@ import static pdc.Constants.GRIDDISTANCE;
 /*
  * handles the logic behind drawingTransparent, coping and undoing an opaque wall
  */
+@SuppressWarnings("serial")
 public class MapWallLayer extends MapLayer {
 
    private boolean playerMode;
@@ -107,6 +108,7 @@ public class MapWallLayer extends MapLayer {
       }
    }
 
+   @SuppressWarnings("unchecked")
    @Override
 	public MapLayer copy() {
 		MapLayer copy = new MapWallLayer();
@@ -129,12 +131,12 @@ public class MapWallLayer extends MapLayer {
 			
 		return copy;
 	}
-
+    /*
 	@Override
 	public void undo() {
 	   //TODO need to fix this now that we've changed how rooms are created
 
-	}
+	} */
 
    @Override
    public void setPlayerMode(boolean setting) {

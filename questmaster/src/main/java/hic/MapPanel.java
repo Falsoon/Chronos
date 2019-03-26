@@ -42,8 +42,8 @@ public class MapPanel extends JPanel {
 					dialog(error.getMessage());
 					error.printStackTrace();
 				}
-				repaint();
 				aw.authorPanel.update();
+				repaint();
 			}
 		};
 		addMouseListener(mousehandler);
@@ -96,6 +96,16 @@ public class MapPanel extends JPanel {
 		civ.clear();
 		repaint();
 	}
+	
+	public void save() {
+		civ.save();
+	}
+	
+	public void restore() {
+		civ.restore();
+		aw.authorPanel.update();
+		repaint();
+	}
 
 	/**
 	 * This method is inherited by JPanel paintComponents will draw on the panel
@@ -133,6 +143,10 @@ public class MapPanel extends JPanel {
 
 	public void placePlayerStart() {
 		civ.placeStart();
+	}
+
+	public void stopPlacingPlayer() {
+		civ.stopPlacingPlayer();
 	}
 
 	public boolean placedPlayer() {
