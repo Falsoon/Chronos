@@ -81,9 +81,11 @@ class DescriptionFormTC05Test {
 		assertEquals("the place people go when they got to use the bathroom", room.desc );
 	}
 
+	// @Test - fix in a hot sec
 	void testMoveToNewRoom() {
 		bf = new ButtonFactory(aw);
 		makeTestRoom();
+		civ.stopDrawing();
 		makeTestRoom2();
 		civ.stopDrawing();
 		civ.mousePressed(new Point(50, 50), false, true, false);
