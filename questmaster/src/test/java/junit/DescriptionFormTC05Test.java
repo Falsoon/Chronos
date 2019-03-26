@@ -41,30 +41,30 @@ class DescriptionFormTC05Test {
 	}
 
 	public void makeTestRoom() {
-		civ.outlining();
+		aw.civ.outlining();
 		Point point1 = new Point(15, 15);
       	Point point2 = new Point(15, 75);
       	Point point3 = new Point(75, 75);
       	Point point4 = new Point(75, 15);
 
-		civ.mousePressed(point1, false, true,false);
-		civ.mousePressed(point2, false, true,false);
-		civ.mousePressed(point3, false, true,false);
-      	civ.mousePressed(point4, false, true,false);
-		civ.mousePressed(point1, false, true,false);
+		aw.civ.mousePressed(point1, false, true,false);
+		aw.civ.mousePressed(point2, false, true,false);
+		aw.civ.mousePressed(point3, false, true,false);
+      	aw.civ.mousePressed(point4, false, true,false);
+		aw.civ.mousePressed(point1, false, true,false);
 	}
 
 	public void makeTestRoom2() {
-		civ.outlining();
 		Point point1 = new Point(75, 15);
       	Point point2 = new Point(75, 75);
       	Point point3 = new Point(150, 75);
       	Point point4 = new Point(150, 15);
 
-		civ.mousePressed(point2, false, true,false);
-		civ.mousePressed(point3, false, true,false);
-      	civ.mousePressed(point4, false, true,false);
-		civ.mousePressed(point1, false, true,false);
+		aw.civ.mousePressed(point3, false, false,true);
+		aw.civ.mousePressed(point2, false, true,false);
+		aw.civ.mousePressed(point3, false, true,false);
+      	aw.civ.mousePressed(point4, false, true,false);
+		aw.civ.mousePressed(point1, false, true,false);
 	}
 
 	@Test
@@ -81,19 +81,18 @@ class DescriptionFormTC05Test {
 		assertEquals("the place people go when they got to use the bathroom", room.desc );
 	}
 
-	// @Test - fix in a hot sec
+	//@Test //- fix in a hot sec
 	void testMoveToNewRoom() {
-		bf = new ButtonFactory(aw);
+		bf = aw.buttonFactory;
 		makeTestRoom();
-		civ.stopDrawing();
+		//civ.stopDrawing();
 		makeTestRoom2();
-		civ.stopDrawing();
-		civ.mousePressed(new Point(50, 50), false, true, false);
+		aw.civ.stopDrawing();
+		aw.civ.mousePressed(new Point(50, 50), false, true, false);
 		bf.rdi.titleText.setText("the bathroom");
 		bf.rdi.descArea.setText("the place people go when they got to use the bathroom");
-		civ.mousePressed(new Point(100, 50), false, true, false);
-
-		room = bf.rdi.formCiv.room;
+		aw.civ.mousePressed(new Point(100, 50), false, true, false);
+		room = aw.civ.formCiv.room;
 		assertEquals("", room.title );
 		assertEquals("", room.desc );
 	}
