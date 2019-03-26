@@ -5,6 +5,7 @@ import javafx.geometry.Point2D;
 import java.awt.*;
 import java.awt.geom.GeneralPath;
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 /**
  * Represents a room on the map
@@ -207,7 +208,7 @@ public class Room {
     * @param r the Room to check is contained by this
     * @return true if r is contained by this
     */
-	private boolean contains (Room r){
+	public boolean contains (Room r){
 	   //for each point p of r, check that each point immediately northwest, northeast, southeast, and southwest of p is
       // contained by r.  If p is contained by r but not by this, then this does not contain r
       for (Point p : r.pointList) {
@@ -283,6 +284,16 @@ public class Room {
 		return adjacentRooms;
 	}
 
+	public ArrayList<Room> getAdjacentRoomsAsList(){
+	   ArrayList<Room> adjacentRooms = new ArrayList<>();
+	   for(Room room: RoomList.getInstance().list){
+	      if(isAdjacent(room)){
+	         adjacentRooms.add(room);
+         }
+      }
+	   return adjacentRooms;
+   }
+
 	private String getDirection(Room r) {
 		Point2D roomCenter, otherCenter;
 		roomCenter = new Point2D(this.path.getBounds2D().getCenterX(), this.path.getBounds2D().getCenterY());
@@ -350,5 +361,29 @@ public class Room {
 	   pointList.clear();
 	   makePointList(walls);
 	   makePath();
+   }
+
+   /**
+    * Returns all Rooms internal to this that do not share a wall with this
+    * @return An ArrayList\<Room\> containing all Rooms contained by this which do not share a wall with this
+    */
+   public ArrayList<Room> getContainedRooms(){
+	   return RoomList.getInstance().list.stream().filter(this::contains).collect(Collectors.toCollection(ArrayList::new));
+   }
+
+   /**
+    * Determines if this has any traversable Walls
+    * @return true if this.walls contains any Walls of type ARCHWAY, DOOR, or TRANSPARENT
+    */
+   public boolean hasTraversableWall(){
+      return walls.stream().anyMatch(Wall::isTraversable);
+   }
+
+   /**
+    * 
+    * @return
+    */
+   public ArrayList<Room> getAccessibleAdjacentRooms() {
+      return getAdjacentRoomsAsList().stream().filter(room -> )
    }
 }

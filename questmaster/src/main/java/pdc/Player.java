@@ -32,13 +32,7 @@ public class Player {
 				Math.round(position.y / GRIDDISTANCE) * GRIDDISTANCE - YOFFSET);
 		placed = true;
 		placing = false;
-		Iterator<Room> itr = RoomList.getInstance().iterator();
-		while (itr.hasNext()) {
-			Room curr = itr.next();
-			if (curr.contains(position)) {
-				currentRoom = curr;
-			}
-		}
+		rePlace();
 	}
 	
 	public String getRepresentation() {

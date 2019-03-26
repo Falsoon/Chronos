@@ -48,4 +48,12 @@ public class Wall {
    public Type getType(){
       return type;
    }
+
+   public boolean isTraversable(){
+      return isPortal()||type.equals(Type.TRANSPARENT);
+   }
+
+   public boolean isPortal(){
+      return type.equals(Type.ARCHWAY)||type.equals(Type.DOOR);
+   }
 }

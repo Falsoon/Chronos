@@ -6,6 +6,8 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 
 /*
@@ -66,6 +68,8 @@ public class MapWallLayer extends MapLayer {
    public void setPlayerStartingPosition(Point p){
 	   playerStartingPosition = new Point(p);
    }
+
+
 
    @Override
 	public MapLayer copy() {
