@@ -1,18 +1,14 @@
 package junit;
 import static org.junit.Assert.assertEquals;
-import static org.junit.jupiter.api.Assertions.*;
 
 import java.awt.Point;
-import java.awt.event.WindowEvent;
 
-import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import civ.CIV;
@@ -70,7 +66,7 @@ class DescriptionFormTC05Test {
       	civ.mousePressed(point4, false, true,false);
 		civ.mousePressed(point1, false, true,false);
 	}
-	
+
 	@Test
 	void testAddNameAndDescToRoom() {
 		bf = new ButtonFactory(aw);
@@ -79,7 +75,7 @@ class DescriptionFormTC05Test {
 		civ.mousePressed(new Point(50, 50), false, true, false);
 		bf.rdi.titleText.setText("the bathroom");
 		bf.rdi.descArea.setText("the place people go when they got to use the bathroom");
-		
+
 		room = bf.rdi.formCiv.room;
 		assertEquals("the bathroom", room.title );
 		assertEquals("the place people go when they got to use the bathroom", room.desc );
@@ -94,7 +90,7 @@ class DescriptionFormTC05Test {
 		bf.rdi.titleText.setText("the bathroom");
 		bf.rdi.descArea.setText("the place people go when they got to use the bathroom");
 		civ.mousePressed(new Point(100, 50), false, true, false);
-		
+
 		room = bf.rdi.formCiv.room;
 		assertEquals("", room.title );
 		assertEquals("", room.desc );
@@ -113,7 +109,7 @@ class DescriptionFormTC05Test {
 		//iunno why but the thing clearly works for users
 		assertEquals("the bathroom", room.title );
 		assertEquals("the place people go when they got to use the bathroom", room.desc );
-		
+
 	}
 	
 	@Test
@@ -124,7 +120,7 @@ class DescriptionFormTC05Test {
 		civ.mousePressed(new Point(50, 50), false, true, false);
 		bf.rdi.titleText.setText("\u2202x");
 		bf.rdi.descArea.setText("");
-		
+
 		room = bf.rdi.formCiv.room;
 		assertEquals("\u2202x", room.title );
 		assertEquals("", room.desc );

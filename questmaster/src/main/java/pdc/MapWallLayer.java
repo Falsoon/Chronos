@@ -67,7 +67,7 @@ public class MapWallLayer extends MapLayer {
       }
 		if (selectedRoom != null) {
 			g2d.setColor(Color.RED);
-			setDrawMode(g2d,Type.OPAQUE);
+			setDrawMode(g2d,WallType.OPAQUE);
 			selectedRoom.walls.forEach(wall -> g2d.draw(wall.getLineRepresentation()));
 		}
 	}
@@ -77,28 +77,28 @@ public class MapWallLayer extends MapLayer {
     * @param g2d the Graphics2D object to modify
     * @param type the type of the wall
     */
-   private void setDrawMode(Graphics2D g2d,Type type) {
-	   if(type.equals(Type.OPAQUE)){
+   private void setDrawMode(Graphics2D g2d,WallType type) {
+	   if(type.equals(WallType.OPAQUE)){
          g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
          g2d.setStroke(new BasicStroke(4, BasicStroke.CAP_ROUND, BasicStroke.JOIN_BEVEL));
       }
-      else if(type.equals(Type.ARCHWAY)) {
+      else if(type.equals(WallType.ARCHWAY)) {
          g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
          Stroke arch = new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{3}, 0);
          g2d.setStroke(arch);
       }
-      else if(type.equals(Type.CLOSEDDOOR)) {
+      else if(type.equals(WallType.CLOSEDDOOR)) {
          g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
          Stroke arch = new BasicStroke(10, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL);
          g2d.setStroke(arch);
       }
 
-      else if(type.equals(Type.OPENDOOR)) {
+      else if(type.equals(WallType.OPENDOOR)) {
          g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
          Stroke arch = new BasicStroke(10, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{3}, 0);
          g2d.setStroke(arch);
       }
-      else if(type.equals(Type.TRANSPARENT)){
+      else if(type.equals(WallType.TRANSPARENT)){
          g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
          Stroke dashed = new BasicStroke(3, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{9}, 0);
          g2d.setStroke(dashed);
@@ -110,9 +110,9 @@ public class MapWallLayer extends MapLayer {
    }
 
    private void drawWall(Graphics2D g2d, Wall wall){
-      Type wallType = wall.getType();
-      //don't draw transparent walls if in player mode
-      if(!playerMode||wallType.equals(Type.OPAQUE)) {
+       WallType wallType = wall.getWallType();
+      //only draw transparent walls in author mode
+      if(!playerMode||!wallType.equals(WallType.TRANSPARENT)) {
          setDrawMode(g2d, wallType);
          g2d.draw(wall.getLineRepresentation());
       }

@@ -53,7 +53,8 @@ public class CIV {
     * @param isRightButton if the right mouse button was pressed.  If so, stop drawing
     */
 	public void mousePressed(Point point,boolean isAltDown, boolean isLeftButton, boolean isRightButton){
-	   System.out.println(RoomList.getInstance().list.size());
+	   //keep the original point in case the author is deleting
+	   Point originalPoint = new Point(point);
 		if (!isAltDown) {
 			point.setLocation(Math.round(((double) point.x) / Constants.GRIDDISTANCE) * Constants.GRIDDISTANCE,
 					Math.round(((double) point.y) / Constants.GRIDDISTANCE) * Constants.GRIDDISTANCE);
@@ -64,7 +65,9 @@ public class CIV {
 				map.mousePressed(point);
 				stateEdit.end();
 				manager.addEdit(stateEdit);
-			} else {
+			} else if(map.isDeleting()){
+			   map.mousePressed(originalPoint);
+         } else {
 				if (!map.getPlayer().isPlaying()) {
 					Room room = RoomList.getInstance().getRoom(point);
 					if (room != null) {
@@ -108,19 +111,19 @@ public class CIV {
 		RoomList.getInstance().reset();
 		return true;
 	}
-	
+
 	public void save() {
 		String filename = "savedMap.ser";
 		ArrayList<Room> roomsToAdd = new ArrayList<>(RoomList.getInstance().list);
 		map.rooms.addAll(roomsToAdd);
-		try 
+		try
 		{
 			FileOutputStream file = new FileOutputStream(filename);
-			ObjectOutputStream out = new ObjectOutputStream(file); 
-			out.writeObject(map); 
+			ObjectOutputStream out = new ObjectOutputStream(file);
+			out.writeObject(map);
 			out.close();
 			file.close();
-			
+
 			System.out.println("Map has been saved");
 		}
 		catch (IOException ex)
@@ -128,34 +131,34 @@ public class CIV {
 			ex.printStackTrace();
 		}
 	}
-	
+
 	public void restore() {
-		
+
 		try
-        {    
-            FileInputStream file = new FileInputStream("savedMap.ser"); 
-            ObjectInputStream in = new ObjectInputStream(file); 
+        {
+            FileInputStream file = new FileInputStream("savedMap.ser");
+            ObjectInputStream in = new ObjectInputStream(file);
             map = (Map)in.readObject();
             //UndoableEditSupport undoSupport = new UndoableEditSupport(map);
         	//UndoManager manager = new UndoManager();
         	//map.addUndoableEditListener(manager);
-            in.close(); 
+            in.close();
             file.close();
             RoomList.getInstance().list = map.rooms;
             //map.mapLayer.detectRooms();
-            
-            System.out.println("Map has been restored "); 
-        } 
-        catch(IOException ex) 
-        { 
+
+            System.out.println("Map has been restored ");
+        }
+        catch(IOException ex)
+        {
         	ex.printStackTrace();
-        } 
-        catch(ClassNotFoundException ex) 
-        { 
-            System.out.println("ClassNotFoundException is caught"); 
-        } 
+        }
+        catch(ClassNotFoundException ex)
+        {
+            System.out.println("ClassNotFoundException is caught");
+        }
 	}
-	
+
 	public void draw(Graphics g) {
 		map.draw(g);
 	}
@@ -328,5 +331,12 @@ public class CIV {
     */
    public void setPlayerMode(boolean setting) {
       map.setPlayerMode(setting);
+   }
+
+   /**
+    * Method to delete walls and passageways
+    */
+   public void delete() {
+      map.delete();
    }
 }
