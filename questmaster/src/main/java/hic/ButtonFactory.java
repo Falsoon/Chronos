@@ -2,8 +2,6 @@ package hic;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 /**
  * This class is used to encapsulate the creation of buttons and the logic behind
@@ -15,9 +13,9 @@ public class ButtonFactory {
 	
 	private AuthorWindow authorWindow;
 	public RoomDescInsert rdi;
-	public JButton btnPlay, btnPlayer, btnUndo, btnClear; //addRoombtn1, addRoombtn2;
+	public JButton btnPlay, btnPlayer, btnUndo, btnClear;
 	public JButton btnSave, btnRestore;
-	public JToggleButton btnOpaqueWalls, btnTransWalls, btnArchways, btnProp, btnDoors;
+	public JToggleButton btnOpaqueWalls, btnTransWalls, btnArchways, btnProp, btnDoors, btnDelete;
 	
 	public ButtonFactory(AuthorWindow aw) {
 		this.authorWindow = aw;
@@ -26,6 +24,7 @@ public class ButtonFactory {
 	}
 	
 	private void initialize() {
+
 		authorWindow.authorPanel = new AuthorPanel();
 
 		btnOpaqueWalls = new JToggleButton("Opaque Walls");
@@ -38,6 +37,8 @@ public class ButtonFactory {
 		btnDoors.setAlignmentX(Component.CENTER_ALIGNMENT);
 		btnProp = new JToggleButton("Set Properties");
 		btnProp.setAlignmentX(Component.CENTER_ALIGNMENT);
+		btnDelete = new JToggleButton("Delete Walls/Passageways");
+		btnDelete.setAlignmentX(Component.CENTER_ALIGNMENT);
 
 		btnPlayer = new JButton("Set Start Point");
 		btnPlayer.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -52,7 +53,7 @@ public class ButtonFactory {
 		btnSave = new JButton("Save Map");
 		btnSave.setAlignmentX(Component.CENTER_ALIGNMENT);
 		btnRestore = new JButton("Restore Map");
-		btnRestore.setAlignmentX(Component.CENTER_ALIGNMENT); 
+		btnRestore.setAlignmentX(Component.CENTER_ALIGNMENT);
 
 		JSeparator line3 = new JSeparator(SwingConstants.HORIZONTAL);
 
@@ -70,6 +71,7 @@ public class ButtonFactory {
 		authorWindow.authorPanel.add(btnDoors);
 		authorWindow.authorPanel.add(btnProp);
 		authorWindow.authorPanel.add(btnPlayer);
+		authorWindow.authorPanel.add(btnDelete);
 		authorWindow.authorPanel.add(line1);
 
 		authorWindow.authorPanel.add(rdi);
@@ -89,6 +91,7 @@ public class ButtonFactory {
 		btnList.add(btnArchways);
 		btnList.add(btnDoors);
 		btnList.add(btnProp);
+		btnList.add(btnDelete);
 
 		btnOpaqueWalls.addItemListener(e -> {
 			if (e.getStateChange() == ItemEvent.SELECTED) {
@@ -137,10 +140,18 @@ public class ButtonFactory {
 			}
 		});
 
+		btnDelete.addItemListener(e->{
+			if (e.getStateChange() == ItemEvent.SELECTED) {
+				authorWindow.mapPanel.stopDrawing();
+				authorWindow.mapPanel.stopPlacingPlayer();
+				authorWindow.mapPanel.delete();
+			}
+		});
+
 		btnPlayer.addActionListener(e -> {
 			btnProp.doClick();
 			authorWindow.mapPanel.placePlayerStart();
-			
+
 		});
 
 		btnUndo.addActionListener(e -> {
@@ -161,7 +172,7 @@ public class ButtonFactory {
 			authorWindow.authorPanel.grabFocus();
 			btnProp.doClick();
 		});
-		
+
 		btnPlay.addActionListener(e -> {
          if (authorWindow.mapPanel.placedPlayer()) {
             EventQueue.invokeLater(() -> {
@@ -182,7 +193,7 @@ public class ButtonFactory {
 			authorWindow.frame.setVisible(false);
          }
 		});
-		
+
 		btnClear.addActionListener(e -> {
 			int opt = JOptionPane.showConfirmDialog(null, "Are you sure you want to clear?", "Clear",
 					JOptionPane.YES_NO_OPTION);
