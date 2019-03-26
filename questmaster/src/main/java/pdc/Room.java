@@ -368,7 +368,7 @@ public class Room {
     * @return An ArrayList\<Room\> containing all Rooms contained by this which do not share a wall with this
     */
    public ArrayList<Room> getContainedRooms(){
-	   return RoomList.getInstance().list.stream().filter(this::contains).collect(Collectors.toCollection(ArrayList::new));
+	   return RoomList.getInstance().list.stream().filter(room->!room.equals(this)&&this.contains(room)).collect(Collectors.toCollection(ArrayList::new));
    }
 
    /**
@@ -380,10 +380,17 @@ public class Room {
    }
 
    /**
-    * 
-    * @return
+    * Get the accessible Rooms adjacent to this
+    * An "accessible room" is defined here as a room that the player can walk to by going through portals and
+    * transparent walls belonging to rooms within the map
+    * @return an ArrayList\<Room\> of Rooms adjacent to and accessible from this room
     */
    public ArrayList<Room> getAccessibleAdjacentRooms() {
-      return getAdjacentRoomsAsList().stream().filter(room -> )
+      ArrayList<Room> adjacentRoomsWithTraversableWalls = getAdjacentRoomsAsList().stream().filter(
+         Room::hasTraversableWall
+      ).collect(Collectors.toCollection(ArrayList::new));
+      return adjacentRoomsWithTraversableWalls.stream().filter(
+         room -> room.walls.stream().anyMatch(wall->wall.isTraversable()&&this.walls.contains(wall))
+      ).collect(Collectors.toCollection(ArrayList::new));
    }
 }

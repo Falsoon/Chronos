@@ -131,30 +131,28 @@ public class RoomList implements StateEditable {
       return innerMostRoom;
    }
 
-   public ArrayList<Room> getInaccessibleRooms(Point playerStartingPosition){
+   /**
+    * Returns an ArrayList\<Room\> of all Rooms accessible from the Player's starting Room.
+    * An "accessible room" is defined here as a room that the player can walk to by going through portals and
+    * transparent walls belonging to rooms within the map
+    * @param playerStartingPosition the player's starting position
+    * @return an ArrayList\<Room\> of all Rooms accessible from the Player's starting Room
+    */
+   public ArrayList<Room> getAccessibleRooms(Point playerStartingPosition){
       HashSet<Room> accessibleRooms = new HashSet<>();
-      Room startingRoom = RoomList.getInstance().getPlayerCurrentRoom(playerStartingPosition);
+      Room startingRoom = getPlayerCurrentRoom(playerStartingPosition);
       accessibleRooms.add(startingRoom);
-      ArrayList<Room> adjacentRoomsWithTraversableWalls = startingRoom.getAdjacentRoomsAsList().stream()
-         .filter(Room::hasTraversableWall).collect(Collectors.toCollection(ArrayList::new));
 
-      ArrayList<Room> accessibleAdjacentRooms = adjacentRoomsWithTraversableWalls.stream()
-         .filter(room -> room.walls.stream().anyMatch(wall -> wall.isTraversable()&&startingRoom.walls.contains(wall))).collect(Collectors.toCollection(ArrayList::new));
+      ArrayList<Room> accessibleAdjacentRooms = startingRoom.getAccessibleAdjacentRooms();
 
       accessibleRooms.addAll(accessibleAdjacentRooms);
       Stack<Room> roomsToCheck = new Stack<>();
       roomsToCheck.addAll(accessibleAdjacentRooms);
       while(roomsToCheck.size()>0){
          Room room = roomsToCheck.pop();
-         room.getAccessibleAdjacentRooms();
+         accessibleRooms.addAll(room.getAccessibleAdjacentRooms());
       }
-      accessibleAdjacentRooms.addAll(getAccessibleRooms(accessibleRooms));
-   }
-
-   private HashSet<Room> getAccessibleRooms(HashSet<Room> accessibleRooms){
-      for(Room room:accessibleRooms){
-
-      }
+      return new ArrayList<>(accessibleRooms);
    }
 
    @Override

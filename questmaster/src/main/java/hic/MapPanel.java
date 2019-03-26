@@ -9,6 +9,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
+import static pdc.Constants.GRIDDISTANCE;
+
 /**
  * the presenter class for the mapWindow handles updating both data on the map
  * and UI of the map
@@ -17,7 +19,6 @@ import java.awt.event.MouseListener;
 public class MapPanel extends JPanel {
 
 	public CIV civ;
-	private final int GRIDDISTANCE = Constants.GRIDDISTANCE;
 	public Point playerPos;
 	private AuthorWindow aw;
 

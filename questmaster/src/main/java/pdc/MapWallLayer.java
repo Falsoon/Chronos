@@ -1,13 +1,10 @@
 package pdc;
 
-import javax.swing.undo.UndoManager;
-import javax.swing.undo.UndoableEditSupport;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Hashtable;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+
+import static pdc.Constants.GRIDDISTANCE;
 
 
 /*
@@ -21,25 +18,50 @@ public class MapWallLayer extends MapLayer {
 	@Override
 	public void draw(Graphics g) {
 		Graphics2D g2d = (Graphics2D) g;
+		Stroke defaultStroke = g2d.getStroke();
 		g2d.setColor(Color.BLACK);
-		wallList.forEach(wall-> {
-		   Type wallType = wall.getType();
-		   //don't draw transparent walls if in player mode
-		   if(!playerMode||wallType.equals(Type.OPAQUE)) {
-            setDrawMode(g2d, wallType);
-            g2d.draw(wall.getLineRepresentation());
-         }
-		});
-		//black out inaccessible rooms
+		wallList.forEach(wall-> drawWall(g2d,wall));
+		//black out inaccessible rooms to player
       if(playerMode) {
+         ArrayList<Room> accessibleRooms = RoomList.getInstance().getAccessibleRooms(playerStartingPosition);
+         //black out inaccessible rooms
+         ArrayList<Room> inaccessibleRooms = new ArrayList<>();
          RoomList.getInstance().list.forEach(room -> {
-            Predicate<Wall> isPortal = wall -> wall.getType().equals(Type.ARCHWAY) || wall.getType().equals(Type.DOOR);
-            boolean hasPortal = room.walls.stream().anyMatch(isPortal);
-            if (!room.contains(playerStartingPosition)&&!hasPortal) {
+            if (!accessibleRooms.contains(room)) {
+               inaccessibleRooms.add(room);
                g2d.setColor(Color.BLACK);
                g2d.fill(room.path);
             }
          });
+         //re-color any internal rooms of inaccessible rooms
+         inaccessibleRooms.forEach(ir-> RoomList.getInstance().list.forEach(room->{
+            if(!ir.equals(room)&&ir.contains(room)){
+               g2d.setColor(Color.LIGHT_GRAY);
+               g2d.fill(room.path);
+               g2d.setStroke(defaultStroke);
+               g2d.setColor(Color.white);
+               //get the bounding box of the room's path to reduce the number of points to check
+               Rectangle roomBoundingBox = room.path.getBounds();
+               for (int i = roomBoundingBox.x; i <= roomBoundingBox.width+roomBoundingBox.x; i+=GRIDDISTANCE) {
+                  for (int j = roomBoundingBox.y; j <= roomBoundingBox.height+roomBoundingBox.y; j+=GRIDDISTANCE) {
+                     Point p = new Point(i,j);
+                     if(room.path.contains(p)){
+                        g2d.drawLine(i, j, i, j);
+                     }
+                  }
+               }
+               g2d.setColor(Color.BLACK);
+               room.walls.forEach(wall-> drawWall(g2d,wall));
+            }
+         }));
+         //then re-color any inaccessible rooms within current room
+         ArrayList<Room> internalRooms = RoomList.getInstance().getPlayerCurrentRoom(playerStartingPosition).getContainedRooms();
+         for(Room room:internalRooms){
+            if(inaccessibleRooms.contains(room)){
+               g2d.setColor(Color.BLACK);
+               g2d.fill(room.path);
+            }
+         }
       }
 		if (selectedRoom != null) {
 			g2d.setColor(Color.RED);
@@ -48,6 +70,11 @@ public class MapWallLayer extends MapLayer {
 		}
 	}
 
+   /**
+    * Sets the draw mode based on the type of wall to draw
+    * @param g2d the Graphics2D object to modify
+    * @param type the type of the wall
+    */
    private void setDrawMode(Graphics2D g2d,Type type) {
 	   if(type.equals(Type.OPAQUE)){
          g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -58,10 +85,12 @@ public class MapWallLayer extends MapLayer {
          Stroke arch = new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{3}, 0);
          g2d.setStroke(arch);
       }
-      else {
+      else if(type.equals(Type.TRANSPARENT)){
          g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
          Stroke dashed = new BasicStroke(3, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{9}, 0);
          g2d.setStroke(dashed);
+      }else if(type.equals(Type.DOOR)){
+         //TODO when doors are added
       }
    }
 
@@ -69,7 +98,14 @@ public class MapWallLayer extends MapLayer {
 	   playerStartingPosition = new Point(p);
    }
 
-
+   private void drawWall(Graphics2D g2d, Wall wall){
+      Type wallType = wall.getType();
+      //don't draw transparent walls if in player mode
+      if(!playerMode||wallType.equals(Type.OPAQUE)) {
+         setDrawMode(g2d, wallType);
+         g2d.draw(wall.getLineRepresentation());
+      }
+   }
 
    @Override
 	public MapLayer copy() {
