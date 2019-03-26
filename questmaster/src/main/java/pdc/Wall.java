@@ -3,11 +3,13 @@ package pdc;
 import java.awt.*;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
+import java.io.Serializable;
 
 /**
  * Representation of a wall as a Line2D and wallType of wall
  */
-public class Wall {
+@SuppressWarnings("serial")
+public class Wall implements Serializable{
    private Line2D lineRepresentation;
    private WallType wallType;
 
@@ -20,7 +22,10 @@ public class Wall {
       this.lineRepresentation = new Line2D.Double(pointA,pointB);
       this.wallType = wallType;
    }
-
+   public void setType(WallType type)
+   {
+      this.wallType = type;
+   }
    public double getX1(){
       return lineRepresentation.getX1();
    }
@@ -58,5 +63,13 @@ public class Wall {
     */
    public boolean hasEndpoint(Point p) {
       return this.getP1().equals(p)||this.getP2().equals(p);
+   }
+
+   public boolean isTraversable(){
+      return isPortal()||wallType.equals(WallType.TRANSPARENT);
+   }
+
+   public boolean isPortal(){
+      return wallType.equals(WallType.ARCHWAY)||wallType.equals(WallType.CLOSEDDOOR)||wallType.equals(WallType.OPENDOOR);
    }
 }

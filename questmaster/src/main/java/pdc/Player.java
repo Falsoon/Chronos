@@ -2,12 +2,14 @@ package pdc;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.io.Serializable;
 import java.util.Iterator;
 
 /*
  * encapsulates player's avatar data
  */
-public class Player {
+@SuppressWarnings("serial")
+public class Player implements Serializable {
 	private static final int GRIDDISTANCE = Constants.GRIDDISTANCE;
 	private Point position;
 	private boolean placed, playing, placing;
@@ -32,13 +34,7 @@ public class Player {
 				Math.round(position.y / GRIDDISTANCE) * GRIDDISTANCE - YOFFSET);
 		placed = true;
 		placing = false;
-		Iterator<Room> itr = RoomList.getInstance().iterator();
-		while (itr.hasNext()) {
-			Room curr = itr.next();
-			if (curr.contains(position)) {
-				currentRoom = curr;
-			}
-		}
+		rePlace();
 	}
 	
 	public String getRepresentation() {
@@ -57,13 +53,16 @@ public class Player {
 	public void startPlaying() {
 		playing = true;
 	}
+	public void stopPlaying() {
+		playing = false;
+	}
 	public void startPlacing() {
 		placing = true;
 	}
 	public void stopPlacing() {
 		placing = false;
 	}
-	
+
 	public Point getPosition() {
 		return position;
 	}
@@ -119,7 +118,16 @@ public class Player {
 				if (distance < closestCollision) {
 					closestCollision = distance;
 				}
-			} else if (distance < closestNonCollision) {
+			}
+			else if (w.getWallType() == WallType.CLOSEDDOOR) {
+            if (distance < closestCollision) {
+               closestCollision = distance;
+               if (closestCollision < closestNonCollision && closestCollision < COLLISION_MARGIN) {
+                  w.setType(WallType.OPENDOOR);
+               }
+            }
+         }
+         else if (distance < closestNonCollision) {
 				closestNonCollision = distance;
 			}
 		}

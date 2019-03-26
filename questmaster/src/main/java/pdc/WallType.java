@@ -1,3 +1,3 @@
 package pdc;
 
-public enum WallType {OPAQUE,TRANSPARENT,ARCHWAY,DOOR}
+public enum WallType {OPAQUE,TRANSPARENT,ARCHWAY,CLOSEDDOOR,OPENDOOR}
