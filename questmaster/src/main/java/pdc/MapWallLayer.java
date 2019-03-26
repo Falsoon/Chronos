@@ -111,8 +111,8 @@ public class MapWallLayer extends MapLayer {
 
    private void drawWall(Graphics2D g2d, Wall wall){
        WallType wallType = wall.getWallType();
-      //don't draw transparent walls if in player mode
-      if(!playerMode||wallType.equals(WallType.OPAQUE)) {
+      //only draw transparent walls in author mode
+      if(!playerMode||!wallType.equals(WallType.TRANSPARENT)) {
          setDrawMode(g2d, wallType);
          g2d.draw(wall.getLineRepresentation());
       }

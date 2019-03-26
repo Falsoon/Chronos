@@ -35,7 +35,6 @@ public abstract class MapLayer implements StateEditable, Serializable {
    protected ArrayList<Wall> wallList;
    private boolean firstClick;
    private Wall lastWall;
-   private Room roomToDivide;
    //private UndoableEditSupport undoSupport;
    //private UndoManager undoManager;
    //private StateEdit stateEdit;
@@ -56,7 +55,6 @@ public abstract class MapLayer implements StateEditable, Serializable {
 		this.selectedRoom = null;
 		firstClick = true;
 		candidateRoomsForTransparent = new ArrayList<>();
-      roomToDivide = null;
 	}
 
 	public abstract void draw(Graphics g);
@@ -529,13 +527,13 @@ public abstract class MapLayer implements StateEditable, Serializable {
    public void placeDoor(Point point) throws Throwable
    {
       Line2D doorWall= new Line2D.Double();
+      ArrayList<Room> roomsToUpdate = new ArrayList<>();
+      Wall doorWallObj = null;
       boolean flag = false;
       int flagerror = 0;
-      for(int i = 0; i< this.wallList.size(); i++)
-      {
-         if (this.wallList.get(i).getDistance(point) ==0)
-         {
-            Wall doorWallObj = this.wallList.get(i);
+      for(int i = 0; i< this.wallList.size(); i++) {
+         if (this.wallList.get(i).getDistance(point) ==0) {
+            doorWallObj = this.wallList.get(i);
             doorWall = doorWallObj.getLineRepresentation();
             //System.out.println(Math.sqrt( ( ( archwayWall.getX2() - archwayWall.getX1() ) * ( doorWall.getX2() -
             // doorWall.getX1() ) ) + ( ( doorWall.getY2() - doorWall.getY1() ) * ( doorWall.getY2() - doorWall.getY1() ) ) ));
@@ -543,80 +541,74 @@ public abstract class MapLayer implements StateEditable, Serializable {
                if((doorWall.getX1() == doorWall.getX2())) {
                   if ((Math.abs(point.getY() - doorWall.getY1()) > 15) && (Math.abs(point.getY() - doorWall.getY2()) > 15)) {
                      this.wallList.remove(doorWallObj);
+                     for(Room room : RoomList.getInstance().list){
+                        if(room.walls.contains(doorWallObj)){
+                           roomsToUpdate.add(room);
+                        }
+                     }
                      flag = true;
                      break;
-                  }
-                  else
-                  {
+                  } else {
                      flagerror = 1;
                   }
-               }
-               else if(doorWall.getY1() == doorWall.getY2())
-               {
+               } else if(doorWall.getY1() == doorWall.getY2()) {
                   if ((Math.abs(point.getX() - doorWall.getX1()) > 15) && (Math.abs(point.getX() - doorWall.getX2()) > 15)) {
                      this.wallList.remove(doorWallObj);
+                     for(Room room : RoomList.getInstance().list){
+                        if(room.walls.contains(doorWallObj)){
+                           roomsToUpdate.add(room);
+                        }
+                     }
                      flag = true;
                      break;
-                  }
-                  else
-                  {
+                  } else {
                      flagerror = 1;
                   }
-               }
-               else
-               {
+               } else {
                   flagerror = 1;
                }
-            }
-            else
-            {
+            } else {
                flagerror = 1;
             }
 
          }
       }
-      if(flag)
-      {
-
+      if(flag) {
          Point2D start = doorWall.getP1();
          Point2D end = doorWall.getP2();
          Wall newStartWall = new Wall(new Line2D.Double(start, point),WallType.OPAQUE);
          //TODO: Limit number of doors on wall?
          Point2D endDoor;
-         if(doorWall.getX1() == doorWall.getX2())
-         {
+         if(doorWall.getX1() == doorWall.getX2()) {
             endDoor = new Point2D.Double(doorWall.getX2(), point.getY()-15);
-            if(start.getY() < end.getY())
-            {
+            if(start.getY() < end.getY()) {
                endDoor = new Point2D.Double(doorWall.getX2(), point.getY()+15);
             }
-         }
-         else
-         {
+         } else {
             endDoor = new Point2D.Double(point.getX()-15, doorWall.getY2());
-            if(start.getX() < end.getX())
-            {
+            if(start.getX() < end.getX()) {
                endDoor = new Point2D.Double(point.getX()+15, doorWall.getY2());
             }
          }
          Wall newEndWall = new Wall(new Line2D.Double(endDoor, end),WallType.OPAQUE);
          Wall doorSeg = new Wall(new Line2D.Double(point, endDoor),WallType.CLOSEDDOOR);
-         //System.out.println("Start: " + start + "\nPoint: " + point + "\nEndArch: " + endDoor + "\nEnd: " + end);
-         //System.out.println("StartWall: " + newStartWall.getLineRepresentation() + "\nDoor:" + doorSeg
-         // .getLineRepresentation() + "\nEnd: "+ newEndWall.getLineRepresentation());
          this.wallList.add(newStartWall);
          this.wallList.add(doorSeg);
          this.wallList.add(newEndWall);
-      }
-      else
-         {
-            if(flagerror ==1)
-            {
-               dialog("Door cannot be placed here.");
-            }
-            else {
-               dialog("Door must be placed on a wall.");
-            }
+         for(Room room:roomsToUpdate){
+            room.walls.remove(doorWallObj);
+            ArrayList<Wall> newWallList = room.walls;
+            newWallList.add(newStartWall);
+            newWallList.add(doorSeg);
+            newWallList.add(newEndWall);
+            room.updatePath(newWallList);
+         }
+      } else {
+         if(flagerror ==1) {
+            dialog("Door cannot be placed here.");
+         } else {
+            dialog("Door must be placed on a wall.");
+         }
       }
    }
 
