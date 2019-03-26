@@ -21,7 +21,10 @@ public class Wall implements Serializable{
       this.lineRepresentation = new Line2D.Double(pointA,pointB);
       this.type = type;
    }
-
+   public void setType(Type type)
+   {
+      this.type = type;
+   }
    public double getX1(){
       return lineRepresentation.getX1();
    }

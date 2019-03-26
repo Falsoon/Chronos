@@ -78,7 +78,7 @@ public class MapPanel extends JPanel {
 	 * Changes state of MapPanel to add doors
 	 */
 	public void paintDoors() {
-		civ.dooring();
+		civ.doorAdd();
 	}
 
    /**
@@ -87,6 +87,7 @@ public class MapPanel extends JPanel {
    public void paintArchway() {
       civ.archwayAdd();
    }
+
 
 	/**
 	 * Resets state of MapPanel

@@ -124,7 +124,16 @@ public class Player implements Serializable {
 				if (distance < closestCollision) {
 					closestCollision = distance;
 				}
-			} else if (distance < closestNonCollision) {
+			}
+			else if (w.getType() == Type.CLOSEDDOOR) {
+            if (distance < closestCollision) {
+               closestCollision = distance;
+               if (closestCollision < closestNonCollision && closestCollision < COLLISION_MARGIN) {
+                  w.setType(Type.OPENDOOR);
+               }
+            }
+         }
+         else if (distance < closestNonCollision) {
 				closestNonCollision = distance;
 			}
 		}
