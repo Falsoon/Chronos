@@ -92,6 +92,7 @@ public class Map implements StateEditable, Serializable {
       }
 		if (player.isPlacing()) {
 			player.place(p);
+			mapLayer.setPlayerStartingPosition(p);
 		}
 		//stateEdit.end();
 		//manager.addEdit(stateEdit);

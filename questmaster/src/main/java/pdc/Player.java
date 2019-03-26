@@ -34,13 +34,7 @@ public class Player implements Serializable {
 				Math.round(position.y / GRIDDISTANCE) * GRIDDISTANCE - YOFFSET);
 		placed = true;
 		placing = false;
-		Iterator<Room> itr = RoomList.getInstance().iterator();
-		while (itr.hasNext()) {
-			Room curr = itr.next();
-			if (curr.contains(position)) {
-				currentRoom = curr;
-			}
-		}
+		rePlace();
 	}
 	
 	public String getRepresentation() {
@@ -68,7 +62,7 @@ public class Player implements Serializable {
 	public void stopPlacing() {
 		placing = false;
 	}
-	
+
 	public Point getPosition() {
 		return position;
 	}

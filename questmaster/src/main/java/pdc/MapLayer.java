@@ -10,7 +10,6 @@ import java.awt.*;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
-import java.util.*;
 import java.util.stream.Collectors;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -27,31 +26,30 @@ import java.util.Optional;
  */
 @SuppressWarnings("serial")
 public abstract class MapLayer implements StateEditable, Serializable {
-	protected boolean drawingTransparent;
-	protected Point start;
-	protected ArrayList<GeneralPath> pathList;
-	public ArrayList<Point> pointList;
+   protected boolean drawingTransparent;
+   protected Point start;
+   protected ArrayList<GeneralPath> pathList;
+   public ArrayList<Point> pointList;
    public GeneralPath guiPath;
    public boolean throwAlerts;
-	private boolean walling;
-	protected Room selectedRoom;
-	protected ArrayList<Wall> wallList;
-	private boolean firstClick;
-    private Wall lastWall;
-    private Room roomToDivide;
-    private Point lastPoint;
-    private boolean wasFirstClick;
-    //private transient UndoableEditSupport undoSupport;
-    //private transient UndoManager undoManager;
-    //private transient StateEdit stateEdit;
-    private boolean drawingOpaque;
- 
+   private boolean walling;
+   protected Room selectedRoom;
+   protected ArrayList<Wall> wallList;
+   private boolean firstClick;
+   private Wall lastWall;
+   //private UndoableEditSupport undoSupport;
+   //private UndoManager undoManager;
+   //private StateEdit stateEdit;
+   private Point lastPoint;
+   private boolean wasFirstClick;
+   private ArrayList<Room> candidateRoomsForTransparent;
+
    public MapLayer() {
-	   
+
         /* undoSupport = new UndoableEditSupport(this);
         undoManager = new UndoManager();
         undoSupport.addUndoableEditListener(undoManager); */
-	   
+
 		this.pathList = new ArrayList<>();
 		this.pointList = new ArrayList<>();
 		wallList = new ArrayList<>();
@@ -59,10 +57,12 @@ public abstract class MapLayer implements StateEditable, Serializable {
       throwAlerts = true;
 		this.selectedRoom = null;
 		firstClick = true;
-		roomToDivide = null;
+		candidateRoomsForTransparent = new ArrayList<>();
 	}
 
 	public abstract void draw(Graphics g);
+
+   public abstract void setPlayerStartingPosition(Point p);
 
    /**
     * Method called to draw opaque walls
@@ -111,7 +111,6 @@ public abstract class MapLayer implements StateEditable, Serializable {
     * Method called to detect rooms from lines drawn on the map
     */
 	public void detectRooms(){
-		
       breakUpWallsAtIntersections();
 
       ArrayList<Room> tempRoomList = getRooms();
@@ -343,94 +342,82 @@ public abstract class MapLayer implements StateEditable, Serializable {
    //TODO: improve Java Doc, detect if the wall divides two rooms?
    /**
     * Method to add archway onto map.
-    * @param point
-    * @throws Throwable
+    * @param point the point that was clicked
+    * @throws Throwable if the author attempts to place an archway at an invalid point
     */
-   public void placeArchway(Point point) throws Throwable
-   {
+   public void placeArchway(Point point) throws Throwable {
       Line2D archwayWall= new Line2D.Double();
+      Wall archwayWallObj = null;
+      ArrayList<Room> roomsToUpdate = new ArrayList<>();
       boolean flag = false;
       int flagerror = 0;
-      for(int i = 0; i< this.wallList.size(); i++)
-      {
-         if (this.wallList.get(i).getDistance(point) ==0)
-         {
-            Wall archwayWallObj = this.wallList.get(i);
+      for(int i = 0; i< this.wallList.size(); i++) {
+         if (this.wallList.get(i).getDistance(point) ==0) {
+            archwayWallObj = this.wallList.get(i);
             archwayWall = archwayWallObj.getLineRepresentation();
-            //System.out.println(Math.sqrt( ( ( archwayWall.getX2() - archwayWall.getX1() ) * ( archwayWall.getX2() -
-            // archwayWall.getX1() ) ) + ( ( archwayWall.getY2() - archwayWall.getY1() ) * ( archwayWall.getY2() - archwayWall.getY1() ) ) ));
-            if(Math.sqrt( ( ( archwayWall.getX2() - archwayWall.getX1() ) * ( archwayWall.getX2() - archwayWall.getX1() ) ) + ( ( archwayWall.getY2() - archwayWall.getY1() ) * ( archwayWall.getY2() - archwayWall.getY1() ) ) )>= 15){
-               if((archwayWall.getX1() == archwayWall.getX2())) {
-                  if ((Math.abs(point.getY() - archwayWall.getY1()) > 15) && (Math.abs(point.getY() - archwayWall.getY2()) > 15)) {
-                     this.wallList.remove(archwayWallObj);
-                     flag = true;
-                     break;
+            if(Math.sqrt( ( ( archwayWall.getX2() - archwayWall.getX1() ) * ( archwayWall.getX2() - archwayWall.getX1() ) ) + ( ( archwayWall.getY2() - archwayWall.getY1() ) * ( archwayWall.getY2() - archwayWall.getY1() ) ) )>= 15) {
+               if((archwayWall.getX1() == archwayWall.getX2())  || (archwayWall.getY1() == archwayWall.getY2())) {
+                  this.wallList.remove(archwayWallObj);
+                  for(Room room : RoomList.getInstance().list){
+                     if(room.walls.contains(archwayWallObj)){
+                        roomsToUpdate.add(room);
+                     }
                   }
-                  else
-                  {
-                     flagerror = 1;
-                  }
-               }
-               else if(archwayWall.getY1() == archwayWall.getY2())
-               {
+                  flag = true;
+                  break;
+               } else if(archwayWall.getY1() == archwayWall.getY2()) {
                   if ((Math.abs(point.getX() - archwayWall.getX1()) > 15) && (Math.abs(point.getX() - archwayWall.getX2()) > 15)) {
                      this.wallList.remove(archwayWallObj);
                      flag = true;
                      break;
                   }
                   else
-                     //TODO: why does this repeat
+                  //TODO: why does this repeat
                   {
-                  flagerror = 1; //corner
+                     flagerror = 1; //corner
                   }
                }
                else
                {
                   flagerror = 1; //rectilinear
                }
-            }
-            else
-            {
-               flagerror = 1; //large enough
+            } else {
+               throw new Throwable("Archway must be placed on a large enough wall");
             }
 
          }
       }
-      if(flag)
-      {
-
+      if(flag) {
          Point2D start = archwayWall.getP1();
          Point2D end = archwayWall.getP2();
          Wall newStartWall = new Wall(new Line2D.Double(start, point),Type.OPAQUE);
          //TODO: Limit number of archways on wall?
          Point2D endArchway;
-         if(archwayWall.getX1() == archwayWall.getX2())
-         {
+         if(archwayWall.getX1() == archwayWall.getX2()) {
             endArchway = new Point2D.Double(archwayWall.getX2(), point.getY()-15);
-            if(start.getY() < end.getY())
-            {
-            endArchway = new Point2D.Double(archwayWall.getX2(), point.getY()+15);
+            if(start.getY() < end.getY()) {
+              endArchway = new Point2D.Double(archwayWall.getX2(), point.getY()+15);
             }
-         }
-         else
-         {
+         } else {
             endArchway = new Point2D.Double(point.getX()-15, archwayWall.getY2());
-            if(start.getX() < end.getX())
-            {
+            if(start.getX() < end.getX()) {
                endArchway = new Point2D.Double(point.getX()+15, archwayWall.getY2());
             }
          }
          Wall newEndWall = new Wall(new Line2D.Double(endArchway, end),Type.OPAQUE);
          Wall archwaySeg = new Wall(new Line2D.Double(point, endArchway),Type.ARCHWAY);
-         //System.out.println("Start: " + start + "\nPoint: " + point + "\nEndArch: " + endArchway + "\nEnd: " + end);
-         //System.out.println("StartWall: " + newStartWall.getLineRepresentation() + "\nArchway:" + archwaySeg
-         // .getLineRepresentation() + "\nEnd: "+ newEndWall.getLineRepresentation());
          this.wallList.add(newStartWall);
          this.wallList.add(archwaySeg);
          this.wallList.add(newEndWall);
-      }
-      else
-      {
+         for(Room room:roomsToUpdate){
+            room.walls.remove(archwayWallObj);
+            ArrayList<Wall> newWallList = room.walls;
+            newWallList.add(newStartWall);
+            newWallList.add(archwaySeg);
+            newWallList.add(newEndWall);
+            room.updatePath(newWallList);
+         }
+      } else {
          if(flagerror ==1)
          {
             dialog("Archway cannot be placed here.");
@@ -481,43 +468,43 @@ public abstract class MapLayer implements StateEditable, Serializable {
     * @return true if the author is still drawingTransparent transparent walls
     */
 	public boolean drawTransparentWalls(Point p) {
-		this.walling = true;
-
+      this.walling = true;
       if (firstClick) {
+         firstClick = false;
          //check that the player has clicked on the boundary of a room
-         for(int i = 0; roomToDivide==null && i<RoomList.getInstance().list.size();i++){
+         for(int i = 0; i<RoomList.getInstance().list.size();i++){
             Room room = RoomList.getInstance().list.get(i);
             if(room.onBoundary(p)){
-               roomToDivide = room;
+               candidateRoomsForTransparent.add(room);
             }
          }
-         if(roomToDivide==null){
-            //walling = false;
-            //firstClick = false;
-            dialog("Transparent walls must start on the edge of a room.");
-         } else {
+         if(candidateRoomsForTransparent.size()==0){
+            walling = false;
+         }else {
             lastPoint = p;
-            firstClick = false;
          }
       } else {
-         if(roomToDivide!=null&&roomToDivide.onBoundary(p)) {
-            //StateEdit stateEdit = new StateEdit(MapLayer.this);
-            pointList.add(lastPoint);
-            pointList.add(p);
-            lastWall = new Wall(new Line2D.Double(lastPoint, p), Type.TRANSPARENT);
-            wallList.add(lastWall);
-            detectRooms();
-            //stateEdit.end();
-            //undoManager.addEdit(stateEdit);
-            firstClick = true;
+         if(candidateRoomsForTransparent.size()>0) {
+            boolean secondClickValid=false;
+            for(int i = 0;!secondClickValid&&i<candidateRoomsForTransparent.size();i++){
+               secondClickValid = candidateRoomsForTransparent.get(i).onBoundary(p);
+            }
+            if(secondClickValid) {
+               StateEdit stateEdit = new StateEdit(MapLayer.this);
+               pointList.add(lastPoint);
+               pointList.add(p);
+               lastWall = new Wall(new Line2D.Double(lastPoint, p), Type.TRANSPARENT);
+               wallList.add(lastWall);
+               detectRooms();
+               stateEdit.end();
+               //undoManager.addEdit(stateEdit);
+            }else{
+               walling = false;
+            }
          }else {
-            dialog("Transparent walls must divide one room into two pieces.");
-            //walling = false;
-            firstClick = true;
+            walling = false;
          }
-         roomToDivide = null;
       }
-
 		return this.walling;
 	}
 

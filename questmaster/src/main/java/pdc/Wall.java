@@ -53,4 +53,12 @@ public class Wall implements Serializable{
    public Type getType(){
       return type;
    }
+
+   public boolean isTraversable(){
+      return isPortal()||type.equals(Type.TRANSPARENT);
+   }
+
+   public boolean isPortal(){
+      return type.equals(Type.ARCHWAY)||type.equals(Type.CLOSEDDOOR)||type.equals(Type.OPENDOOR);
+   }
 }
