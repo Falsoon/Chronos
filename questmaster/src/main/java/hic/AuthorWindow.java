@@ -4,6 +4,8 @@ import civ.CIV;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 
 /**
  * UI class for entire application
@@ -12,8 +14,8 @@ import java.awt.*;
 @SuppressWarnings("serial")
 public class AuthorWindow extends JPanel {
 
-	public static CIV civ;
-	public JFrame frame; 
+	public CIV civ;
+	public JFrame frame;
 	public AuthorPanel authorPanel;
 	public MapPanel mapPanel;
 	public String[] wallTypes = { "Walls", "Opaque", "Transparent" };
@@ -57,9 +59,9 @@ public class AuthorWindow extends JPanel {
 
 		frame = new JFrame();
 		frame.getContentPane().setBackground(Color.BLACK);
-		frame.setExtendedState(JFrame.MAXIMIZED_BOTH); 
-		//frame.setBounds(200, 100, 1000, 600);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+		// frame.setBounds(200, 100, 1000, 600);
+		frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 
 		JSplitPane splitPane = new JSplitPane();
 		frame.getContentPane().add(splitPane, BorderLayout.CENTER);
@@ -76,5 +78,51 @@ public class AuthorWindow extends JPanel {
 		buttonFactory = new ButtonFactory(this);
 		splitPane.setLeftComponent(authorPanel);
 		authorPanel.update();
+
+		WindowListener wl = new WindowListener() {
+
+			@Override
+			public void windowOpened(WindowEvent e) {
+
+			}
+
+			@Override
+			public void windowIconified(WindowEvent e) {
+
+			}
+
+			@Override
+			public void windowDeiconified(WindowEvent e) {
+
+			}
+
+			@Override
+			public void windowDeactivated(WindowEvent e) {
+
+			}
+
+			@Override
+			public void windowClosing(WindowEvent e) {
+				int opt = JOptionPane.showConfirmDialog(null, "Are you sure you want to quit?", "Quit",
+						JOptionPane.YES_NO_OPTION);
+				/*jop.setLocation(250, 250);
+				jop.setVisible(true);*/
+				if (opt == JOptionPane.YES_OPTION) {
+					System.exit(0);
+				}
+				
+			}
+
+			@Override
+			public void windowClosed(WindowEvent e) {
+
+			}
+
+			@Override
+			public void windowActivated(WindowEvent e) {
+
+			}
+		};
+		frame.addWindowListener(wl);
 	}
 }

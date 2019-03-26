@@ -28,7 +28,7 @@ public class MapPanel extends JPanel {
 	 * @param authorWindow
 	 */
 	public MapPanel(AuthorWindow authorWindow) {
-		civ = AuthorWindow.civ;
+		civ = authorWindow.civ;
 		aw = authorWindow;
 
 		// Anonymous class was used to access MapPanel fields
@@ -79,7 +79,7 @@ public class MapPanel extends JPanel {
 	 * Changes state of MapPanel to add doors
 	 */
 	public void paintDoors() {
-		civ.dooring();
+		civ.doorAdd();
 	}
 
    /**
@@ -88,6 +88,7 @@ public class MapPanel extends JPanel {
    public void paintArchway() {
       civ.archwayAdd();
    }
+
 
 	/**
 	 * Resets state of MapPanel

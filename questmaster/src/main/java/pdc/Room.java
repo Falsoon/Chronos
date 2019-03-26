@@ -409,10 +409,20 @@ public class Room implements Serializable{
             //if room has a traversable Wall that is not shared with any of its adjacent Rooms, then that traversable
             //Wall connects to the outer Room (this)
             if(this.contains(room)&&room.hasTraversableWall()){
-                ArrayList<Wall> traversableWalls = room.walls.stream().filter(
-                        Wall::isTraversable
-                ).collect(Collectors.toCollection(ArrayList::new));
-                return hasOuterWall(traversableWalls);
+                //make sure room is immediately outside this
+                boolean isImmediatelyOutside = true;
+                for(Room otherRoom:RoomList.getInstance().list){
+                    if(!otherRoom.equals(this)&&otherRoom.contains(room)){
+                        isImmediatelyOutside = false;
+                        break;
+                    }
+                }
+                if(isImmediatelyOutside) {
+                    ArrayList<Wall> traversableWalls = walls.stream().filter(
+                            Wall::isTraversable
+                    ).collect(Collectors.toCollection(ArrayList::new));
+                    return hasOuterWall(traversableWalls);
+                }
             }
             return false;
         }).collect(Collectors.toCollection(ArrayList::new));
@@ -429,15 +439,30 @@ public class Room implements Serializable{
             //if this has a traversable Wall that is not shared with any of its adjacent Rooms, then that traversable
             //Wall connects to the outer Room
             if(room.contains(this)&&this.hasTraversableWall()){
-                ArrayList<Wall> traversableWalls = walls.stream().filter(
-                        Wall::isTraversable
-                ).collect(Collectors.toCollection(ArrayList::new));
-                return hasOuterWall(traversableWalls);
+                //make sure room is immediately outside this
+                boolean isImmediatelyOutside = true;
+                for(Room otherRoom:RoomList.getInstance().list){
+                    if(!otherRoom.equals(room)&&otherRoom.contains(this)){
+                        isImmediatelyOutside = false;
+                        break;
+                    }
+                }
+                if(isImmediatelyOutside) {
+                    ArrayList<Wall> traversableWalls = walls.stream().filter(
+                            Wall::isTraversable
+                    ).collect(Collectors.toCollection(ArrayList::new));
+                    return hasOuterWall(traversableWalls);
+                }
             }
             return false;
         }).collect(Collectors.toCollection(ArrayList::new));
     }
 
+    /**
+     * determines if this has an outer Wall, defined as a Wall that is not shared by any other Room
+     * @param traversableWalls the traversable walls of this
+     * @return true is this has an outer Wall not shared by any other Room
+     */
     private boolean hasOuterWall(ArrayList<Wall> traversableWalls){
         for(Wall traversableWall:traversableWalls){
             boolean isOuterWall = true;

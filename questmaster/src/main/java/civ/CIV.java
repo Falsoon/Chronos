@@ -220,14 +220,15 @@ public class CIV {
 		map.stopDrawing();
 	}
 
-	public void dooring() {
-		map.dooring();
-	}
-
 	public void archwayAdd() {
 		stopDrawing();
 		stopPlacingPlayer();
 		map.archwayAdd();
+	}
+    public void doorAdd() {
+		stopDrawing();
+		stopPlacingPlayer();
+		map.dooring();
 	}
 	//look into creating door pointList
 	public int numOfDoors() {

@@ -29,7 +29,7 @@ public class RoomDescInsert extends JPanel{
         titleText = new JTextArea();
         roomIdText = new JTextField();
         descArea = new JTextArea();
-        formCiv = AuthorWindow.civ.formCiv;
+        formCiv = aw.civ.formCiv;
         initialize();
     }
     

@@ -17,7 +17,7 @@ public class ButtonFactory {
 	public RoomDescInsert rdi;
 	public JButton btnPlay, btnPlayer, btnUndo, btnClear; //addRoombtn1, addRoombtn2;
 	public JButton btnSave, btnRestore;
-	public JToggleButton btnOpaqueWalls, btnTransWalls, btnArchways, btnProp;
+	public JToggleButton btnOpaqueWalls, btnTransWalls, btnArchways, btnProp, btnDoors;
 	
 	public ButtonFactory(AuthorWindow aw) {
 		this.authorWindow = aw;
@@ -34,6 +34,8 @@ public class ButtonFactory {
 		btnTransWalls.setAlignmentX(Component.CENTER_ALIGNMENT);
 		btnArchways = new JToggleButton("Archways");
 		btnArchways.setAlignmentX(Component.CENTER_ALIGNMENT);
+		btnDoors = new JToggleButton("Doors");
+		btnDoors.setAlignmentX(Component.CENTER_ALIGNMENT);
 		btnProp = new JToggleButton("Set Properties");
 		btnProp.setAlignmentX(Component.CENTER_ALIGNMENT);
 
@@ -65,6 +67,7 @@ public class ButtonFactory {
 		authorWindow.authorPanel.add(btnOpaqueWalls);
 		authorWindow.authorPanel.add(btnTransWalls);
 		authorWindow.authorPanel.add(btnArchways);
+		authorWindow.authorPanel.add(btnDoors);
 		authorWindow.authorPanel.add(btnProp);
 		authorWindow.authorPanel.add(btnPlayer);
 		authorWindow.authorPanel.add(line1);
@@ -84,6 +87,7 @@ public class ButtonFactory {
 		btnList.add(btnOpaqueWalls);
 		btnList.add(btnTransWalls);
 		btnList.add(btnArchways);
+		btnList.add(btnDoors);
 		btnList.add(btnProp);
 
 		btnOpaqueWalls.addItemListener(e -> {
@@ -110,6 +114,22 @@ public class ButtonFactory {
 			}
 		});
 
+		btnArchways.addItemListener(e -> {
+			if (e.getStateChange() == ItemEvent.SELECTED) {
+				//authorWindow.mapPanel.stopDrawing();
+				//authorWindow.mapPanel.stopPlacingPlayer();
+				authorWindow.mapPanel.paintArchway();
+			}
+		});
+
+		btnDoors.addItemListener(e -> {
+			if (e.getStateChange() == ItemEvent.SELECTED) {
+				//authorWindow.mapPanel.stopDrawing();
+				//authorWindow.mapPanel.stopPlacingPlayer();
+				authorWindow.mapPanel.paintDoors();
+			}
+		});
+
 		btnProp.addItemListener(e -> {
 			if (e.getStateChange() == ItemEvent.SELECTED) {
 				authorWindow.mapPanel.stopDrawing();
@@ -130,14 +150,14 @@ public class ButtonFactory {
 
 		btnSave.addActionListener(e -> {
 			authorWindow.mapPanel.save();
-			AuthorWindow.civ.setSelectedRoom(null);
+			authorWindow.civ.setSelectedRoom(null);
 			authorWindow.authorPanel.grabFocus();
 			btnProp.doClick();
 });
 
 		btnRestore.addActionListener(e -> {
 			authorWindow.mapPanel.restore();
-			AuthorWindow.civ.setSelectedRoom(null);
+			authorWindow.civ.setSelectedRoom(null);
 			authorWindow.authorPanel.grabFocus();
 			btnProp.doClick();
 		});
@@ -151,7 +171,7 @@ public class ButtonFactory {
 				  authorWindow.mapPanel.save();
                   PlayerWindow window = new PlayerWindow(authorWindow.mapPanel);
                   window.frame.setVisible(true);
-                  AuthorWindow.civ.setSelectedRoom(null);
+                  authorWindow.civ.setSelectedRoom(null);
 				  authorWindow.mapPanel.repaint();
 
                } catch (Exception e13) {
@@ -163,17 +183,16 @@ public class ButtonFactory {
          }
 		});
 		
-		btnUndo.addActionListener(e -> {
-         	authorWindow.mapPanel.undo();
-         	authorWindow.authorPanel.grabFocus();
-		});
-		
 		btnClear.addActionListener(e -> {
-			btnProp.doClick();
-			authorWindow.mapPanel.clear();
-        	// authorWindow.authorPanel.Rooms.setSelectedIndex(0);
-         	// authorWindow.wallCombo.setSelectedItem(authorWindow.wallTypes[0]);
-         	authorWindow.authorPanel.grabFocus();
+			int opt = JOptionPane.showConfirmDialog(null, "Are you sure you want to clear?", "Clear",
+					JOptionPane.YES_NO_OPTION);
+			if (opt == JOptionPane.YES_OPTION) {
+				btnProp.doClick();
+				authorWindow.mapPanel.clear();
+				// authorWindow.authorPanel.Rooms.setSelectedIndex(0);
+				// authorWindow.wallCombo.setSelectedItem(authorWindow.wallTypes[0]);
+				authorWindow.authorPanel.grabFocus();
+			}
 		});
 	}
 }
