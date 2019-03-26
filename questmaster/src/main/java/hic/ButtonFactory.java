@@ -183,17 +183,16 @@ public class ButtonFactory {
          }
 		});
 		
-		btnUndo.addActionListener(e -> {
-         	authorWindow.mapPanel.undo();
-         	authorWindow.authorPanel.grabFocus();
-		});
-		
 		btnClear.addActionListener(e -> {
-			btnProp.doClick();
-			authorWindow.mapPanel.clear();
-        	// authorWindow.authorPanel.Rooms.setSelectedIndex(0);
-         	// authorWindow.wallCombo.setSelectedItem(authorWindow.wallTypes[0]);
-         	authorWindow.authorPanel.grabFocus();
+			int opt = JOptionPane.showConfirmDialog(null, "Are you sure you want to clear?", "Clear",
+					JOptionPane.YES_NO_OPTION);
+			if (opt == JOptionPane.YES_OPTION) {
+				btnProp.doClick();
+				authorWindow.mapPanel.clear();
+				// authorWindow.authorPanel.Rooms.setSelectedIndex(0);
+				// authorWindow.wallCombo.setSelectedItem(authorWindow.wallTypes[0]);
+				authorWindow.authorPanel.grabFocus();
+			}
 		});
 	}
 }
