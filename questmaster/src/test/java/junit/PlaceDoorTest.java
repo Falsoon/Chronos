@@ -11,7 +11,7 @@ import java.awt.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class PlaceArchwayTest {
+public class PlaceDoorTest {
 
    private CIV civ;
 
@@ -27,7 +27,7 @@ public class PlaceArchwayTest {
       RoomList.getInstance().reset();
    }
 
-   // N - User draws a room and places an archway on left wall
+   // N - User draws a room and places a door on left wall
    @Test
    void testN1() {
       civ.outlining();
@@ -50,7 +50,7 @@ public class PlaceArchwayTest {
       assertTrue(civ.map.mapLayer.pointList.contains(point3));
       assertTrue(civ.map.mapLayer.pointList.contains(point4));
 
-      civ.archwayAdd();
+      civ.doorAdd();
 
       civ.mousePressed(point5, false, true,false);
 
@@ -63,7 +63,7 @@ public class PlaceArchwayTest {
       assertEquals(6, civ.map.mapLayer.getWallList().size());
    }
 
-   // N - User draws a room and places an archway on right wall
+   // N - User draws a room and places a door on right wall
    @Test
    void testN2() {
       civ.outlining();
@@ -87,7 +87,7 @@ public class PlaceArchwayTest {
       assertTrue(civ.map.mapLayer.pointList.contains(point3));
       assertTrue(civ.map.mapLayer.pointList.contains(point4));
 
-      civ.archwayAdd();
+      civ.doorAdd();
 
       civ.mousePressed(point5, false, true,false);
 
@@ -100,7 +100,7 @@ public class PlaceArchwayTest {
       assertEquals(6, civ.map.mapLayer.getWallList().size());
    }
 
-   // N - User draws a room and places an archway on top wall
+   // N - User draws a room and places a door on top wall
    @Test
    void testN3() {
       civ.outlining();
@@ -124,7 +124,7 @@ public class PlaceArchwayTest {
       assertTrue(civ.map.mapLayer.pointList.contains(point3));
       assertTrue(civ.map.mapLayer.pointList.contains(point4));
 
-      civ.archwayAdd();
+      civ.doorAdd();
 
       civ.mousePressed(point5, false, true,false);
 
@@ -137,7 +137,7 @@ public class PlaceArchwayTest {
       assertEquals(6, civ.map.mapLayer.getWallList().size());
    }
 
-   // N - User draws a room and places an archway on Bottom wall
+   // N - User draws a room and places a door on Bottom wall
    @Test
    void testN4() {
       civ.outlining();
@@ -161,7 +161,7 @@ public class PlaceArchwayTest {
       assertTrue(civ.map.mapLayer.pointList.contains(point3));
       assertTrue(civ.map.mapLayer.pointList.contains(point4));
 
-      civ.archwayAdd();
+      civ.doorAdd();
 
       civ.mousePressed(point5, false, true,false);
 
@@ -175,7 +175,7 @@ public class PlaceArchwayTest {
    }
 
 
-   // N - User draws a room and places an archway on a wall splitting two walls
+   // N - User draws a room and places a door on a wall splitting two walls
    @Test
    void testN5() {
       civ.outlining();
@@ -223,7 +223,7 @@ public class PlaceArchwayTest {
       assertTrue(civ.map.mapLayer.pointList.contains(point5));
       assertTrue(civ.map.mapLayer.pointList.contains(point6));
 
-      civ.archwayAdd();
+      civ.doorAdd();
 
       civ.mousePressed(point7, false, true, false);
 
@@ -237,7 +237,7 @@ public class PlaceArchwayTest {
       assertTrue(civ.map.mapLayer.pointList.contains(point6));
       assertEquals(9, civ.map.mapLayer.getWallList().size());
    }
-   //E - User tries to place an archway not on a wall
+   //E - User tries to place a door not on a wall
    @Test
    void testE1() {
       civ.outlining();
@@ -261,7 +261,7 @@ public class PlaceArchwayTest {
       assertTrue(civ.map.mapLayer.pointList.contains(point3));
       assertTrue(civ.map.mapLayer.pointList.contains(point4));
 
-      civ.archwayAdd();
+      civ.doorAdd();
 
       civ.mousePressed(point5, false, true, false);
 
@@ -274,7 +274,7 @@ public class PlaceArchwayTest {
       // assertThrows()
    }
 
-   //E - User tries to place an archway on a non-rectilinear wall
+   //E - User tries to place a door on a non-rectilinear wall
    @Test
    void testE2() {
       civ.outlining();
@@ -298,7 +298,7 @@ public class PlaceArchwayTest {
       assertTrue(civ.map.mapLayer.pointList.contains(point3));
       assertTrue(civ.map.mapLayer.pointList.contains(point4));
 
-      civ.archwayAdd();
+      civ.doorAdd();
 
       civ.mousePressed(point5, false, true, false);
 
@@ -310,7 +310,7 @@ public class PlaceArchwayTest {
       assertEquals(4, civ.map.mapLayer.getWallList().size());
       // assertThrows()
    }
-   //E - User tries to place an archway in a corner
+   //E - User tries to place a door in a corner
    @Test
    void testE3() {
       civ.outlining();
@@ -334,7 +334,7 @@ public class PlaceArchwayTest {
       assertTrue(civ.map.mapLayer.pointList.contains(point3));
       assertTrue(civ.map.mapLayer.pointList.contains(point4));
 
-      civ.archwayAdd();
+      civ.doorAdd();
 
       civ.mousePressed(point5, false, true, false);
 
@@ -346,6 +346,7 @@ public class PlaceArchwayTest {
       assertEquals(4, civ.map.mapLayer.getWallList().size());
       // assertThrows()
    }
+
 }
 
 

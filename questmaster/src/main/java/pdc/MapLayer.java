@@ -336,93 +336,113 @@ public abstract class MapLayer implements StateEditable, Serializable {
       wallList.add(new Wall(lastPoint,wallPoints.get(1),wall.getWallType()));
    }
 
-   //TODO: improve Java Doc, detect if the wall divides two rooms?
+   //TODO: detect if the wall divides two rooms?
+
    /**
-    * Method to add archway onto map.
-    * @param point the point that was clicked
-    * @throws Throwable if the author attempts to place an archway at an inappropriate point
-    * @param point the point that was clicked
-    * @throws Throwable if the author attempts to place an archway at an invalid point
+    * Places an archway at the specified Point
+    * @param point the point at which to place the archway
     */
-   public void placeArchway(Point point) throws Throwable {
-      Line2D archwayWall= new Line2D.Double();
-      Wall archwayWallObj = null;
+   public void placeArchway(Point point){
+      placePortal(point,WallType.ARCHWAY);
+   }
+
+   /**
+    * Places a door at the specified Point
+    * @param point the point at which to place the door
+    */
+   public void placeDoor(Point point){
+      placePortal(point,WallType.CLOSEDDOOR);
+   }
+
+   /**
+    * Method to add portal to map
+    * @param point the point that was clicked
+    * @param type the type of wall to draw
+    */
+   private void placePortal(Point point,WallType type){
+      Line2D portalWall= new Line2D.Double();
       ArrayList<Room> roomsToUpdate = new ArrayList<>();
       boolean flag = false;
       int flagerror = 0;
+      Wall portalWallObj = null;
       for(int i = 0; i< this.wallList.size(); i++) {
          if (this.wallList.get(i).getDistance(point) ==0) {
-            archwayWallObj = this.wallList.get(i);
-            archwayWall = archwayWallObj.getLineRepresentation();
-            if(Math.sqrt( ( ( archwayWall.getX2() - archwayWall.getX1() ) * ( archwayWall.getX2() - archwayWall.getX1() ) ) + ( ( archwayWall.getY2() - archwayWall.getY1() ) * ( archwayWall.getY2() - archwayWall.getY1() ) ) )>= 15) {
-               if((archwayWall.getX1() == archwayWall.getX2())  || (archwayWall.getY1() == archwayWall.getY2())) {
-                  this.wallList.remove(archwayWallObj);
-                  for(Room room : RoomList.getInstance().list){
-                     if(room.walls.contains(archwayWallObj)){
-                        roomsToUpdate.add(room);
+            portalWallObj = this.wallList.get(i);
+            portalWall = portalWallObj.getLineRepresentation();
+            if(Math.sqrt( ( ( portalWall.getX2() - portalWall.getX1() ) * ( portalWall.getX2() - portalWall.getX1() ) ) + ( ( portalWall.getY2() - portalWall.getY1() ) * ( portalWall.getY2() - portalWall.getY1() ) ) )>= 15) {
+               if (portalWall.getX1() == portalWall.getX2()) {
+                  if ((Math.abs(point.getY() - portalWall.getY1()) > 15) && (Math.abs(point.getY() - portalWall.getY2()) > 15)) {
+                     this.wallList.remove(portalWallObj);
+                     for (Room room : RoomList.getInstance().list) {
+                        if (room.walls.contains(portalWallObj)) {
+                           roomsToUpdate.add(room);
+                        }
                      }
-                  }
-                  flag = true;
-                  break;
-               } else if(archwayWall.getY1() == archwayWall.getY2()) {
-                  if ((Math.abs(point.getX() - archwayWall.getX1()) > 15) && (Math.abs(point.getX() - archwayWall.getX2()) > 15)) {
-                     this.wallList.remove(archwayWallObj);
                      flag = true;
                      break;
+                  } else {
+                     flagerror = 1;
                   }
-                  else
-                  //TODO: why does this repeat
-                  {
-                     flagerror = 1; //corner
+               } else if(portalWall.getY1() == portalWall.getY2()){
+                  if ((Math.abs(point.getX() - portalWall.getX1()) > 15) && (Math.abs(point.getX() - portalWall.getX2()) > 15)) {
+                     this.wallList.remove(portalWallObj);
+                     for (Room room : RoomList.getInstance().list) {
+                        if (room.walls.contains(portalWallObj)) {
+                           roomsToUpdate.add(room);
+                        }
+                     }
+                     flag = true;
+                     break;
+                  } else {
+                     flagerror = 1;
                   }
+               }else {
+                  flagerror = 1;
                }
-               else
-               {
-                  flagerror = 1; //rectilinear
-               }
-            } else {
-               throw new Throwable("Archway must be placed on a large enough wall");
             }
-
          }
       }
       if(flag) {
-         Point2D start = archwayWall.getP1();
-         Point2D end = archwayWall.getP2();
+         Point2D start = portalWall.getP1();
+         Point2D end = portalWall.getP2();
          Wall newStartWall = new Wall(new Line2D.Double(start, point),WallType.OPAQUE);
-         //TODO: Limit number of archways on wall?
-         Point2D endArchway;
-         if(archwayWall.getX1() == archwayWall.getX2()) {
-            endArchway = new Point2D.Double(archwayWall.getX2(), point.getY()-15);
+         //TODO: Limit number of doors on wall?
+         Point2D endDoor;
+         if(portalWall.getX1() == portalWall.getX2()) {
+            endDoor = new Point2D.Double(portalWall.getX2(), point.getY()-15);
             if(start.getY() < end.getY()) {
-              endArchway = new Point2D.Double(archwayWall.getX2(), point.getY()+15);
+               endDoor = new Point2D.Double(portalWall.getX2(), point.getY()+15);
             }
          } else {
-            endArchway = new Point2D.Double(point.getX()-15, archwayWall.getY2());
+            endDoor = new Point2D.Double(point.getX()-15, portalWall.getY2());
             if(start.getX() < end.getX()) {
-               endArchway = new Point2D.Double(point.getX()+15, archwayWall.getY2());
+               endDoor = new Point2D.Double(point.getX()+15, portalWall.getY2());
             }
          }
-         Wall newEndWall = new Wall(new Line2D.Double(endArchway, end),WallType.OPAQUE);
-         Wall archwaySeg = new Wall(new Line2D.Double(point, endArchway),WallType.ARCHWAY);
+         Wall newEndWall = new Wall(new Line2D.Double(endDoor, end),WallType.OPAQUE);
+         Wall doorSeg = new Wall(new Line2D.Double(point, endDoor),type);
          this.wallList.add(newStartWall);
-         this.wallList.add(archwaySeg);
+         this.wallList.add(doorSeg);
          this.wallList.add(newEndWall);
          for(Room room:roomsToUpdate){
-            room.walls.remove(archwayWallObj);
+            room.walls.remove(portalWallObj);
             ArrayList<Wall> newWallList = room.walls;
             newWallList.add(newStartWall);
-            newWallList.add(archwaySeg);
+            newWallList.add(doorSeg);
             newWallList.add(newEndWall);
             room.updatePath(newWallList);
          }
       } else {
-         if(flagerror ==1)
-         {
-            dialog("Archway cannot be placed here.");
+         String portalTypeForDialog = "Portal";
+         if(type.equals(WallType.CLOSEDDOOR)){
+            portalTypeForDialog = "Door";
+         }else if(type.equals(WallType.ARCHWAY)){
+            portalTypeForDialog = "Archway";
          }
-         else {
-            dialog("Archway must be placed on a wall.");
+         if(flagerror ==1) {
+            dialog(portalTypeForDialog+" cannot be placed here.");
+         } else {
+            dialog(portalTypeForDialog+" must be placed on a wall.");
          }
       }
    }
@@ -524,93 +544,7 @@ public abstract class MapLayer implements StateEditable, Serializable {
        this.selectedRoom = r;
 	}
 
-   public void placeDoor(Point point) throws Throwable
-   {
-      Line2D doorWall= new Line2D.Double();
-      ArrayList<Room> roomsToUpdate = new ArrayList<>();
-      Wall doorWallObj = null;
-      boolean flag = false;
-      int flagerror = 0;
-      for(int i = 0; i< this.wallList.size(); i++) {
-         if (this.wallList.get(i).getDistance(point) ==0) {
-            doorWallObj = this.wallList.get(i);
-            doorWall = doorWallObj.getLineRepresentation();
-            //System.out.println(Math.sqrt( ( ( archwayWall.getX2() - archwayWall.getX1() ) * ( doorWall.getX2() -
-            // doorWall.getX1() ) ) + ( ( doorWall.getY2() - doorWall.getY1() ) * ( doorWall.getY2() - doorWall.getY1() ) ) ));
-            if(Math.sqrt( ( ( doorWall.getX2() - doorWall.getX1() ) * ( doorWall.getX2() - doorWall.getX1() ) ) + ( ( doorWall.getY2() - doorWall.getY1() ) * ( doorWall.getY2() - doorWall.getY1() ) ) )>= 15){
-               if((doorWall.getX1() == doorWall.getX2())) {
-                  if ((Math.abs(point.getY() - doorWall.getY1()) > 15) && (Math.abs(point.getY() - doorWall.getY2()) > 15)) {
-                     this.wallList.remove(doorWallObj);
-                     for(Room room : RoomList.getInstance().list){
-                        if(room.walls.contains(doorWallObj)){
-                           roomsToUpdate.add(room);
-                        }
-                     }
-                     flag = true;
-                     break;
-                  } else {
-                     flagerror = 1;
-                  }
-               } else if(doorWall.getY1() == doorWall.getY2()) {
-                  if ((Math.abs(point.getX() - doorWall.getX1()) > 15) && (Math.abs(point.getX() - doorWall.getX2()) > 15)) {
-                     this.wallList.remove(doorWallObj);
-                     for(Room room : RoomList.getInstance().list){
-                        if(room.walls.contains(doorWallObj)){
-                           roomsToUpdate.add(room);
-                        }
-                     }
-                     flag = true;
-                     break;
-                  } else {
-                     flagerror = 1;
-                  }
-               } else {
-                  flagerror = 1;
-               }
-            } else {
-               flagerror = 1;
-            }
 
-         }
-      }
-      if(flag) {
-         Point2D start = doorWall.getP1();
-         Point2D end = doorWall.getP2();
-         Wall newStartWall = new Wall(new Line2D.Double(start, point),WallType.OPAQUE);
-         //TODO: Limit number of doors on wall?
-         Point2D endDoor;
-         if(doorWall.getX1() == doorWall.getX2()) {
-            endDoor = new Point2D.Double(doorWall.getX2(), point.getY()-15);
-            if(start.getY() < end.getY()) {
-               endDoor = new Point2D.Double(doorWall.getX2(), point.getY()+15);
-            }
-         } else {
-            endDoor = new Point2D.Double(point.getX()-15, doorWall.getY2());
-            if(start.getX() < end.getX()) {
-               endDoor = new Point2D.Double(point.getX()+15, doorWall.getY2());
-            }
-         }
-         Wall newEndWall = new Wall(new Line2D.Double(endDoor, end),WallType.OPAQUE);
-         Wall doorSeg = new Wall(new Line2D.Double(point, endDoor),WallType.CLOSEDDOOR);
-         this.wallList.add(newStartWall);
-         this.wallList.add(doorSeg);
-         this.wallList.add(newEndWall);
-         for(Room room:roomsToUpdate){
-            room.walls.remove(doorWallObj);
-            ArrayList<Wall> newWallList = room.walls;
-            newWallList.add(newStartWall);
-            newWallList.add(doorSeg);
-            newWallList.add(newEndWall);
-            room.updatePath(newWallList);
-         }
-      } else {
-         if(flagerror ==1) {
-            dialog("Door cannot be placed here.");
-         } else {
-            dialog("Door must be placed on a wall.");
-         }
-      }
-   }
 
     public ArrayList<Wall> getWallList()
     {
