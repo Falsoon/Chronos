@@ -65,6 +65,8 @@ public class MapPanel extends JPanel {
 	 * Changes state of MapPanel to draw Outline
 	 */
 	public void paintRooms() {
+		civ.stopDrawing();
+		civ.stopPlacingPlayer();
 		civ.outlining();
 	}
 
@@ -72,6 +74,8 @@ public class MapPanel extends JPanel {
 	 * Changes state of MapPanel to add walls
 	 */
 	public void paintWalls() {
+		civ.stopDrawing();
+		civ.stopPlacingPlayer();
 		civ.walling();
 	}
 
@@ -79,6 +83,8 @@ public class MapPanel extends JPanel {
 	 * Changes state of MapPanel to add doors
 	 */
 	public void paintDoors() {
+		civ.stopDrawing();
+		civ.stopPlacingPlayer();
 		civ.doorAdd();
 	}
 
@@ -86,7 +92,9 @@ public class MapPanel extends JPanel {
     * Changes state of MapPanel to add Archway
     */
    public void paintArchway() {
-      civ.archwayAdd();
+		civ.stopDrawing();
+		civ.stopPlacingPlayer();
+		civ.archwayAdd();
    }
 
 
