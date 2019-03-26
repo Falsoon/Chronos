@@ -143,14 +143,18 @@ public class RoomList implements StateEditable, Serializable {
       Room startingRoom = getPlayerCurrentRoom(playerStartingPosition);
       accessibleRooms.add(startingRoom);
 
-      ArrayList<Room> accessibleAdjacentRooms = startingRoom.getAccessibleAdjacentRooms();
+      ArrayList<Room> currentAccessibleRooms = startingRoom.getAccessibleRooms();
+      accessibleRooms.addAll(currentAccessibleRooms);
 
-      accessibleRooms.addAll(accessibleAdjacentRooms);
       Stack<Room> roomsToCheck = new Stack<>();
-      roomsToCheck.addAll(accessibleAdjacentRooms);
+      roomsToCheck.addAll(currentAccessibleRooms);
+
       while(roomsToCheck.size()>0){
          Room room = roomsToCheck.pop();
-         accessibleRooms.addAll(room.getAccessibleAdjacentRooms());
+         currentAccessibleRooms = room.getAccessibleRooms();
+         //add all rooms adjacent to the current room that haven't been checked yet
+         roomsToCheck.addAll(currentAccessibleRooms.stream().filter(accessibleRoom->!accessibleRooms.contains(accessibleRoom)).collect(Collectors.toCollection(HashSet::new)));
+         accessibleRooms.addAll(room.getAccessibleRooms());
       }
       return new ArrayList<>(accessibleRooms);
    }

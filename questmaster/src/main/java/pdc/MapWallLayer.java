@@ -27,15 +27,15 @@ public class MapWallLayer extends MapLayer {
          ArrayList<Room> accessibleRooms = RoomList.getInstance().getAccessibleRooms(playerStartingPosition);
          //black out inaccessible rooms
          ArrayList<Room> inaccessibleRooms = new ArrayList<>();
+         g2d.setColor(Color.BLACK);
          RoomList.getInstance().list.forEach(room -> {
             if (!accessibleRooms.contains(room)) {
                inaccessibleRooms.add(room);
-               g2d.setColor(Color.BLACK);
                g2d.fill(room.path);
             }
          });
-         //re-color any internal rooms of inaccessible rooms
-         inaccessibleRooms.forEach(ir-> RoomList.getInstance().list.forEach(room->{
+         //re-color any internal accessible rooms of inaccessible rooms
+         inaccessibleRooms.forEach(ir-> accessibleRooms.forEach(room->{
             if(!ir.equals(room)&&ir.contains(room)){
                g2d.setColor(Color.LIGHT_GRAY);
                g2d.fill(room.path);
@@ -57,12 +57,13 @@ public class MapWallLayer extends MapLayer {
          }));
          //then re-color any inaccessible rooms within current room
          ArrayList<Room> internalRooms = RoomList.getInstance().getPlayerCurrentRoom(playerStartingPosition).getContainedRooms();
-         for(Room room:internalRooms){
+         g2d.setColor(Color.BLACK);
+         internalRooms.forEach(room->{
             if(inaccessibleRooms.contains(room)){
-               g2d.setColor(Color.BLACK);
                g2d.fill(room.path);
             }
-         }
+         });
+
       }
 		if (selectedRoom != null) {
 			g2d.setColor(Color.RED);

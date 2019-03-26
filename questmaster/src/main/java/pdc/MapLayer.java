@@ -37,9 +37,9 @@ public abstract class MapLayer implements StateEditable, Serializable {
    protected ArrayList<Wall> wallList;
    private boolean firstClick;
    private Wall lastWall;
-   private UndoableEditSupport undoSupport;
-   private UndoManager undoManager;
-   private StateEdit stateEdit;
+   //private UndoableEditSupport undoSupport;
+   //private UndoManager undoManager;
+   //private StateEdit stateEdit;
    private Point lastPoint;
    private boolean wasFirstClick;
    private ArrayList<Room> candidateRoomsForTransparent;
@@ -450,8 +450,8 @@ public abstract class MapLayer implements StateEditable, Serializable {
     */
 	public boolean drawTransparentWalls(Point p) {
       this.walling = true;
-      firstClick = !firstClick;
       if (firstClick) {
+         firstClick = false;
          //check that the player has clicked on the boundary of a room
          for(int i = 0; i<RoomList.getInstance().list.size();i++){
             Room room = RoomList.getInstance().list.get(i);
@@ -461,7 +461,6 @@ public abstract class MapLayer implements StateEditable, Serializable {
          }
          if(candidateRoomsForTransparent.size()==0){
             walling = false;
-            firstClick = false;
          }else {
             lastPoint = p;
          }
@@ -479,7 +478,7 @@ public abstract class MapLayer implements StateEditable, Serializable {
                wallList.add(lastWall);
                detectRooms();
                stateEdit.end();
-               undoManager.addEdit(stateEdit);
+               //undoManager.addEdit(stateEdit);
             }else{
                walling = false;
             }

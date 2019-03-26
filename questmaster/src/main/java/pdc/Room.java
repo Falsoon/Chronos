@@ -6,6 +6,8 @@ import java.awt.*;
 import java.awt.geom.GeneralPath;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.stream.Collectors;
 
 /**
@@ -385,9 +387,9 @@ public class Room implements Serializable{
     * Get the accessible Rooms adjacent to this
     * An "accessible room" is defined here as a room that the player can walk to by going through portals and
     * transparent walls belonging to rooms within the map
-    * @return an ArrayList\<Room\> of Rooms adjacent to and accessible from this room
+    * @return an ArrayList\<Room\> of Rooms adjacent to and accessible from this
     */
-   public ArrayList<Room> getAccessibleAdjacentRooms() {
+   private ArrayList<Room> getAccessibleAdjacentRooms() {
       ArrayList<Room> adjacentRoomsWithTraversableWalls = getAdjacentRoomsAsList().stream().filter(
          Room::hasTraversableWall
       ).collect(Collectors.toCollection(ArrayList::new));
@@ -395,4 +397,76 @@ public class Room implements Serializable{
          room -> room.walls.stream().anyMatch(wall->wall.isTraversable()&&this.walls.contains(wall))
       ).collect(Collectors.toCollection(ArrayList::new));
    }
+
+    /**
+     * Get the accessible Rooms contained in this
+     * An "accessible room" is defined here as a room that the player can walk to by going through portals and
+     * transparent walls belonging to rooms within the map
+     * @return an ArrayList\<Room\> of Rooms contained within and accessible from this
+     */
+    private ArrayList<Room> getAccessibleInnerRooms(){
+        return RoomList.getInstance().list.stream().filter(room->{
+            //if room has a traversable Wall that is not shared with any of its adjacent Rooms, then that traversable
+            //Wall connects to the outer Room (this)
+            if(this.contains(room)&&room.hasTraversableWall()){
+                ArrayList<Wall> traversableWalls = room.walls.stream().filter(
+                        Wall::isTraversable
+                ).collect(Collectors.toCollection(ArrayList::new));
+                return hasOuterWall(traversableWalls);
+            }
+            return false;
+        }).collect(Collectors.toCollection(ArrayList::new));
+   }
+
+    /**
+     * Get the accessible Rooms that contain this
+     * An "accessible room" is defined here as a room that the player can walk to by going through portals and
+     * transparent walls belonging to rooms within the map
+     * @return an ArrayList\<Room\> of Rooms that contain and are accessible from this
+     */
+    private ArrayList<Room> getAccessibleOuterRooms() {
+        return RoomList.getInstance().list.stream().filter(room->{
+            //if this has a traversable Wall that is not shared with any of its adjacent Rooms, then that traversable
+            //Wall connects to the outer Room
+            if(room.contains(this)&&this.hasTraversableWall()){
+                ArrayList<Wall> traversableWalls = walls.stream().filter(
+                        Wall::isTraversable
+                ).collect(Collectors.toCollection(ArrayList::new));
+                return hasOuterWall(traversableWalls);
+            }
+            return false;
+        }).collect(Collectors.toCollection(ArrayList::new));
+    }
+
+    private boolean hasOuterWall(ArrayList<Wall> traversableWalls){
+        for(Wall traversableWall:traversableWalls){
+            boolean isOuterWall = true;
+            for(Room adjacentRoom:getAdjacentRoomsAsList()){
+                if(adjacentRoom.walls.contains(traversableWall)){
+                    isOuterWall = false;
+                    break;
+                }
+            }
+            if(isOuterWall){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Gets all rooms accessible from this
+     * An "accessible room" is defined here as a room that the player can walk to by going through portals and
+     * transparent walls belonging to rooms within the map
+     * @return an ArrayList\<Room\> containing all Rooms accessible from this
+     */
+   public ArrayList<Room> getAccessibleRooms(){
+       HashSet<Room> rooms = new HashSet<>();
+       rooms.addAll(getAccessibleAdjacentRooms());
+       rooms.addAll(getAccessibleInnerRooms());
+       rooms.addAll(getAccessibleOuterRooms());
+       return new ArrayList<>(rooms);
+   }
+
+
 }
