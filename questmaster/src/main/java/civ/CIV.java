@@ -10,6 +10,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 import javax.swing.undo.StateEdit;
@@ -110,9 +111,8 @@ public class CIV {
 	
 	public void save() {
 		String filename = "savedMap.ser";
-		for (Room room : RoomList.getInstance().list) {
-			map.rooms.add(room);
-		}
+		ArrayList<Room> roomsToAdd = new ArrayList<>(RoomList.getInstance().list);
+		map.rooms.addAll(roomsToAdd);
 		try 
 		{
 			FileOutputStream file = new FileOutputStream(filename);
