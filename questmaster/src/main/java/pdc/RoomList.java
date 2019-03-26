@@ -37,15 +37,19 @@ public class RoomList implements StateEditable, Serializable {
 	public Room getRoom(Point p) {
 		Room room = null;
 		Iterator<Room> itr = list.iterator();
-		boolean found = false;
-		while (!found && itr.hasNext()) {
+		Room minAreaRoom = null;
+		double minBoundingArea = Double.POSITIVE_INFINITY;
+		while (itr.hasNext()) {
 			room = itr.next();
-			found = room.contains(p);
+			if(room.contains(p)) {
+				double currBoundingArea = room.path.getBounds().getWidth() * room.path.getBounds().getHeight();
+				if (currBoundingArea < minBoundingArea) {
+					minAreaRoom = room;
+					minBoundingArea = currBoundingArea;
+				}
+			}
 		}
-		if (!found) {
-			room = null;
-		}
-		return room;
+		return minAreaRoom;
 	}
 
 	public void add(Room r) {
