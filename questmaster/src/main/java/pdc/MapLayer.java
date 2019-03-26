@@ -346,38 +346,42 @@ public abstract class MapLayer implements StateEditable, Serializable {
     */
    public void placeArchway(Point point) throws Throwable {
       Line2D archwayWall= new Line2D.Double();
-      Wall archwayWallObj = null;
-      ArrayList<Room> roomsToUpdate = new ArrayList<>();
       boolean flag = false;
       int flagerror = 0;
+      Wall archwayWallObj = null;
+      ArrayList<Room> roomsToUpdate = new ArrayList<>();
       for(int i = 0; i< this.wallList.size(); i++) {
          if (this.wallList.get(i).getDistance(point) ==0) {
             archwayWallObj = this.wallList.get(i);
             archwayWall = archwayWallObj.getLineRepresentation();
             if(Math.sqrt( ( ( archwayWall.getX2() - archwayWall.getX1() ) * ( archwayWall.getX2() - archwayWall.getX1() ) ) + ( ( archwayWall.getY2() - archwayWall.getY1() ) * ( archwayWall.getY2() - archwayWall.getY1() ) ) )>= 15) {
-               if((archwayWall.getX1() == archwayWall.getX2())  || (archwayWall.getY1() == archwayWall.getY2())) {
-                  this.wallList.remove(archwayWallObj);
-                  for(Room room : RoomList.getInstance().list){
-                     if(room.walls.contains(archwayWallObj)){
-                        roomsToUpdate.add(room);
-                     }
-                  }
-                  flag = true;
-                  break;
-               } else if(archwayWall.getY1() == archwayWall.getY2()) {
-                  if ((Math.abs(point.getX() - archwayWall.getX1()) > 15) && (Math.abs(point.getX() - archwayWall.getX2()) > 15)) {
+               if(archwayWall.getX1() == archwayWall.getX2()) {
+                  if ((Math.abs(point.getY() - archwayWall.getY1()) > 15) && (Math.abs(point.getY() - archwayWall.getY2()) > 15)) {
                      this.wallList.remove(archwayWallObj);
+                     for (Room room : RoomList.getInstance().list) {
+                        if (room.walls.contains(archwayWallObj)) {
+                           roomsToUpdate.add(room);
+                        }
+                     }
                      flag = true;
                      break;
+                  } else {
+                     flagerror = 1;
                   }
-                  else
-                  //TODO: why does this repeat
-                  {
-                     flagerror = 1; //corner
+               } else if(archwayWall.getY1() == archwayWall.getY2()){
+                  if ((Math.abs(point.getX() - archwayWall.getX1()) > 15) && (Math.abs(point.getX() - archwayWall.getX2()) > 15)) {
+                     this.wallList.remove(archwayWallObj);
+                     for (Room room : RoomList.getInstance().list) {
+                        if (room.walls.contains(archwayWallObj)) {
+                           roomsToUpdate.add(room);
+                        }
+                     }
+                     flag = true;
+                     break;
+                  } else {
+                     flagerror = 1;
                   }
-               }
-               else
-               {
+               } else {
                   flagerror = 1; //rectilinear
                }
             } else {
@@ -528,21 +532,21 @@ public abstract class MapLayer implements StateEditable, Serializable {
    {
       Line2D doorWall= new Line2D.Double();
       ArrayList<Room> roomsToUpdate = new ArrayList<>();
-      Wall doorWallObj = null;
       boolean flag = false;
       int flagerror = 0;
+      Wall doorWallObj = null;
       for(int i = 0; i< this.wallList.size(); i++) {
          if (this.wallList.get(i).getDistance(point) ==0) {
             doorWallObj = this.wallList.get(i);
             doorWall = doorWallObj.getLineRepresentation();
             //System.out.println(Math.sqrt( ( ( archwayWall.getX2() - archwayWall.getX1() ) * ( doorWall.getX2() -
             // doorWall.getX1() ) ) + ( ( doorWall.getY2() - doorWall.getY1() ) * ( doorWall.getY2() - doorWall.getY1() ) ) ));
-            if(Math.sqrt( ( ( doorWall.getX2() - doorWall.getX1() ) * ( doorWall.getX2() - doorWall.getX1() ) ) + ( ( doorWall.getY2() - doorWall.getY1() ) * ( doorWall.getY2() - doorWall.getY1() ) ) )>= 15){
-               if((doorWall.getX1() == doorWall.getX2())) {
+            if(Math.sqrt( ( ( doorWall.getX2() - doorWall.getX1() ) * ( doorWall.getX2() - doorWall.getX1() ) ) + ( ( doorWall.getY2() - doorWall.getY1() ) * ( doorWall.getY2() - doorWall.getY1() ) ) )>= 15) {
+               if (doorWall.getX1() == doorWall.getX2()) {
                   if ((Math.abs(point.getY() - doorWall.getY1()) > 15) && (Math.abs(point.getY() - doorWall.getY2()) > 15)) {
                      this.wallList.remove(doorWallObj);
-                     for(Room room : RoomList.getInstance().list){
-                        if(room.walls.contains(doorWallObj)){
+                     for (Room room : RoomList.getInstance().list) {
+                        if (room.walls.contains(doorWallObj)) {
                            roomsToUpdate.add(room);
                         }
                      }
@@ -551,11 +555,11 @@ public abstract class MapLayer implements StateEditable, Serializable {
                   } else {
                      flagerror = 1;
                   }
-               } else if(doorWall.getY1() == doorWall.getY2()) {
+               } else if(doorWall.getY1() == doorWall.getY2()){
                   if ((Math.abs(point.getX() - doorWall.getX1()) > 15) && (Math.abs(point.getX() - doorWall.getX2()) > 15)) {
                      this.wallList.remove(doorWallObj);
-                     for(Room room : RoomList.getInstance().list){
-                        if(room.walls.contains(doorWallObj)){
+                     for (Room room : RoomList.getInstance().list) {
+                        if (room.walls.contains(doorWallObj)) {
                            roomsToUpdate.add(room);
                         }
                      }
@@ -564,13 +568,10 @@ public abstract class MapLayer implements StateEditable, Serializable {
                   } else {
                      flagerror = 1;
                   }
-               } else {
+               }else {
                   flagerror = 1;
                }
-            } else {
-               flagerror = 1;
             }
-
          }
       }
       if(flag) {
