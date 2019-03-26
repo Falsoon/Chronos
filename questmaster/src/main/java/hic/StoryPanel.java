@@ -21,6 +21,8 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Label;
+import javafx.event.*;
+import javafx.scene.input.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -56,7 +58,8 @@ public class StoryPanel extends JPanel {
                 ScrollPane pane = new ScrollPane(root);
                 pane.setFitToWidth(true);
                 Scene scene = new Scene(pane);
-                scene.setOnKeyPressed(event->{
+
+                scene.addEventFilter(KeyEvent.KEY_PRESSED, event->{
                     switch (event.getCode()) {
                         case A:
                         case LEFT:
@@ -81,6 +84,7 @@ public class StoryPanel extends JPanel {
                         default:
                             break;
                     }
+                    event.consume();
                 });
                 jfxPanel.setScene(scene);
             }
