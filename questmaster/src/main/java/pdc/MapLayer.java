@@ -355,36 +355,42 @@ public abstract class MapLayer implements StateEditable, Serializable {
             archwayWallObj = this.wallList.get(i);
             archwayWall = archwayWallObj.getLineRepresentation();
             if(Math.sqrt( ( ( archwayWall.getX2() - archwayWall.getX1() ) * ( archwayWall.getX2() - archwayWall.getX1() ) ) + ( ( archwayWall.getY2() - archwayWall.getY1() ) * ( archwayWall.getY2() - archwayWall.getY1() ) ) )>= 15) {
-               if((archwayWall.getX1() == archwayWall.getX2())  || (archwayWall.getY1() == archwayWall.getY2())) {
-                  this.wallList.remove(archwayWallObj);
-                  for(Room room : RoomList.getInstance().list){
-                     if(room.walls.contains(archwayWallObj)){
-                        roomsToUpdate.add(room);
+               if((archwayWall.getX1() == archwayWall.getX2())) {
+                  if ((Math.abs(point.getY() - archwayWall.getY1()) > 15) && (Math.abs(point.getY() - archwayWall.getY2()) > 15)) {
+                     this.wallList.remove(archwayWallObj);
+                     for(Room room : RoomList.getInstance().list){
+                        if(room.walls.contains(archwayWallObj)){
+                           roomsToUpdate.add(room);
+                        }
                      }
+                     flag = true;
+                     break;
+                  } else {
+                     flagerror = 1;
                   }
-                  flag = true;
-                  break;
                } else if(archwayWall.getY1() == archwayWall.getY2()) {
                   if ((Math.abs(point.getX() - archwayWall.getX1()) > 15) && (Math.abs(point.getX() - archwayWall.getX2()) > 15)) {
                      this.wallList.remove(archwayWallObj);
+                     for(Room room : RoomList.getInstance().list){
+                        if(room.walls.contains(archwayWallObj)){
+                           roomsToUpdate.add(room);
+                        }
+                     }
                      flag = true;
                      break;
+                  } else {
+                     flagerror = 1;
                   }
-                  else
-                  //TODO: why does this repeat
-                  {
-                     flagerror = 1; //corner
-                  }
+               } else {
+                  flagerror = 1;
+               }
                }
                else
                {
                   flagerror = 1; //rectilinear
                }
-            } else {
-               throw new Throwable("Archway must be placed on a large enough wall");
             }
 
-         }
       }
       if(flag) {
          Point2D start = archwayWall.getP1();
@@ -423,6 +429,7 @@ public abstract class MapLayer implements StateEditable, Serializable {
          }
          else {
             dialog("Archway must be placed on a wall.");
+
          }
       }
    }
