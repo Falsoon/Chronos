@@ -35,6 +35,8 @@ public class StoryPanel extends JPanel {
                 printDetails(mapPanel.getRoomName(), mapPanel.getRoomDesc(), t);
                 VBox root = new VBox();
                 root.getChildren().add(t);
+                JPanel topBar = new PlayerTopBar().getMainJPanel();
+                root.getChildren().add(topBar);
                 root.setPrefSize(400, 400);
                 t.setTextAlignment(TextAlignment.LEFT);
                 t.setWrappingWidth(375);
