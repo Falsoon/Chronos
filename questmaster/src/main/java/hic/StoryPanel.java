@@ -1,32 +1,16 @@
 package hic;
 
-import java.awt.BorderLayout;
-import java.awt.event.ActionEvent;
-import java.net.URL;
-
-import javax.sound.sampled.Control;
-import javax.swing.AbstractAction;
-import javax.swing.JPanel;
-import javax.swing.JTextArea;
-import javax.swing.KeyStroke;
-
-
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
 import javafx.scene.Scene;
-import javafx.scene.*;
-import javafx.scene.text.*;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.control.Label;
-import javafx.event.*;
-import javafx.scene.input.*;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 
 import javax.swing.*;
 import java.awt.*;
-import java.net.URL;
 
 /**
  * Presenter class used to update playerWindow and player data.
@@ -35,16 +19,15 @@ import java.net.URL;
 public class StoryPanel extends JPanel {
 	private final JFXPanel jfxPanel = new JFXPanel();
 	private MapPanel mapPanel;
-    private JPanel disPanel = new JPanel();
-	
-	public StoryPanel(MapPanel mp) {
+	private JPanel disPanel = new JPanel();
+
+   public StoryPanel(MapPanel mp) {
 		mapPanel = mp;		
 		createScene();
 		this.add(jfxPanel, BorderLayout.CENTER);
 		this.add(disPanel, BorderLayout.SOUTH);
 	}
 	private void createScene() {
-
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
