@@ -1,7 +1,5 @@
 package pdc;
 
-import javafx.geometry.Point2D;
-
 import java.awt.*;
 import java.awt.geom.GeneralPath;
 import java.io.Serializable;
@@ -298,9 +296,9 @@ public class Room implements Serializable{
    }
 
 	private String getDirection(Room r) {
-		Point2D roomCenter, otherCenter;
-		roomCenter = new Point2D(this.path.getBounds2D().getCenterX(), this.path.getBounds2D().getCenterY());
-		otherCenter = new Point2D(r.path.getBounds2D().getCenterX(), r.path.getBounds2D().getCenterY());
+		Point roomCenter, otherCenter;
+		roomCenter = new Point((int)this.path.getBounds2D().getCenterX(), (int)this.path.getBounds2D().getCenterY());
+		otherCenter = new Point((int)r.path.getBounds2D().getCenterX(), (int)r.path.getBounds2D().getCenterY());
 		double angle = Math.toDegrees(
 				Math.atan((otherCenter.getY() - roomCenter.getY()) / (otherCenter.getX() - roomCenter.getX())));
 		if (otherCenter.getX() - roomCenter.getX() >= 0) {

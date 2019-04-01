@@ -1,14 +1,5 @@
 package hic;
 
-import javafx.application.Platform;
-import javafx.embed.swing.JFXPanel;
-import javafx.scene.Scene;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.VBox;
-import javafx.scene.text.Text;
-import javafx.scene.text.TextAlignment;
-
 import javax.swing.*;
 import java.awt.*;
 
@@ -17,66 +8,43 @@ import java.awt.*;
  */
 @SuppressWarnings("serial")
 public class StoryPanel extends JPanel {
-	private final JFXPanel jfxPanel = new JFXPanel();
+	private final JPanel jPanel;
 	private MapPanel mapPanel;
-	private JPanel disPanel = new JPanel();
+	private JTextArea textArea;
 
    public StoryPanel(MapPanel mp) {
-		mapPanel = mp;		
-		createScene();
-		this.add(jfxPanel, BorderLayout.CENTER);
+		mapPanel = mp;
+		jPanel = new JPanel();
+		jPanel.setLayout(new BoxLayout(jPanel,BoxLayout.PAGE_AXIS));
+		initialize();
+		this.add(jPanel, BorderLayout.CENTER);
+		JPanel disPanel = new JPanel();
 		this.add(disPanel, BorderLayout.SOUTH);
 	}
-	private void createScene() {
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                Text t = new Text("Begin exploring with WASD.");
-                printDetails(mapPanel.getRoomName(), mapPanel.getRoomDesc(), t);
-                VBox root = new VBox();
-                root.getChildren().add(t);
-                JPanel topBar = new PlayerTopBar().getMainJPanel();
-                root.getChildren().add(topBar);
-                root.setPrefSize(400, 400);
-                t.setTextAlignment(TextAlignment.LEFT);
-                t.setWrappingWidth(375);
-                ScrollPane pane = new ScrollPane(root);
-                pane.setFitToWidth(true);
-                Scene scene = new Scene(pane);
 
-                scene.addEventFilter(KeyEvent.KEY_PRESSED, event->{
-                    switch (event.getCode()) {
-                        case A:
-                        case LEFT:
-                            mapPanel.goLeft();
-                            printDetails(mapPanel.getRoomName(), mapPanel.getRoomDesc(), t);
-                            break;
-                        case D:
-                        case RIGHT:
-                            mapPanel.goRight();
-                            printDetails(mapPanel.getRoomName(), mapPanel.getRoomDesc(), t);
-                            break;
-                        case W:
-                        case UP:
-                            mapPanel.goUp();
-                            printDetails(mapPanel.getRoomName(), mapPanel.getRoomDesc(), t);
-                            break;
-                        case S:
-                        case DOWN:
-                            mapPanel.goDown();
-                            printDetails(mapPanel.getRoomName(), mapPanel.getRoomDesc(), t);
-                            break;
-                        default:
-                            break;
-                    }
-                    event.consume();
-                });
-                jfxPanel.setScene(scene);
-            }
+    private void initialize() {
+        textArea = new JTextArea("Begin exploring with WASD.");
+        printDetails(mapPanel.getRoomName(), mapPanel.getRoomDesc());
 
-            private void printDetails(String name, String desc, Text t) {
-                t.setText(name + "\n\n" + desc);
-            }
-        });
+        JPanel root = new JPanel();
+        root.setLayout(new BoxLayout(root,BoxLayout.PAGE_AXIS));
+
+        JPanel topBar = new PlayerTopBar().getMainJPanel();
+        root.add(topBar,BorderLayout.PAGE_START);
+
+        textArea.setLineWrap(true);
+        textArea.setEditable(false);
+        textArea.setSize(400,400);
+        textArea.setFocusable(false);
+        root.add(textArea,BorderLayout.PAGE_END);
+
+        root.setSize(400,400);
+
+        JScrollPane pane = new JScrollPane(root);
+        jPanel.add(pane);
+    }
+
+    public void printDetails(String name, String desc) {
+        textArea.setText(name + "\n\n" + desc);
     }
 }
