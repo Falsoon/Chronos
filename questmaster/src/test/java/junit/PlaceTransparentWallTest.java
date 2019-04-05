@@ -18,6 +18,7 @@ public class PlaceTransparentWallTest {
    @BeforeEach
    public void setup() {
       civ = new CIV();
+      civ.map.mapLayer.throwAlerts = false;
    }
 
    @AfterEach
@@ -40,13 +41,7 @@ public class PlaceTransparentWallTest {
 
       civ.mousePressed(point1, false, true, false);
       civ.mousePressed(point2, false, true, false);
-
-      civ.mousePressed(point2, false, true, false);
       civ.mousePressed(point3, false, true, false);
-
-      civ.mousePressed(point3, false, true, false);
-      civ.mousePressed(point4, false, true, false);
-
       civ.mousePressed(point4, false, true, false);
       civ.mousePressed(point1, false, true, false);
 
@@ -86,13 +81,7 @@ public class PlaceTransparentWallTest {
 
       civ.mousePressed(point1, false, true, false);
       civ.mousePressed(point2, false, true, false);
-
-      civ.mousePressed(point2, false, true, false);
       civ.mousePressed(point3, false, true, false);
-
-      civ.mousePressed(point3, false, true, false);
-      civ.mousePressed(point4, false, true, false);
-
       civ.mousePressed(point4, false, true, false);
       civ.mousePressed(point1, false, true, false);
 
@@ -110,7 +99,7 @@ public class PlaceTransparentWallTest {
       civ.mousePressed(point6,false,true, false);
 
       assertEquals(1, civ.getRoomList().size());
-      assertFalse(civ.map.isCreating());
+      assertTrue(civ.map.isCreating());
       assertTrue(civ.map.mapLayer.pointList.contains(point1));
       assertTrue(civ.map.mapLayer.pointList.contains(point2));
       assertTrue(civ.map.mapLayer.pointList.contains(point3));
@@ -133,13 +122,7 @@ public class PlaceTransparentWallTest {
 
       civ.mousePressed(point1, false, true, false);
       civ.mousePressed(point2, false, true, false);
-
-      civ.mousePressed(point2, false, true, false);
       civ.mousePressed(point3, false, true, false);
-
-      civ.mousePressed(point3, false, true, false);
-      civ.mousePressed(point4, false, true, false);
-
       civ.mousePressed(point4, false, true, false);
       civ.mousePressed(point1, false, true, false);
 
@@ -156,7 +139,6 @@ public class PlaceTransparentWallTest {
       civ.mousePressed(point6,false,true, false);
 
       assertEquals(1, civ.getRoomList().size());
-      assertFalse(civ.map.isCreating());
       assertTrue(civ.map.mapLayer.pointList.contains(point1));
       assertTrue(civ.map.mapLayer.pointList.contains(point2));
       assertTrue(civ.map.mapLayer.pointList.contains(point3));
@@ -179,13 +161,7 @@ public class PlaceTransparentWallTest {
 
       civ.mousePressed(point1, false, true, false);
       civ.mousePressed(point2, false, true, false);
-
-      civ.mousePressed(point2, false, true, false);
       civ.mousePressed(point3, false, true, false);
-
-      civ.mousePressed(point3, false, true, false);
-      civ.mousePressed(point4, false, true, false);
-
       civ.mousePressed(point4, false, true, false);
       civ.mousePressed(point1, false, true, false);
 
@@ -202,7 +178,6 @@ public class PlaceTransparentWallTest {
       civ.mousePressed(point6,false,true, false);
 
       assertEquals(1, civ.getRoomList().size());
-      assertFalse(civ.map.isCreating());
       assertTrue(civ.map.mapLayer.pointList.contains(point1));
       assertTrue(civ.map.mapLayer.pointList.contains(point2));
       assertTrue(civ.map.mapLayer.pointList.contains(point3));
@@ -223,7 +198,6 @@ public class PlaceTransparentWallTest {
       civ.mousePressed(point2, false, true, false);
 
       assertTrue(civ.getRoomList().isEmpty());
-      assertFalse(civ.map.isCreating());
       assertFalse(civ.map.mapLayer.pointList.contains(point1));
       assertFalse(civ.map.mapLayer.pointList.contains(point2));
    }

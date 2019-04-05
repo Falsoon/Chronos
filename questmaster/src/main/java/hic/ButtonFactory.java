@@ -1,211 +1,209 @@
 package hic;
 
-import civ.FormCiv;
-
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
 /**
  * This class is used to encapsulate the creation of buttons and the logic behind
  * action listeners of each button 
  * 
+ * @author Ryan Wires - I done fixed it good
  */
-public class ButtonFactory implements ActionListener  {
+public class ButtonFactory {
 	
 	private AuthorWindow authorWindow;
-	public JButton start, placeStart, undoButton, btnClear, addRoombtn1, addRoombtn2;
+	public RoomDescInsert rdi;
+	public JButton btnPlay, btnPlayer, btnUndo, btnClear;
+	public JButton btnSave, btnRestore;
+	public JToggleButton btnOpaqueWalls, btnTransWalls, btnArchways, btnProp, btnDoors, btnDelete;
 	
 	public ButtonFactory(AuthorWindow aw) {
 		this.authorWindow = aw;
+		rdi = new RoomDescInsert(aw);
 		initialize();
 	}
 	
 	private void initialize() {
+
 		authorWindow.authorPanel = new AuthorPanel();
-		JComboBox<String> authorModeBox = new JComboBox<String>(authorWindow.authorModes);
-		authorModeBox.addActionListener(e -> {
-         if (authorWindow.modeSelected == 0) {
-            authorModeBox.removeItemAt(0);
-         }
-         @SuppressWarnings("unchecked")
-         JComboBox<String> cb = (JComboBox<String>) e.getSource();
-         switch (cb.getSelectedItem().toString()) {
-         case "Author Room descriptions":
-            authorWindow.modeSelected = 1;
-            setMode1();
-            authorWindow.authorPanel.update();
-            break;
-         case "Draw Rooms":
-            authorWindow.modeSelected = 2;
-            setMode2();
-            authorWindow.authorPanel.update();
-            break;
-         }
-      });
-		authorWindow.authorPanel.add(authorModeBox);
 
-		authorWindow.wallCombo = new JComboBox<>(authorWindow.wallTypes);
-		authorWindow.wallCombo.addActionListener(this);
-		authorWindow.wallCombo.setVisible(false);
-		authorWindow.authorPanel.add(authorWindow.wallCombo);
+		btnOpaqueWalls = new JToggleButton("Opaque Walls");
+		btnOpaqueWalls.setAlignmentX(Component.CENTER_ALIGNMENT);
+		btnTransWalls = new JToggleButton("Transparent Walls");
+		btnTransWalls.setAlignmentX(Component.CENTER_ALIGNMENT);
+		btnArchways = new JToggleButton("Archways");
+		btnArchways.setAlignmentX(Component.CENTER_ALIGNMENT);
+		btnDoors = new JToggleButton("Doors");
+		btnDoors.setAlignmentX(Component.CENTER_ALIGNMENT);
+		btnProp = new JToggleButton("Set Properties");
+		btnProp.setAlignmentX(Component.CENTER_ALIGNMENT);
+		btnDelete = new JToggleButton("Delete Walls/Passageways");
+		btnDelete.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-		authorWindow.portalCombo = new JComboBox<>(authorWindow.portalTypes);
-		authorWindow.portalCombo.addActionListener(this);
-		authorWindow.authorPanel.add(authorWindow.portalCombo);
-		authorWindow.portalCombo.setVisible(false);
+		btnPlayer = new JButton("Set Start Point");
+		btnPlayer.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-		// button resets the map
+		JSeparator line1 = new JSeparator(SwingConstants.HORIZONTAL);
+
+		JSeparator line2 = new JSeparator(SwingConstants.HORIZONTAL);
+
+		btnUndo = new JButton("Undo");
+		btnUndo.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+		btnSave = new JButton("Save Map");
+		btnSave.setAlignmentX(Component.CENTER_ALIGNMENT);
+		btnRestore = new JButton("Restore Map");
+		btnRestore.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+		JSeparator line3 = new JSeparator(SwingConstants.HORIZONTAL);
+
+		btnPlay = new JButton("Play");
+		btnPlay.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+		JSeparator line4 = new JSeparator(SwingConstants.HORIZONTAL);
+
 		btnClear = new JButton("Clear");
-		btnClear.addActionListener(e -> {
-         authorWindow.mapPanel.clear();
-         authorWindow.authorPanel.Rooms.setSelectedIndex(0);
-         authorWindow.wallCombo.setSelectedItem(authorWindow.wallTypes[0]);
-         authorWindow.authorPanel.grabFocus();
-      });
+		btnClear.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+		authorWindow.authorPanel.add(btnOpaqueWalls);
+		authorWindow.authorPanel.add(btnTransWalls);
+		authorWindow.authorPanel.add(btnArchways);
+		authorWindow.authorPanel.add(btnDoors);
+		authorWindow.authorPanel.add(btnProp);
+		authorWindow.authorPanel.add(btnPlayer);
+		authorWindow.authorPanel.add(btnDelete);
+		authorWindow.authorPanel.add(line1);
+
+		authorWindow.authorPanel.add(rdi);
+
+		authorWindow.authorPanel.add(line2);
+		//authorWindow.authorPanel.add(btnUndo);
+		authorWindow.authorPanel.add(btnSave);
+		authorWindow.authorPanel.add(btnRestore);
+		authorWindow.authorPanel.add(line3);
+		authorWindow.authorPanel.add(btnPlay);
+		authorWindow.authorPanel.add(line4);
 		authorWindow.authorPanel.add(btnClear);
-		btnClear.setVisible(false);
 
-		// button allows author to undo last action.
-		// ctrl+z is preferred design
-		undoButton = new JButton("Undo");
-		undoButton.addActionListener(e -> {
-         authorWindow.mapPanel.undo();
-         authorWindow.authorPanel.grabFocus();
-      });
-		authorWindow.authorPanel.add(undoButton);
-		undoButton.setVisible(false);
+		ButtonGroup btnList = new ButtonGroup();
+		btnList.add(btnOpaqueWalls);
+		btnList.add(btnTransWalls);
+		btnList.add(btnArchways);
+		btnList.add(btnDoors);
+		btnList.add(btnProp);
+		btnList.add(btnDelete);
 
-		placeStart = new JButton("Place Start Point");
-		placeStart.addActionListener(e -> authorWindow.mapPanel.placePlayerStart());
-		authorWindow.authorPanel.add(placeStart);
-		placeStart.setVisible(false);
+		btnOpaqueWalls.addItemListener(e -> {
+			if (e.getStateChange() == ItemEvent.SELECTED) {
+				//authorWindow.mapPanel.stopDrawing();
+				//authorWindow.mapPanel.stopPlacingPlayer();
+				authorWindow.mapPanel.paintRooms();
+			}
+		});
 
-		start = new JButton("Start Playing");
-		start.addActionListener(e -> {
+		btnTransWalls.addItemListener(e -> {
+			if (e.getStateChange() == ItemEvent.SELECTED) {
+				//authorWindow.mapPanel.stopDrawing();
+				//authorWindow.mapPanel.stopPlacingPlayer();
+				authorWindow.mapPanel.paintWalls();
+			}
+		});
+
+		btnArchways.addItemListener(e -> {
+			if (e.getStateChange() == ItemEvent.SELECTED) {
+				//authorWindow.mapPanel.stopDrawing();
+				//authorWindow.mapPanel.stopPlacingPlayer();
+				authorWindow.mapPanel.paintArchway();
+			}
+		});
+
+		btnArchways.addItemListener(e -> {
+			if (e.getStateChange() == ItemEvent.SELECTED) {
+				//authorWindow.mapPanel.stopDrawing();
+				//authorWindow.mapPanel.stopPlacingPlayer();
+				authorWindow.mapPanel.paintArchway();
+			}
+		});
+
+		btnDoors.addItemListener(e -> {
+			if (e.getStateChange() == ItemEvent.SELECTED) {
+				//authorWindow.mapPanel.stopDrawing();
+				//authorWindow.mapPanel.stopPlacingPlayer();
+				authorWindow.mapPanel.paintDoors();
+			}
+		});
+
+		btnProp.addItemListener(e -> {
+			if (e.getStateChange() == ItemEvent.SELECTED) {
+				authorWindow.mapPanel.stopDrawing();
+				authorWindow.mapPanel.stopPlacingPlayer();
+			}
+		});
+
+		btnDelete.addItemListener(e->{
+			if (e.getStateChange() == ItemEvent.SELECTED) {
+				authorWindow.mapPanel.stopDrawing();
+				authorWindow.mapPanel.stopPlacingPlayer();
+				authorWindow.mapPanel.delete();
+			}
+		});
+
+		btnPlayer.addActionListener(e -> {
+			btnProp.doClick();
+			authorWindow.mapPanel.placePlayerStart();
+
+		});
+
+		btnUndo.addActionListener(e -> {
+        	authorWindow.mapPanel.undo();
+        	authorWindow.authorPanel.grabFocus();
+		});
+
+		btnSave.addActionListener(e -> {
+			authorWindow.mapPanel.save();
+			authorWindow.civ.setSelectedRoom(null);
+			authorWindow.authorPanel.grabFocus();
+			btnProp.doClick();
+});
+
+		btnRestore.addActionListener(e -> {
+			authorWindow.mapPanel.restore();
+			authorWindow.civ.setSelectedRoom(null);
+			authorWindow.authorPanel.grabFocus();
+			btnProp.doClick();
+		});
+
+		btnPlay.addActionListener(e -> {
          if (authorWindow.mapPanel.placedPlayer()) {
             EventQueue.invokeLater(() -> {
                try {
                   authorWindow.mapPanel.civ.stopDrawing();
-                  authorWindow.mapPanel.setPlayerMode(true);
+				  authorWindow.mapPanel.setPlayerMode(true);
+				  authorWindow.mapPanel.save();
                   PlayerWindow window = new PlayerWindow(authorWindow.mapPanel);
                   window.frame.setVisible(true);
-                  AuthorWindow.civ.setSelectedRoom(null);
-                  authorWindow.mapPanel.repaint();
+                  authorWindow.civ.setSelectedRoom(null);
+				  authorWindow.mapPanel.repaint();
 
                } catch (Exception e13) {
                   e13.printStackTrace();
                }
             });
-            authorWindow.mapPanel.startGame();
-            authorWindow.frame.setVisible(false);
+			authorWindow.mapPanel.startGame();
+			authorWindow.frame.setVisible(false);
          }
-      });
-		authorWindow.authorPanel.add(start);
-		start.setVisible(false);
+		});
 
-		authorWindow.authorPanel.Rooms = new JComboBox<>();
-		authorWindow.authorPanel.Rooms.addActionListener(e -> {
-         @SuppressWarnings("unchecked")
-         JComboBox<String> cb = (JComboBox<String>) e.getSource();
-         if (cb.getItemCount() > 1) {
-            final String str = (String) cb.getSelectedItem();
-            FormCiv fc = new FormCiv();
-            if (!"Select Room".equals(str)) {
-               if (authorWindow.modeSelected == 1) {
-                  EventQueue.invokeLater(() -> {
-                     try {
-                        fc.setRoomReference(str);
-                        FormWindow window = new FormWindow(fc,
-                              fc.getRoomDrawn(str));
-                        window.frame.setVisible(true);
-                     } catch (Exception e1) {
-                        e1.printStackTrace();
-                     }
-                  });
-               }
-               authorWindow.mapPanel.setSelectedRoom(str);
-            }else {
-               authorWindow.mapPanel.setSelectedRoom(null);
-            }
-            authorWindow.mapPanel.repaint();
-         }
-      });
-		authorWindow.authorPanel.add(authorWindow.authorPanel.Rooms);
-
-		addRoombtn1 = new JButton("Add Room");
-		authorWindow.authorPanel.add(addRoombtn1);
-		addRoombtn2 = new JButton("Add Room");
-		authorWindow.authorPanel.add(addRoombtn2);
-		addRoombtn2.setVisible(false);
-		addRoombtn1.setVisible(false);
-		addRoombtn1.addActionListener(e -> EventQueue.invokeLater(() -> {
-         try {
-            FormWindow window = new FormWindow(new FormCiv(), false);
-            window.frame.setVisible(true);
-         } catch (Exception e12) {
-            e12.printStackTrace();
-         }
-      }));
-		addRoombtn2.addActionListener(e -> {
-         String str = (String) authorWindow.authorPanel.Rooms.getSelectedItem();
-         if ("Select Room".equals(str)) {
-            authorWindow.mapPanel.paintRooms();
-         } else {
-            authorWindow.mapPanel.drawRoom(str);
-         }
-      });
+		btnClear.addActionListener(e -> {
+			int opt = JOptionPane.showConfirmDialog(null, "Are you sure you want to clear?", "Clear",
+					JOptionPane.YES_NO_OPTION);
+			if (opt == JOptionPane.YES_OPTION) {
+				btnProp.doClick();
+				authorWindow.mapPanel.clear();
+				// authorWindow.authorPanel.Rooms.setSelectedIndex(0);
+				// authorWindow.wallCombo.setSelectedItem(authorWindow.wallTypes[0]);
+				authorWindow.authorPanel.grabFocus();
+			}
+		});
 	}
-	
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		@SuppressWarnings("unchecked")
-		JComboBox<String> cb = (JComboBox<String>) e.getSource();
-		switch (cb.getSelectedItem().toString()) {
-		case "Opaque":
-			authorWindow.mapPanel.paintRooms();
-			break;
-		case "Transparent":
-			authorWindow.mapPanel.paintWalls();
-			break;
-		case "Walls":
-			authorWindow.mapPanel.stopDrawing();
-			break;
-		case "Doors":
-			authorWindow.mapPanel.paintDoors();
-			break;
-		case "Archway":
-         authorWindow.mapPanel.paintArchway();
-         break;
-		case "Portals":
-			authorWindow.mapPanel.stopDrawing();
-			break;
-		default:
-			System.err.println("ComboBox Error");
-		}
-		authorWindow.authorPanel.update();
-	}
-	
-	public void setMode2() {
-		start.setVisible(true);
-		placeStart.setVisible(true);
-		undoButton.setVisible(true);
-		btnClear.setVisible(true);
-		authorWindow.wallCombo.setVisible(true);
-		authorWindow.portalCombo.setVisible(true);
-		addRoombtn1.setVisible(false);
-		addRoombtn2.setVisible(true);
-	}
-
-	public void setMode1() {
-		start.setVisible(false);
-		placeStart.setVisible(false);
-		undoButton.setVisible(false);
-		btnClear.setVisible(false);
-		authorWindow.wallCombo.setVisible(false);
-		authorWindow.portalCombo.setVisible(false);
-		addRoombtn2.setVisible(false);
-		addRoombtn1.setVisible(true);
-	}
-	
 }
