@@ -32,7 +32,6 @@ class ClearAndUndoDrawingActionTC04Test {
 	@Test
 	void testUndoLastWallOfCompleteRoom() throws Throwable {
 		bf = new ButtonFactory(aw);
-		bf.setMode2();
 		
 		Point p0 = new Point(15, 15);
 		Point p1 = new Point(15, 75);
@@ -59,7 +58,6 @@ class ClearAndUndoDrawingActionTC04Test {
 	@Test
 	void testUndoSinglePoint() throws Throwable {
 		bf = new ButtonFactory(aw);
-		bf.setMode2();
 		
 		civ.outlining();
 		civ.mousePressed(new Point(50, 50), true, true,false);
@@ -73,7 +71,6 @@ class ClearAndUndoDrawingActionTC04Test {
 	@Test
 	void testUndoLastWallOfIncompleteRoom() throws Throwable {
 		bf = new ButtonFactory(aw);
-		bf.setMode2();
 		
 		Point p0 = new Point(50, 50);
 		Point p1 = new Point(87, 95);
@@ -96,7 +93,6 @@ class ClearAndUndoDrawingActionTC04Test {
 	@Test
 	void testUndoOnEmptyMap() {
 		bf = new ButtonFactory(aw);
-		bf.setMode2();
 		
 		assertEquals(false, civ.undo());
 	}
@@ -104,7 +100,6 @@ class ClearAndUndoDrawingActionTC04Test {
 	@Test
 	void testUndoPlayerStartPt() throws Throwable {
 		bf = new ButtonFactory(aw);
-		bf.setMode2();
 		
 		Point p0 = new Point(50, 50);
 		Point p1 = new Point(87, 95);
@@ -132,7 +127,6 @@ class ClearAndUndoDrawingActionTC04Test {
 	@Test
 	void testClearOnEmptyMap() {
 		bf = new ButtonFactory(aw);
-		bf.setMode2();
 		
 		assertEquals(true, civ.clear());
 	}
@@ -140,7 +134,6 @@ class ClearAndUndoDrawingActionTC04Test {
 	@Test 
 	void testClearMapWithCompleteRoom() throws Throwable {
 		bf = new ButtonFactory(aw);
-		bf.setMode2();
 		
 		Point p0 = new Point(50, 50);
 		Point p1 = new Point(87, 95);
@@ -164,7 +157,6 @@ class ClearAndUndoDrawingActionTC04Test {
 	@Test
 	void testClearMapWithIncompleteRoom() throws Throwable {
 		bf = new ButtonFactory(aw);
-		bf.setMode2();
 		
 		Point p0 = new Point(50, 50);
 		Point p1 = new Point(87, 95);
@@ -185,7 +177,6 @@ class ClearAndUndoDrawingActionTC04Test {
 	@Test
 	void testClearMapWithMultipleRooms() throws Throwable {
 		bf = new ButtonFactory(aw);
-		bf.setMode2();
 		
 		Point p0 = new Point(50, 50);
 		Point p1 = new Point(87, 95);
@@ -223,7 +214,6 @@ class ClearAndUndoDrawingActionTC04Test {
 	@Test
 	void testClearMapWithPlayerStartPtAndRooms() throws Throwable {
 		bf = new ButtonFactory(aw);
-		bf.setMode2();
 		
 		Point p0 = new Point(50, 50);
 		Point p1 = new Point(87, 95);
