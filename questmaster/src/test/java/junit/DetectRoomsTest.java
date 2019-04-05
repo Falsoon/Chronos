@@ -41,7 +41,13 @@ class DetectRoomsTest {
 
 		civ.mousePressed(point1, false, true,false);
 		civ.mousePressed(point2, false, true,false);
+
+      civ.mousePressed(point2, false, true,false);
 		civ.mousePressed(point3, false, true,false);
+
+      civ.mousePressed(point3, false, true,false);
+      civ.mousePressed(point4, false, true,false);
+
       civ.mousePressed(point4, false, true,false);
       civ.mousePressed(point1, false, true,false);
 
@@ -53,22 +59,28 @@ class DetectRoomsTest {
       assertTrue(civ.map.mapLayer.pointList.contains(point4));
 	}
 
-
    // N - User completes a square room shape and then clicks another point
    @Test
    void testN2() {
       civ.outlining();
-      Point point1 = new Point(15, 30);
+      Point point1 = new Point(15, 15);
       Point point2 = new Point(15, 75);
       Point point3 = new Point(75, 75);
-      Point point4 = new Point(75, 30);
-      Point point5 = new Point(15, 15);
+      Point point4 = new Point(75, 15);
+      Point point5 = new Point(150, 150);
 
       civ.mousePressed(point1, false, true,false);
       civ.mousePressed(point2, false, true,false);
+
+      civ.mousePressed(point2, false, true,false);
+      civ.mousePressed(point3, false, true,false);
+
       civ.mousePressed(point3, false, true,false);
       civ.mousePressed(point4, false, true,false);
+
+      civ.mousePressed(point4, false, true,false);
       civ.mousePressed(point1, false, true,false);
+
       civ.mousePressed(point5, false, true,false);
 
       assertEquals(1, civ.getRoomList().size());
@@ -93,9 +105,19 @@ class DetectRoomsTest {
 
       civ.mousePressed(point1, false, true,false);
       civ.mousePressed(point2, false, true,false);
+
+      civ.mousePressed(point2, false, true,false);
+      civ.mousePressed(point3, false, true,false);
+
       civ.mousePressed(point3, false, true,false);
       civ.mousePressed(point4, false, true,false);
+
+      civ.mousePressed(point4, false, true,false);
       civ.mousePressed(point5, false, true,false);
+
+      civ.mousePressed(point5, false, true,false);
+      civ.mousePressed(point6, false, true,false);
+
       civ.mousePressed(point6, false, true,false);
       civ.mousePressed(point1, false, true,false);
 
@@ -127,15 +149,37 @@ class DetectRoomsTest {
 
       civ.mousePressed(point1, false, true,false);
       civ.mousePressed(point2, false, true,false);
+
+      civ.mousePressed(point2, false, true,false);
+      civ.mousePressed(point3, false, true,false);
+
       civ.mousePressed(point3, false, true,false);
       civ.mousePressed(point4, false, true,false);
+
+      civ.mousePressed(point4, false, true,false);
+      civ.mousePressed(point5, false, true,false);
+
       civ.mousePressed(point5, false, true,false);
       civ.mousePressed(point6, false, true,false);
+
+      civ.mousePressed(point6, false, true,false);
+      civ.mousePressed(point7, false, true,false);
+
       civ.mousePressed(point7, false, true,false);
       civ.mousePressed(point8, false, true,false);
+
+      civ.mousePressed(point8, false, true,false);
+      civ.mousePressed(point9, false, true,false);
+
       civ.mousePressed(point9, false, true,false);
       civ.mousePressed(point10, false, true,false);
+
+      civ.mousePressed(point10, false, true,false);
       civ.mousePressed(point11, false, true,false);
+
+      civ.mousePressed(point11, false, true,false);
+      civ.mousePressed(point12, false, true,false);
+
       civ.mousePressed(point12, false, true,false);
       civ.mousePressed(point1, false, true,false);
 
@@ -168,6 +212,7 @@ class DetectRoomsTest {
       civ.mousePressed(point1, false, true,false);
       civ.mousePressed(point2, false, true,false);
 
+      civ.mousePressed(point2, false, true,false);
       civ.mousePressed(point3, false, true,false);
       // stops without finishing shape
       civ.stopDrawing();
@@ -198,15 +243,23 @@ class DetectRoomsTest {
       //first
       civ.mousePressed(point1, false, true,false);
       civ.mousePressed(point2, false, true,false);
+
+      civ.mousePressed(point2, false, true,false);
       civ.mousePressed(point3, false, true,false);
+
+      civ.mousePressed(point3, false, true,false);
+      civ.mousePressed(point4, false, true,false);
+
       civ.mousePressed(point4, false, true,false);
       civ.mousePressed(point1, false, true,false);
 
-      civ.stopDrawing();
-      civ.outlining();
       //second
       civ.mousePressed(point4, false, true,false);
       civ.mousePressed(point5, false, true,false);
+
+      civ.mousePressed(point5, false, true,false);
+      civ.mousePressed(point6, false, true,false);
+
       civ.mousePressed(point6, false, true,false);
       civ.mousePressed(point3, false, true,false);
 
@@ -233,7 +286,13 @@ class DetectRoomsTest {
       //first
       civ.mousePressed(point1, false, true,false);
       civ.mousePressed(point2, false, true,false);
+
+      civ.mousePressed(point2, false, true,false);
       civ.mousePressed(point3, false, true,false);
+
+      civ.mousePressed(point3, false, true,false);
+      civ.mousePressed(point4, false, true,false);
+
       civ.mousePressed(point4, false, true,false);
       civ.mousePressed(point1, false, true,false);
 
@@ -242,9 +301,6 @@ class DetectRoomsTest {
       assertTrue(civ.map.mapLayer.pointList.contains(point2));
       assertTrue(civ.map.mapLayer.pointList.contains(point3));
       assertTrue(civ.map.mapLayer.pointList.contains(point4));
-
-      civ.stopDrawing();
-      civ.outlining();
 
       //second
       civ.mousePressed(point5, false, true,false);
@@ -266,6 +322,7 @@ class DetectRoomsTest {
       civ.mousePressed(new Point(15, 15), false, true,false);
       civ.mousePressed(new Point(15, 45), false, true,false);
 
+      civ.mousePressed(new Point(15, 45), false, true,false);
       civ.mousePressed(new Point(90, 30), false, true,false);
       // stops without finishing shape
       civ.stopDrawing();
@@ -273,7 +330,13 @@ class DetectRoomsTest {
       civ.outlining();
       civ.mousePressed(new Point(105,90), false, true,false);
       civ.mousePressed(new Point(300, 90), false, true,false);
+
+      civ.mousePressed(new Point(300, 90), false, true,false);
       civ.mousePressed(new Point(300,300), false, true,false);
+
+      civ.mousePressed(new Point(300,300), false, true,false);
+      civ.mousePressed(new Point(105,300), false, true,false);
+
       civ.mousePressed(new Point(105,300), false, true,false);
       civ.mousePressed(new Point(105,90), false, true,false);
 
@@ -322,7 +385,13 @@ class DetectRoomsTest {
 
       civ.mousePressed(point1, false, true,false);
       civ.mousePressed(point2, false, true,false);
+
+      civ.mousePressed(point2, false, true,false);
       civ.mousePressed(point3, false, true,false);
+
+      civ.mousePressed(point3, false, true,false);
+      civ.mousePressed(point4, false, true,false);
+
       civ.mousePressed(point4, false, true,false);
       civ.mousePressed(point1, false, true,false);
 
@@ -361,294 +430,5 @@ class DetectRoomsTest {
       assertTrue(civ.map.mapLayer.pointList.contains(point3));
       assertTrue(civ.map.mapLayer.pointList.contains(point4));
 	}
-
-   //B - Room 1 is entirely contained in the corner of Room 2, Room 1 is drawn first
-   @Test
-   void testB3() {
-      Point point1 = new Point(15, 15);
-      Point point2 = new Point(15, 75);
-      Point point3 = new Point(75, 75);
-      Point point4 = new Point(75, 15);
-
-      Point point5 = new Point(15,150);
-      Point point6 = new Point(150,150);
-      Point point7 = new Point(150,15);
-
-      civ.outlining();
-
-      //Room 1
-      civ.mousePressed(point1, false, true,false);
-      civ.mousePressed(point2, false, true,false);
-      civ.mousePressed(point3, false, true,false);
-      civ.mousePressed(point4, false, true,false);
-      civ.mousePressed(point1, false, true,false);
-
-      civ.stopDrawing();
-      civ.outlining();
-
-      //Room 2
-      civ.mousePressed(point2, false, true,false);
-      civ.mousePressed(point5, false, true,false);
-      civ.mousePressed(point6, false, true,false);
-      civ.mousePressed(point7, false, true,false);
-      civ.mousePressed(point4, false, true,false);
-
-      assertEquals(2, civ.getRoomList().size());
-      assertTrue(civ.map.isCreating());
-      assertTrue(civ.map.mapLayer.pointList.contains(point1));
-      assertTrue(civ.map.mapLayer.pointList.contains(point2));
-      assertTrue(civ.map.mapLayer.pointList.contains(point3));
-      assertTrue(civ.map.mapLayer.pointList.contains(point4));
-      assertTrue(civ.map.mapLayer.pointList.contains(point5));
-      assertTrue(civ.map.mapLayer.pointList.contains(point6));
-      assertTrue(civ.map.mapLayer.pointList.contains(point7));
-   }
-
-   //B - Room 2 is entirely contained in the corner of Room 1, Room 1 is drawn first
-   @Test
-   void testB4() {
-      Point point1 = new Point(15, 15);
-      Point point2 = new Point(15, 75);
-      Point point3 = new Point(75, 75);
-      Point point4 = new Point(75, 15);
-
-      Point point5 = new Point(15,150);
-      Point point6 = new Point(150,150);
-      Point point7 = new Point(150,15);
-
-      civ.outlining();
-
-      //Room 1
-      civ.mousePressed(point2, false, true,false);
-      civ.mousePressed(point5, false, true,false);
-      civ.mousePressed(point6, false, true,false);
-      civ.mousePressed(point7, false, true,false);
-      civ.mousePressed(point4, false, true,false);
-
-      civ.stopDrawing();
-      civ.outlining();
-
-      //Room 2
-      civ.mousePressed(point1, false, true,false);
-      civ.mousePressed(point2, false, true,false);
-      civ.mousePressed(point3, false, true,false);
-      civ.mousePressed(point4, false, true,false);
-      civ.mousePressed(point1, false, true,false);
-
-      assertEquals(2, civ.getRoomList().size());
-      assertTrue(civ.map.isCreating());
-      assertTrue(civ.map.mapLayer.pointList.contains(point1));
-      assertTrue(civ.map.mapLayer.pointList.contains(point2));
-      assertTrue(civ.map.mapLayer.pointList.contains(point3));
-      assertTrue(civ.map.mapLayer.pointList.contains(point4));
-      assertTrue(civ.map.mapLayer.pointList.contains(point5));
-      assertTrue(civ.map.mapLayer.pointList.contains(point6));
-      assertTrue(civ.map.mapLayer.pointList.contains(point7));
-   }
-
-   //B - Room 1 is entirely contained in Room 2, and one wall of Room 1 is shared with Room 2.  Room 1 drawn first
-   @Test
-   void testB5() {
-      civ.outlining();
-      Point point1 = new Point(15, 30);
-      Point point2 = new Point(15, 75);
-      Point point3 = new Point(75, 75);
-      Point point4 = new Point(75, 30);
-
-      Point point5 = new Point(15, 15);
-      Point point6 = new Point(150,15);
-      Point point7 = new Point(150,150);
-      Point point8 = new Point(15,150);
-
-      //Room 1
-      civ.mousePressed(point1, false, true,false);
-      civ.mousePressed(point2, false, true,false);
-      civ.mousePressed(point3, false, true,false);
-      civ.mousePressed(point4, false, true,false);
-      civ.mousePressed(point1, false, true,false);
-
-      civ.stopDrawing();
-      civ.outlining();
-
-      //Room 2
-      civ.mousePressed(point1, false, true,false);
-      civ.mousePressed(point5, false, true,false);
-      civ.mousePressed(point6, false, true,false);
-      civ.mousePressed(point7, false, true,false);
-      civ.mousePressed(point8, false, true,false);
-      civ.mousePressed(point2, false, true,false);
-
-      assertEquals(2, civ.getRoomList().size());
-      assertTrue(civ.map.isCreating());
-      assertTrue(civ.map.mapLayer.pointList.contains(point1));
-      assertTrue(civ.map.mapLayer.pointList.contains(point2));
-      assertTrue(civ.map.mapLayer.pointList.contains(point3));
-      assertTrue(civ.map.mapLayer.pointList.contains(point4));
-      assertTrue(civ.map.mapLayer.pointList.contains(point5));
-      assertTrue(civ.map.mapLayer.pointList.contains(point6));
-      assertTrue(civ.map.mapLayer.pointList.contains(point7));
-      assertTrue(civ.map.mapLayer.pointList.contains(point8));
-   }
-
-   //B - Room 1 is entirely contained in Room 2, and one wall of Room 1 is shared with Room 2.  Room 2 drawn first
-   @Test
-   void testB6() {
-      civ.outlining();
-      Point point1 = new Point(15, 30);
-      Point point2 = new Point(15, 75);
-      Point point3 = new Point(75, 75);
-      Point point4 = new Point(75, 30);
-
-      Point point5 = new Point(15, 15);
-      Point point6 = new Point(150,15);
-      Point point7 = new Point(150,150);
-      Point point8 = new Point(15,150);
-
-      //Room 1
-      civ.mousePressed(point1, false, true,false);
-      civ.mousePressed(point5, false, true,false);
-      civ.mousePressed(point6, false, true,false);
-      civ.mousePressed(point7, false, true,false);
-      civ.mousePressed(point8, false, true,false);
-      civ.mousePressed(point2, false, true,false);
-
-      civ.stopDrawing();
-      civ.outlining();
-
-      //Room 2
-      civ.mousePressed(point1, false, true,false);
-      civ.mousePressed(point2, false, true,false);
-      civ.mousePressed(point3, false, true,false);
-      civ.mousePressed(point4, false, true,false);
-      civ.mousePressed(point1, false, true,false);
-
-      assertEquals(2, civ.getRoomList().size());
-      assertTrue(civ.map.isCreating());
-      assertTrue(civ.map.mapLayer.pointList.contains(point1));
-      assertTrue(civ.map.mapLayer.pointList.contains(point2));
-      assertTrue(civ.map.mapLayer.pointList.contains(point3));
-      assertTrue(civ.map.mapLayer.pointList.contains(point4));
-      assertTrue(civ.map.mapLayer.pointList.contains(point5));
-      assertTrue(civ.map.mapLayer.pointList.contains(point6));
-      assertTrue(civ.map.mapLayer.pointList.contains(point7));
-      assertTrue(civ.map.mapLayer.pointList.contains(point8));
-   }
-
-   //B - Room 1 is entirely contained in Room 2, and one wall of Room 1 is shared with Room 2.  A large box-shaped room
-   //is drawn first, and then Room 1 is drawn inside of it
-   @Test
-   void testB7() {
-      civ.outlining();
-      Point point1 = new Point(15, 15);
-      Point point2 = new Point(15, 150);
-      Point point3 = new Point(150, 150);
-      Point point4 = new Point(150, 15);
-
-      Point point5 = new Point(15, 30);
-      Point point6 = new Point(30,30);
-      Point point7 = new Point(30,75);
-      Point point8 = new Point(15,75);
-
-      //Large room
-      civ.mousePressed(point1, false, true,false);
-      civ.mousePressed(point2, false, true,false);
-      civ.mousePressed(point3, false, true,false);
-      civ.mousePressed(point4, false, true,false);
-      civ.mousePressed(point1, false, true,false);
-
-      civ.stopDrawing();
-      civ.outlining();
-
-      //Smaller room
-      civ.mousePressed(point5, false, true,false);
-      civ.mousePressed(point6, false, true,false);
-      civ.mousePressed(point7, false, true,false);
-      civ.mousePressed(point8, false, true,false);
-
-      assertEquals(2, civ.getRoomList().size());
-      assertTrue(civ.map.isCreating());
-      assertTrue(civ.map.mapLayer.pointList.contains(point1));
-      assertTrue(civ.map.mapLayer.pointList.contains(point2));
-      assertTrue(civ.map.mapLayer.pointList.contains(point3));
-      assertTrue(civ.map.mapLayer.pointList.contains(point4));
-      assertTrue(civ.map.mapLayer.pointList.contains(point5));
-      assertTrue(civ.map.mapLayer.pointList.contains(point6));
-      assertTrue(civ.map.mapLayer.pointList.contains(point7));
-      assertTrue(civ.map.mapLayer.pointList.contains(point8));
-   }
-
-   //B - Room 1 is entirely contained in the center of Room 2
-   @Test
-   void testB8() {
-      civ.outlining();
-      Point point1 = new Point(30, 30);
-      Point point2 = new Point(30, 45);
-      Point point3 = new Point(45, 45);
-      Point point4 = new Point(45, 30);
-
-      Point point5 = new Point(15,15);
-      Point point6 = new Point(150,15);
-      Point point7 = new Point(150,150);
-      Point point8 = new Point(15,150);
-
-      //Room 1
-      civ.mousePressed(point1, false, true,false);
-      civ.mousePressed(point2, false, true,false);
-      civ.mousePressed(point3, false, true,false);
-      civ.mousePressed(point4, false, true,false);
-      civ.mousePressed(point1, false, true,false);
-
-      civ.stopDrawing();
-      civ.outlining();
-
-      //Room 2
-      civ.mousePressed(point5, false, true,false);
-      civ.mousePressed(point6, false, true,false);
-      civ.mousePressed(point7, false, true,false);
-      civ.mousePressed(point8, false, true,false);
-      civ.mousePressed(point5, false, true,false);
-
-
-      assertEquals(2, civ.getRoomList().size());
-      assertTrue(civ.map.isCreating());
-      assertTrue(civ.map.mapLayer.pointList.contains(point1));
-      assertTrue(civ.map.mapLayer.pointList.contains(point2));
-      assertTrue(civ.map.mapLayer.pointList.contains(point3));
-      assertTrue(civ.map.mapLayer.pointList.contains(point4));
-      assertTrue(civ.map.mapLayer.pointList.contains(point5));
-      assertTrue(civ.map.mapLayer.pointList.contains(point6));
-      assertTrue(civ.map.mapLayer.pointList.contains(point7));
-      assertTrue(civ.map.mapLayer.pointList.contains(point8));
-   }
-
-   //B - Author draws duplicate walls over existing walls (e.g. by double clicking)
-   @Test
-   void testB9() {
-      civ.outlining();
-      Point point1 = new Point(15, 15);
-      Point point2 = new Point(15, 75);
-      Point point3 = new Point(75, 75);
-      Point point4 = new Point(75, 15);
-
-      civ.mousePressed(point1, false, true,false);
-      civ.mousePressed(point2, false, true,false);
-
-      civ.mousePressed(point2, false, true,false);
-      civ.mousePressed(point3, false, true,false);
-
-      civ.mousePressed(point3, false, true,false);
-      civ.mousePressed(point4, false, true,false);
-
-      civ.mousePressed(point4, false, true,false);
-      civ.mousePressed(point1, false, true,false);
-
-      assertEquals(1, civ.getRoomList().size());
-      assertTrue(civ.map.isCreating());
-      assertTrue(civ.map.mapLayer.pointList.contains(point1));
-      assertTrue(civ.map.mapLayer.pointList.contains(point2));
-      assertTrue(civ.map.mapLayer.pointList.contains(point3));
-      assertTrue(civ.map.mapLayer.pointList.contains(point4));
-      assertEquals(5,civ.map.mapLayer.pointList.size());
-   }
 
 }

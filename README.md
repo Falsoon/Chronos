@@ -6,7 +6,7 @@ ArenaMapMaker is a project aiming to add a graphical authoring and playing tool 
 To install ArenaMapMaker, clone this Git repository, or copy these files onto your local filesystem. Load the project into Eclipse, then locate a commons-io-2.6.jar and add it to the project in Eclipse as an external jar.
 
 ## Usage
-To run ArenaMapMaker, run the main method in AuthorWindow. You will begin with the Author view. From here you can draw rooms, place the player start point, add doors, split rooms with transparent walls, and change descriptions for rooms and doors. When you are done authoring and would like to play, select the "Start Playing" option, and it will translate the map to INFORM source, compile the source (on Mac and Windows), and present a side-by-side play mode with the map and story panel. Here you can use the arrow keys to navigate on the map side, or wallType into the story panel to play the game like any INFORM game.
+To run ArenaMapMaker, run the main method in AuthorWindow. You will begin with the Author view. From here you can draw rooms, place the player start point, add doors, split rooms with transparent walls, and change descriptions for rooms and doors. When you are done authoring and would like to play, select the "Start Playing" option, and it will translate the map to INFORM source, compile the source (on Mac and Windows), and present a side-by-side play mode with the map and story panel. Here you can use the arrow keys to navigate on the map side, or type into the story panel to play the game like any INFORM game.
 It should be noted that to complete a room, one must click back onto the starting point. So, even if a wall is existing for another room, it will still need to be drawn again for a new room.
 
 ## Architecture

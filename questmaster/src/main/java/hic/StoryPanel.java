@@ -21,8 +21,6 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Label;
-import javafx.event.*;
-import javafx.scene.input.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -58,33 +56,27 @@ public class StoryPanel extends JPanel {
                 ScrollPane pane = new ScrollPane(root);
                 pane.setFitToWidth(true);
                 Scene scene = new Scene(pane);
-
-                scene.addEventFilter(KeyEvent.KEY_PRESSED, event->{
+                scene.setOnKeyPressed(event->{
                     switch (event.getCode()) {
                         case A:
-                        case LEFT:
                             mapPanel.goLeft();
                             printDetails(mapPanel.getRoomName(), mapPanel.getRoomDesc(), t);
                             break;
                         case D:
-                        case RIGHT:
                             mapPanel.goRight();
                             printDetails(mapPanel.getRoomName(), mapPanel.getRoomDesc(), t);
                             break;
                         case W:
-                        case UP:
                             mapPanel.goUp();
                             printDetails(mapPanel.getRoomName(), mapPanel.getRoomDesc(), t);
                             break;
                         case S:
-                        case DOWN:
                             mapPanel.goDown();
                             printDetails(mapPanel.getRoomName(), mapPanel.getRoomDesc(), t);
                             break;
                         default:
                             break;
                     }
-                    event.consume();
                 });
                 jfxPanel.setScene(scene);
             }

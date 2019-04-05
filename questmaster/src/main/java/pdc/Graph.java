@@ -36,6 +36,23 @@ public class Graph {
          {
             findNewCycles(new Point2D[] {adjListArray[i][j]});
          }
+
+
+      //prints out all the cycles
+      /*
+      for (Point2D[] cy : cycles) {
+         String s = "" + cy[0];
+
+         for (int i = 1; i < cy.length; i++)
+         {
+            s += "," + cy[i];
+         }
+
+         o(s);
+
+      }
+      */
+
    }
 
    /**
@@ -68,18 +85,18 @@ public class Graph {
       Point2D x;
       Point2D[] sub = new Point2D[path.length + 1];
 
-      for (Point2D[] point2DS : adjListArray) {
+      for (int i = 0; i < adjListArray.length; i++) {
          for (int y = 0; y <= 1; y++) {
-            if (point2DS[y].equals(n)) {
-               //  edge refers to our current node
-               x = point2DS[(y + 1) % 2];
-               if (!visited(x, path)) {
-                  //  neighbor node not on path yet
+            if (adjListArray[i][y].equals(n)){
+            //  edge refers to our current node
+               x = adjListArray[i][(y + 1) % 2];
+               if (!visited(x, path)){
+               //  neighbor node not on path yet
                   sub[0] = x;
                   System.arraycopy(path, 0, sub, 1, path.length);
                   //  explore extended path
                   findNewCycles(sub);
-               } else if ((path.length > 2) && (x.equals(path[path.length - 1]))) {
+               } else if ((path.length > 2) && (x.equals(path[path.length - 1]))){
                   //  cycle found
                   Point2D[] p = normalize(path);
                   Point2D[] inv = reverse(p);

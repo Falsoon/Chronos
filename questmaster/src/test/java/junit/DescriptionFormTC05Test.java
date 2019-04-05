@@ -1,14 +1,18 @@
 package junit;
 import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.awt.Point;
+import java.awt.event.WindowEvent;
 
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import civ.CIV;
@@ -39,107 +43,239 @@ class DescriptionFormTC05Test {
 		civ = null;
 		RoomList.getInstance().reset();
 	}
-
-	public void makeTestRoom() {
-		civ.outlining();
-		Point point1 = new Point(15, 15);
-      	Point point2 = new Point(15, 75);
-      	Point point3 = new Point(75, 75);
-      	Point point4 = new Point(75, 15);
-
-		civ.mousePressed(point1, false, true,false);
-		civ.mousePressed(point2, false, true,false);
-		civ.mousePressed(point3, false, true,false);
-      	civ.mousePressed(point4, false, true,false);
-		civ.mousePressed(point1, false, true,false);
-	}
-
-	public void makeTestRoom2() {
-		civ.outlining();
-		Point point1 = new Point(75, 15);
-      	Point point2 = new Point(75, 75);
-      	Point point3 = new Point(150, 75);
-      	Point point4 = new Point(150, 15);
-
-		civ.mousePressed(point2, false, true,false);
-		civ.mousePressed(point3, false, true,false);
-      	civ.mousePressed(point4, false, true,false);
-		civ.mousePressed(point1, false, true,false);
-	}
-
+	
 	@Test
-	void testAddNameAndDescToRoom() {
+	void testAuthorSelectsDescriptionMode() {
 		bf = new ButtonFactory(aw);
-		makeTestRoom();
-		civ.stopDrawing();
-		civ.mousePressed(new Point(50, 50), false, true, false);
-		bf.rdi.titleText.setText("the bathroom");
-		bf.rdi.descArea.setText("the place people go when they got to use the bathroom");
-
-		room = bf.rdi.formCiv.room;
-		assertEquals("the bathroom", room.title );
-		assertEquals("the place people go when they got to use the bathroom", room.desc );
-	}
-
-	// @Test - fix in a hot sec
-	void testMoveToNewRoom() {
-		bf = new ButtonFactory(aw);
-		makeTestRoom();
-		civ.stopDrawing();
-		makeTestRoom2();
-		civ.stopDrawing();
-		civ.mousePressed(new Point(50, 50), false, true, false);
-		bf.rdi.titleText.setText("the bathroom");
-		bf.rdi.descArea.setText("the place people go when they got to use the bathroom");
-		civ.mousePressed(new Point(100, 50), false, true, false);
-
-		room = bf.rdi.formCiv.room;
-		assertEquals("", room.title );
-		assertEquals("", room.desc );
+		bf.setMode1();
+		assertEquals(false, aw.wallCombo.isVisible());
+		assertEquals(false, aw.portalCombo.isVisible());
 	}
 	
 	@Test
-	void testNullRoomThenStart() {
-		bf.rdi.titleText.setText("the bathroom");
-		bf.rdi.descArea.setText("the place people go when they got to use the bathroom");
+	void testAuthorSelectsDrawingMode() {
 		bf = new ButtonFactory(aw);
-		makeTestRoom();
-		civ.stopDrawing();
-		civ.mousePressed(new Point(50, 50), false, true, false);
+		bf.setMode2();
+		assertEquals(true, aw.wallCombo.isVisible());
+		assertEquals(true, aw.portalCombo.isVisible());
+	}
+	
+	@Test
+	void testCreateRoomViaForm() {
+		bf = new ButtonFactory(aw);
+		bf.setMode1();
+		bf.addRoombtn1.doClick();
+		FormWindow window = new FormWindow(fc, true);
+		window.frame.setVisible(true);
 		
-		room = bf.rdi.formCiv.room;
-		//iunno why but the thing clearly works for users
+		RoomList.getInstance().add(room);
+		fc.setRoomReference(room.toString());
+		
+		window.frame = new JFrame();
+		window.frame.setBounds(200, 100, 350, 600);
+		window.frame.setTitle("Room Description");
+		window.frame.getContentPane().setLayout(null);
+		
+		JLabel lblRoomTitle = new JLabel("Room Title");
+		lblRoomTitle.setBounds(10, 25, 100, 15);
+		window.frame.getContentPane().add(lblRoomTitle);
+		
+		
+		
+		titleText = new JTextArea();
+		titleText.setBounds(110, 20, 200, 30);
+		window.frame.getContentPane().add(titleText);
+		titleText.setColumns(10);
+		titleText.setText("the bathroom");
+		
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setBounds(10, 100, 300, 400);
+		window.frame.getContentPane().add(scrollPane);
+		
+		textArea = new JTextArea();
+		textArea.setLineWrap(true);
+		textArea.setText("the place people go when they got to use the bathroom");
+		
+		fc.adjustRoomTitleAndDesc(titleText.getText(), textArea.getText() );
+		
 		assertEquals("the bathroom", room.title );
 		assertEquals("the place people go when they got to use the bathroom", room.desc );
-
+		
+		
+	}
+	
+	@Test
+	void testClosesFormBeforeSubmit() {
+		//the room title and room description should not save
+		RoomList.getInstance().add(room);
+		fc.setRoomReference(room.toString());
+		
+		frame = new JFrame();
+		frame.setBounds(200, 100, 350, 600);
+		frame.setTitle("Room Description");
+		frame.getContentPane().setLayout(null);
+		
+		JLabel lblRoomTitle = new JLabel("Room Title");
+		lblRoomTitle.setBounds(10, 25, 100, 15);
+		frame.getContentPane().add(lblRoomTitle);
+		
+		
+		
+		titleText = new JTextArea();
+		titleText.setBounds(110, 20, 200, 30);
+		frame.getContentPane().add(titleText);
+		titleText.setColumns(10);
+		titleText.setText("the bathroom");
+		
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setBounds(10, 100, 300, 400);
+		frame.getContentPane().add(scrollPane);
+		
+		textArea = new JTextArea();
+		textArea.setLineWrap(true);
+		textArea.setText("the place people go when they got to use the bathroom");
+		
+		frame.setVisible(false);
+		frame.dispose();
+		
+		assertEquals("", room.title );
+		assertEquals("", room.desc );
+		
 	}
 	
 	@Test
 	void testStrangeCharacterEntry() {
-		bf = new ButtonFactory(aw);
-		makeTestRoom();
-		civ.stopDrawing();
-		civ.mousePressed(new Point(50, 50), false, true, false);
-		bf.rdi.titleText.setText("\u2202x");
-		bf.rdi.descArea.setText("");
-
-		room = bf.rdi.formCiv.room;
-		assertEquals("\u2202x", room.title );
-		assertEquals("", room.desc );
+		
 	}
+	
+	@Test
+	void testFormPopUpViaDrawMode() {
+		//author brings up form by clicking room in drawingTransparent mode
+		bf = new ButtonFactory(aw);
+		bf.setMode1();
+		bf.addRoombtn1.doClick();
+		FormWindow window = new FormWindow(fc, true);
+		window.frame.setVisible(true);
+		assertEquals(true, window.frame.isVisible());
+		
+	}
+	
+	@Test
+	void testFormEditingViaDrawMode() throws Throwable {
+		//author can edit room desc and title when in drawingTransparent mode
+		civ.outlining();
+		civ.mousePressed(new Point(), true, true,false);
+		civ.mousePressed(new Point(87, 95), true, true,false);
+		civ.mousePressed(new Point(300, 90), false, true,false);
+		civ.mousePressed(new Point(), false, true,false);
+		civ.mousePressed(new Point(100, 50), false, true,false);
+		
+		fc.setRoomReference(room.toString());
+		FormWindow fw = new FormWindow(fc, true);
+		fw.frame.setVisible(true);
+		
+		assertEquals(true, fw.frame.isVisible());
+		
+		
+	}
+	/*
+	Why the hell was this a test in the first place?
+	@Test
+	void testCreateRoomDescThenDrawRoom() throws Throwable {
+		//author creates room description and then draws room
+		RoomList.getInstance().add(room);
+		fc.setRoomReference(room.toString());
+		
+		frame = new JFrame();
+		frame.setBounds(200, 100, 350, 600);
+		frame.setTitle("Room Description");
+		frame.getContentPane().setLayout(null);
+		
+		JLabel lblRoomTitle = new JLabel("Room Title");
+		lblRoomTitle.setBounds(10, 25, 100, 15);
+		frame.getContentPane().add(lblRoomTitle);
+		
+		titleText = new JTextArea();
+		titleText.setBounds(110, 20, 200, 30);
+		frame.getContentPane().add(titleText);
+		titleText.setColumns(10);
+		titleText.setText("1234");
+		
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setBounds(10, 100, 300, 400);
+		frame.getContentPane().add(scrollPane);
+		
+		textArea = new JTextArea();
+		textArea.setLineWrap(true);
+		textArea.setText("1234");
+		
+		fc.adjustRoomTitleAndDesc(titleText.getText(), textArea.getText() );
+		
+		
+		
+		civ.opaqueWalling();
+		civ.mousePressed(new Point(), true, true);
+		civ.mousePressed(new Point(87, 95), true, true);
+		civ.mousePressed(new Point(300, 90), false, true);
+		civ.mousePressed(new Point(), false, true);
+		civ.stopDrawing();
+		
+		assertEquals(1, civ.getRoomList().size());
+		assertEquals(false, civ.map.isCreating());
+		assertEquals(true, civ.map.mapLayer.pointList.contains(new Point()));
+		assertEquals(true, civ.map.mapLayer.pointList.contains(new Point(87, 95)));
+		assertEquals(true, civ.map.mapLayer.pointList.contains(new Point(300, 90)));
+		assertEquals(true, civ.map.mapLayer.pointList.contains(new Point()));
+		assertEquals("1234", room.title );
+		assertEquals("1234", room.desc );
+		
+	}
+	*/
 
 	@Test
 	void testRoomID() {
-		bf = new ButtonFactory(aw);
-		makeTestRoom();
-		civ.stopDrawing();
-		civ.mousePressed(new Point(50, 50), false, true, false);
-		bf.rdi.titleText.setText("1234");
-		bf.rdi.descArea.setText("1234");
+		RoomList.getInstance().add(room);
+		int roomID = room.ROOMID;
+		fc.setRoomReference(room.toString());
+		assertEquals(roomID, fc.getRoomID() );		
+	}
+	
+	@Test
+	void testNumberInputForDescAndTitle(){
 		
-		room = bf.rdi.formCiv.room;
+		RoomList.getInstance().add(room);
+		fc.setRoomReference(room.toString());
+		
+		frame = new JFrame();
+		frame.setBounds(200, 100, 350, 600);
+		frame.setTitle("Room Description");
+		frame.getContentPane().setLayout(null);
+		
+		JLabel lblRoomTitle = new JLabel("Room Title");
+		lblRoomTitle.setBounds(10, 25, 100, 15);
+		frame.getContentPane().add(lblRoomTitle);
+		
+		
+		
+		titleText = new JTextArea();
+		titleText.setBounds(110, 20, 200, 30);
+		frame.getContentPane().add(titleText);
+		titleText.setColumns(10);
+		titleText.setText("1234");
+		
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setBounds(10, 100, 300, 400);
+		frame.getContentPane().add(scrollPane);
+		
+		textArea = new JTextArea();
+		textArea.setLineWrap(true);
+		textArea.setText("1234");
+		
+		fc.adjustRoomTitleAndDesc(titleText.getText(), textArea.getText() );
+		
 		assertEquals("1234", room.title );
 		assertEquals("1234", room.desc );
+		
 	}
 
 }

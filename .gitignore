@@ -27,4 +27,3 @@ buildNumber.properties
 .vscode/
 
 bin/
-savedMap.ser

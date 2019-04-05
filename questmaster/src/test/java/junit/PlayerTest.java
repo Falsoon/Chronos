@@ -26,7 +26,7 @@ public class PlayerTest {
       RoomList.getInstance().reset();
    }
 
-   // N - User draws a room and places the player at a position
+   // N - User draws a room and places an archway on left wall
    @Test
    void testN1() {
       civ.outlining();
@@ -39,7 +39,13 @@ public class PlayerTest {
 
       civ.mousePressed(point1, false, true, false);
       civ.mousePressed(point2, false, true, false);
+
+      civ.mousePressed(point2, false, true, false);
       civ.mousePressed(point3, false, true, false);
+
+      civ.mousePressed(point3, false, true, false);
+      civ.mousePressed(point4, false, true, false);
+
       civ.mousePressed(point4, false, true, false);
       civ.mousePressed(point1, false, true, false);
 

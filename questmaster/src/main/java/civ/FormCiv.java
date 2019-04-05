@@ -13,7 +13,7 @@ import java.util.ArrayList;
  */
 public class FormCiv {
 	
-	public Room room;
+	private Room room;
 	private Door door;
 	
 	public FormCiv() {
@@ -62,20 +62,6 @@ public class FormCiv {
 			room = new Room();
 		}
 		room.title = title;
-		room.desc = desc;
-	}
-
-	public void adjustRoomTitle(String title) {
-		if(room ==null) {
-			room = new Room();
-		}
-		room.title = title;
-	}
-
-	public void adjustRoomDesc(String desc) {
-		if(room ==null) {
-			room = new Room();
-		}
 		room.desc = desc;
 	}
 	

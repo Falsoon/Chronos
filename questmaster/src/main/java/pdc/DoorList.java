@@ -44,5 +44,6 @@ public class DoorList {
 
 	public static void undo() {
 		list.remove(mostRecent);
+		
 	}
 }

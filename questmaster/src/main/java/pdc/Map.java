@@ -3,8 +3,9 @@ package pdc;
 import javax.swing.event.UndoableEditListener;
 import javax.swing.undo.StateEdit;
 import javax.swing.undo.StateEditable;
+import javax.swing.undo.UndoManager;
+import javax.swing.undo.UndoableEditSupport;
 import java.awt.*;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Hashtable;
 
@@ -12,29 +13,26 @@ import java.util.Hashtable;
  * Handles the data of map overall including data of 3 mapLayers
  */
 
-@SuppressWarnings("serial")
-public class Map implements StateEditable, Serializable {
-	public ArrayList<Room> rooms;
+public class Map implements StateEditable {
 	public ArrayList<MapLayer> layers;
 	public Player player;
 	public MapLayer mapLayer;
 	public MapLayer mapLayer3;
-	private boolean transparentWallMode, opaqueWallMode, dooring, archwayAdd, deleting;
-	//UndoableEditSupport undoSupport = new UndoableEditSupport(this);
-	//UndoManager manager = new UndoManager();
+	private boolean transparentWallMode, opaqueWallMode, dooring, archwayAdd;
+	UndoableEditSupport undoSupport = new UndoableEditSupport(this);
+	UndoManager manager = new UndoManager();
 	private final Object MAP_KEY = "MAPKEY";
 
 	public Map() {
 		layers = new ArrayList<>();
 		mapLayer = new MapWallLayer();
 		mapLayer3 = new MapDoorLayer();
-		//addUndoableEditListener(manager);
+		addUndoableEditListener(manager);
 		player = new Player(mapLayer);
-		rooms = new ArrayList<>();
 	}
 
 	public void addUndoableEditListener(UndoableEditListener undoableEditListener) {
-		//undoSupport.addUndoableEditListener(undoableEditListener);
+		undoSupport.addUndoableEditListener(undoableEditListener);
 	}
 
 	public void draw(Graphics g) {
@@ -47,31 +45,29 @@ public class Map implements StateEditable, Serializable {
 	}
 
 	public void opaqueWalling() {
-	   opaqueWallMode = true;
-	   transparentWallMode = false;
-	   dooring = false;
-	   mapLayer.start = null;
-	   mapLayer.drawingTransparent = false;
-	   archwayAdd = false;
-	   deleting = false;
+		opaqueWallMode = true;
+		transparentWallMode = false;
+		dooring = false;
+		mapLayer.start = null;
+		mapLayer.drawingTransparent = false;
 	}
 
 	public void mousePressed(Point p) {
-		//StateEdit stateEdit = new StateEdit(Map.this);
+		StateEdit stateEdit = new StateEdit(Map.this);
 		if (opaqueWallMode) {
 			mapLayer.drawOpaqueWalls(p);
 		}
 		if (transparentWallMode) {
 		   transparentWallMode = mapLayer.drawTransparentWalls(p);
 		}
-//		if (dooring) {
-//			try {
-//				mapLayer3.placeDoor(p);
-//			} catch (Throwable e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-//		}
+		if (dooring) {
+			try {
+				mapLayer3.placeDoor(p);
+			} catch (Throwable e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
       if (archwayAdd) {
          try {
             mapLayer.placeArchway(p);
@@ -80,23 +76,11 @@ public class Map implements StateEditable, Serializable {
             e.printStackTrace();
          }
       }
-      if (dooring) {
-         try {
-            mapLayer.placeDoor(p);
-         } catch (Throwable e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-         }
-      }
 		if (player.isPlacing()) {
 			player.place(p);
-			mapLayer.setPlayerStartingPosition(p);
 		}
-		//stateEdit.end();
-		//manager.addEdit(stateEdit);
-		if(deleting){
-		   mapLayer.delete(p);
-		}
+		stateEdit.end();
+		manager.addEdit(stateEdit);
 		if (player.isPlaced()) {
 			player.rePlace();
 		}
@@ -106,10 +90,9 @@ public class Map implements StateEditable, Serializable {
 		transparentWallMode = true;
 		opaqueWallMode = false;
 		mapLayer.start = null;
+		mapLayer.drawingTransparent = false;
 		dooring = false;
 		archwayAdd = false;
-      mapLayer.drawingTransparent = false;
-		deleting = false;
 	}
 
 	public void dooring() {
@@ -117,14 +100,12 @@ public class Map implements StateEditable, Serializable {
 		transparentWallMode = false;
 		opaqueWallMode = false;
 		archwayAdd = false;
-		deleting = false;
 	}
    public void archwayAdd() {
       dooring = false;
       archwayAdd = true;
       opaqueWallMode = false;
       transparentWallMode = false;
-      deleting = false;
    }
 	public int numOfDoors() {
 		return DoorList.list.size();
@@ -139,7 +120,7 @@ public class Map implements StateEditable, Serializable {
 		return copy;
 	}
 
-	/*public boolean undo() {
+	public boolean undo() {
 		boolean undid = false;
 		if (manager.canUndo()) {
 			manager.undo();
@@ -149,15 +130,11 @@ public class Map implements StateEditable, Serializable {
 			undid = true;
 		}
 		return undid;
-	} */
+	}
 
 	public boolean isCreating() {
 		return transparentWallMode || opaqueWallMode || archwayAdd || dooring || player.isPlacing();
 	}
-
-	public boolean isDeleting(){
-      return deleting;
-   }
 
 	@Override
 	public void storeState(Hashtable<Object, Object> state) {
@@ -191,16 +168,6 @@ public class Map implements StateEditable, Serializable {
 		transparentWallMode = false;
 		dooring = false;
 		archwayAdd = false;
-		deleting = false;
-	}
-
-	public void stopPlacingPlayer() {
-		player.stopPlacing();
-		opaqueWallMode = false;
-		transparentWallMode = false;
-		dooring = false;
-		archwayAdd = false;
-		deleting = false;
 	}
 
 	public void startGame() {
@@ -212,11 +179,10 @@ public class Map implements StateEditable, Serializable {
 	}
 
 	public void stopDrawing() {
-		//opaqueWallMode = false;
-		//transparentWallMode = false;
+		opaqueWallMode = false;
+		transparentWallMode = false;
 		dooring = false;
 		archwayAdd = false;
-		deleting = false;
 		mapLayer.stopDrawing();
 	}
 
@@ -226,8 +192,7 @@ public class Map implements StateEditable, Serializable {
 		dooring = false;
 		archwayAdd = false;
 		mapLayer.start = null;
-      mapLayer.drawingTransparent = false;
-		deleting = false;
+		mapLayer.drawingTransparent = false;
 	}
 
 	public void setSelectedRoom(String str) {
@@ -240,15 +205,5 @@ public class Map implements StateEditable, Serializable {
     */
    public void setPlayerMode(boolean setting) {
       mapLayer.setPlayerMode(setting);
-   }
-
-   public void delete() {
-      deleting = true;
-      opaqueWallMode = false;
-      transparentWallMode = false;
-      dooring = false;
-      archwayAdd = false;
-      mapLayer.start = null;
-      mapLayer.drawingTransparent = false;
    }
 }

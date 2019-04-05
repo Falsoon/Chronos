@@ -1,15 +1,12 @@
 package pdc;
 
 import java.awt.*;
-import java.util.ArrayList;
-import java.io.Serializable;
 import java.util.Iterator;
 
 /*
  * encapsulates player's avatar data
  */
-@SuppressWarnings("serial")
-public class Player implements Serializable {
+public class Player {
 	private static final int GRIDDISTANCE = Constants.GRIDDISTANCE;
 	private Point position;
 	private boolean placed, playing, placing;
@@ -34,7 +31,13 @@ public class Player implements Serializable {
 				Math.round(position.y / GRIDDISTANCE) * GRIDDISTANCE - YOFFSET);
 		placed = true;
 		placing = false;
-		rePlace();
+		Iterator<Room> itr = RoomList.getInstance().iterator();
+		while (itr.hasNext()) {
+			Room curr = itr.next();
+			if (curr.contains(position)) {
+				currentRoom = curr;
+			}
+		}
 	}
 	
 	public String getRepresentation() {
@@ -53,16 +56,13 @@ public class Player implements Serializable {
 	public void startPlaying() {
 		playing = true;
 	}
-	public void stopPlaying() {
-		playing = false;
-	}
 	public void startPlacing() {
 		placing = true;
 	}
 	public void stopPlacing() {
 		placing = false;
 	}
-
+	
 	public Point getPosition() {
 		return position;
 	}
@@ -71,37 +71,25 @@ public class Player implements Serializable {
 		if (playing && !collides(new Point(position.x, position.y - GRIDDISTANCE))) {
 			position.move(position.x, position.y - GRIDDISTANCE);
 		}
-      positionDebug();
-   }
+	}
 
-   private void positionDebug() {
-      System.out.println("Player position: " + position);
-      ArrayList<Room> rl = RoomList.getInstance().list;
-      for (Room room : rl) {
-         System.out.println("Room#" + room.ROOMID + "contains player: " + room.contains(position));
-      }
-   }
-
-   public void goDown() {
+	public void goDown() {
 		if (playing && !collides(new Point(position.x, position.y + GRIDDISTANCE))) {
 			position.move(position.x, position.y + GRIDDISTANCE);
 		}
-      positionDebug();
-   }
+	}
 
 	public void goLeft() {
 		if (playing && !collides(new Point(position.x - GRIDDISTANCE, position.y))) {
 			position.move(position.x - GRIDDISTANCE, position.y);
 		}
-      positionDebug();
-   }
+	}
 
 	public void goRight() {
 		if (playing && !collides(new Point(position.x + GRIDDISTANCE, position.y))) {
 			position.move(position.x + GRIDDISTANCE, position.y);
 		}
-      positionDebug();
-   }
+	}
 	
 	/**
 	 * Returns true if there is no collision at point p, false otherwise
@@ -112,22 +100,13 @@ public class Player implements Serializable {
 		double closestNonCollision = Double.MAX_VALUE;
 		//TODO would like to not iterate through all walls. CurrentRoom currently does not store archways
 		for (Wall w : mapLayer.wallList) {
-			// System.out.println("Wall WallType: " + w.getWallType());
+			// System.out.println("Wall Type: " + w.getType());
 			double distance = w.getDistance(p);
-			if (w.getWallType() == WallType.OPAQUE) {
+			if (w.getType() == Type.OPAQUE) {
 				if (distance < closestCollision) {
 					closestCollision = distance;
 				}
-			}
-			else if (w.getWallType() == WallType.CLOSEDDOOR) {
-            if (distance < closestCollision) {
-               closestCollision = distance;
-               if (closestCollision < closestNonCollision && closestCollision < COLLISION_MARGIN) {
-                  w.setType(WallType.OPENDOOR);
-               }
-            }
-         }
-         else if (distance < closestNonCollision) {
+			} else if (distance < closestNonCollision) {
 				closestNonCollision = distance;
 			}
 		}
