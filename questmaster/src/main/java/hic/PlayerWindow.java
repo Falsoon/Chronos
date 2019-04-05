@@ -91,6 +91,15 @@ public class PlayerWindow {
 		actionMap.put(EAST,
 				new MoveAndPrintAction(EAST));
 
+		actionMap.put(moveNorthArrowKeyAlternate,
+				new MoveAndPrintAction(NORTH));
+		actionMap.put(moveWestArrowKeyAlternate,
+				new MoveAndPrintAction(WEST));
+		actionMap.put(moveSouthArrowKeyAlternate,
+				new MoveAndPrintAction(SOUTH));
+		actionMap.put(moveEastArrowKeyAlternate,
+				new MoveAndPrintAction(EAST));
+
 		WindowListener wl = new WindowListener(){
 
 			@Override

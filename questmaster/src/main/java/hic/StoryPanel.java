@@ -41,6 +41,15 @@ public class StoryPanel extends JPanel {
         root.setSize(400,400);
 
         JScrollPane pane = new JScrollPane(root);
+        //remove scroll actions so that the player can move with arrow keys
+        pane.getActionMap().remove("unitScrollUp");
+        pane.getActionMap().remove("unitScrollDown");
+        pane.getActionMap().remove("unitScrollLeft");
+        pane.getActionMap().remove("unitScrollRight");
+        pane.getActionMap().remove("scrollUp");
+        pane.getActionMap().remove("scrollDown");
+        pane.getActionMap().remove("scrollLeft");
+        pane.getActionMap().remove("scrollRight");
         jPanel.add(pane);
     }
 
