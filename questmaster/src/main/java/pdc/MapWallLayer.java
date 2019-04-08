@@ -63,13 +63,16 @@ public class MapWallLayer extends MapLayer {
                g2d.fill(room.path);
             }
          });
-
       }
 		if (selectedRoom != null) {
 			g2d.setColor(Color.RED);
 			setDrawMode(g2d,WallType.OPAQUE);
 			selectedRoom.walls.forEach(wall -> g2d.draw(wall.getLineRepresentation()));
-		}
+      }
+      
+      for (Stair s : stairList) {
+         s.draw(g);
+      }
 	}
 
    /**

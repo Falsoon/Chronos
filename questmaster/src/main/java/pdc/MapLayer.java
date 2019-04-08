@@ -41,6 +41,8 @@ public abstract class MapLayer implements StateEditable, Serializable {
    private Point lastPoint;
    private boolean wasFirstClick;
    private ArrayList<Room> candidateRoomsForTransparent;
+   public ArrayList<Stair> stairList;
+   private boolean firstStair;
 
    public MapLayer() {
 
@@ -54,7 +56,9 @@ public abstract class MapLayer implements StateEditable, Serializable {
       throwAlerts = true;
 		this.selectedRoom = null;
 		firstClick = true;
-		candidateRoomsForTransparent = new ArrayList<>();
+      candidateRoomsForTransparent = new ArrayList<>();
+      stairList = new ArrayList<>();
+      firstStair = true;
 	}
 
 	public abstract void draw(Graphics g);
@@ -618,6 +622,19 @@ public abstract class MapLayer implements StateEditable, Serializable {
          detectRooms();
       }
 
+   }
+
+   public void placeStairs(Point p) {
+      Stair newStairs = new Stair(p);
+      stairList.add(newStairs);
+      if (firstStair) {
+         newStairs.isGoingUp(false);
+      } else {
+         newStairs.isGoingUp(true);
+         newStairs.linkWith(stairList.get(stairList.size() - 2));
+      }
+      firstStair = !firstStair;
+      System.out.println(stairList.size());
    }
 
    /**
