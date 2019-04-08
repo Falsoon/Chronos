@@ -185,6 +185,7 @@ public class Player implements Serializable {
 		}
 		if (warpTo != null) {
 			position = new Point(warpTo.getLocation());
+			mapLayer.setPlayerStartingPosition(new Point(position));
 		}
 	}
 }

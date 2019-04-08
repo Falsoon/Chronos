@@ -485,12 +485,11 @@ public class Room implements Serializable{
      * @return an ArrayList\<Room\> containing all Rooms accessible from this
      */
    public ArrayList<Room> getAccessibleRooms(){
-       HashSet<Room> rooms = new HashSet<>();
-       rooms.addAll(getAccessibleAdjacentRooms());
-       rooms.addAll(getAccessibleInnerRooms());
-       rooms.addAll(getAccessibleOuterRooms());
-       return new ArrayList<>(rooms);
+      HashSet<Room> rooms = new HashSet<>();
+      rooms.addAll(getAccessibleAdjacentRooms());
+      rooms.addAll(getAccessibleInnerRooms());
+      rooms.addAll(getAccessibleOuterRooms());
+      return new ArrayList<>(rooms);
    }
-
 
 }

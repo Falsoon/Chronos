@@ -27,7 +27,7 @@ public class MapDoorLayer extends MapLayer {
    @Override
    public void setPlayerStartingPosition(Point p) {
 
-   }
+	}
 
    @Override
 	public MapLayer copy() {

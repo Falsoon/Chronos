@@ -660,4 +660,5 @@ public abstract class MapLayer implements StateEditable, Serializable {
          d.setVisible(true);
       }
    }
+
 }
