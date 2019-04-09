@@ -40,6 +40,15 @@ public class StoryPanel extends JPanel {
 
         root.setSize(400,400);
 
+       UIManager.getDefaults().put("ScrollPane.ancestorInputMap",
+          new UIDefaults.LazyInputMap(new Object[] {}));
+
+       UIManager.getDefaults().put("JSplitPane.ancestorInputMap",
+          new UIDefaults.LazyInputMap(new Object[] {}));
+
+       UIManager.getDefaults().put("JButtom.ancestorInputMap",
+          new UIDefaults.LazyInputMap(new Object[] {}));
+
         JScrollPane pane = new JScrollPane(root);
         //remove scroll actions so that the player can move with arrow keys
         pane.getActionMap().remove("unitScrollUp");
@@ -51,6 +60,7 @@ public class StoryPanel extends JPanel {
         pane.getActionMap().remove("scrollLeft");
         pane.getActionMap().remove("scrollRight");
         jPanel.add(pane);
+
     }
 
     public void printDetails(String name, String desc) {
