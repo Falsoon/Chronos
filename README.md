@@ -10,7 +10,7 @@ To run Chronos, run the main method in AuthorWindow. You will begin with the Aut
 
 ## Architecture
 
-![Architecture Diagram](architecture diagram sp19.jpg)
+![Architecture Diagram](https://github.com/dieseld2015/Chronos/blob/master/architecture%20diagram%20sp19.png)
 This image illustrates the relationship between the internal components of Chronos. It has been designed to be extensible in the future, so that more complex functionality can be added to the project. This project internally uses an MVP structure, which makes organization and regression testing much more straightforward.
 
 
