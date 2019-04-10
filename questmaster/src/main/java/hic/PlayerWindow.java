@@ -2,7 +2,6 @@ package hic;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
@@ -21,23 +20,15 @@ public class PlayerWindow {
 	private static final char EAST = 'E';
 	private static final char WEST = 'W';
 
-	private static final int moveNorthKey = KeyEvent.VK_W;
-	private static final int moveSouthKey = KeyEvent.VK_S;
-	private static final int moveEastKey = KeyEvent.VK_D;
-	private static final int moveWestKey = KeyEvent.VK_A;
+	private static final int KEYCODE_W = 87;
+   private static final int KEYCODE_A = 65;
+   private static final int KEYCODE_S = 83;
+   private static final int KEYCODE_D = 68;
 
-	//the following are used to define the Swing KeyStrokes for arrow keys.
-	//The have been renamed here to distinguish between moving north/south and up/down
-	private static final int moveNorthArrowKey = KeyEvent.VK_UP;
-	private static final int moveSouthArrowKey = KeyEvent.VK_DOWN;
-	private static final int moveEastArrowKey = KeyEvent.VK_RIGHT;
-	private static final int moveWestArrowKey = KeyEvent.VK_LEFT;
-
-	//use unitScroll<Direction> because sometimes the arrow keys get registered as such
-	private static final String moveNorthArrowKeyAlternate = "unitScrollUp";
-	private static final String moveSouthArrowKeyAlternate = "unitScrollDown";
-	private static final String moveEastArrowKeyAlternate = "unitScrollRight";
-	private static final String moveWestArrowKeyAlternate = "unitScrollLeft";
+   private static final int KEYCODE_LEFT_ARROW = 37;
+   private static final int KEYCODE_UP_ARROW = 38;
+   private static final int KEYCODE_RIGHT_ARROW = 39;
+   private static final int KEYCODE_DOWN_ARROW = 40;
 
 	/**
 	 * Create the application.
@@ -65,40 +56,34 @@ public class PlayerWindow {
 		splitPane.setRightComponent(mapPanel);
 		
 		storyPanel = new StoryPanel(mapPanel);
+
+      KeyboardFocusManager.getCurrentKeyboardFocusManager()
+         .addKeyEventDispatcher(e -> {
+            if(e.getID() == KeyEvent.KEY_PRESSED) {
+               switch (e.getKeyCode()) {
+                  case KEYCODE_A:
+                  case KEYCODE_LEFT_ARROW:
+                     goDirection(WEST);
+                     return true;
+                  case KEYCODE_W:
+                  case KEYCODE_UP_ARROW:
+                     goDirection(NORTH);
+                     return true;
+                  case KEYCODE_D:
+                  case KEYCODE_RIGHT_ARROW:
+                     goDirection(EAST);
+                     return true;
+                  case KEYCODE_S:
+                  case KEYCODE_DOWN_ARROW:
+                     goDirection(SOUTH);
+                     return true;
+               }
+            }
+            //return false if not key pressed or not one of the reserved keys so other components can grab the key
+            return false;
+         });
 		
 		splitPane.setLeftComponent(storyPanel);
-		InputMap inputMap = splitPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
-
-		inputMap.put(KeyStroke.getKeyStroke(moveNorthKey,0), NORTH);
-		inputMap.put(KeyStroke.getKeyStroke(moveWestKey,0), WEST);
-		inputMap.put(KeyStroke.getKeyStroke(moveSouthKey,0), SOUTH);
-		inputMap.put(KeyStroke.getKeyStroke(moveEastKey,0), EAST);
-
-		inputMap.put(KeyStroke.getKeyStroke(moveNorthArrowKey,0), NORTH);
-		inputMap.put(KeyStroke.getKeyStroke(moveWestArrowKey,0), WEST);
-		inputMap.put(KeyStroke.getKeyStroke(moveSouthArrowKey,0), SOUTH);
-		inputMap.put(KeyStroke.getKeyStroke(moveEastArrowKey,0), EAST);
-
-
-		ActionMap actionMap = splitPane.getActionMap();
-
-		actionMap.put(NORTH,
-				new MoveAndPrintAction(NORTH));
-		actionMap.put(WEST,
-				new MoveAndPrintAction(WEST));
-		actionMap.put(SOUTH,
-				new MoveAndPrintAction(SOUTH));
-		actionMap.put(EAST,
-				new MoveAndPrintAction(EAST));
-
-		actionMap.put(moveNorthArrowKeyAlternate,
-				new MoveAndPrintAction(NORTH));
-		actionMap.put(moveWestArrowKeyAlternate,
-				new MoveAndPrintAction(WEST));
-		actionMap.put(moveSouthArrowKeyAlternate,
-				new MoveAndPrintAction(SOUTH));
-		actionMap.put(moveEastArrowKeyAlternate,
-				new MoveAndPrintAction(EAST));
 
 		WindowListener wl = new WindowListener(){
 
@@ -156,39 +141,30 @@ public class PlayerWindow {
 		frame.addWindowListener(wl);
 	}
 
-	/**
-	 * Custom class to handle actions for key bindings
-	 */
-	private class MoveAndPrintAction extends AbstractAction {
-		private char direction;
-
-		MoveAndPrintAction(char direction){
-			this.direction = direction;
-		}
-
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			switch (direction){
-				case WEST:
-					mapPanel.goLeft();
-					storyPanel.printDetails(mapPanel.getRoomName(), mapPanel.getRoomDesc());
-					break;
-				case EAST:
-					mapPanel.goRight();
-					storyPanel.printDetails(mapPanel.getRoomName(), mapPanel.getRoomDesc());
-					break;
-				case NORTH:
-					mapPanel.goUp();
-					storyPanel.printDetails(mapPanel.getRoomName(), mapPanel.getRoomDesc());
-					break;
-				case SOUTH:
-					mapPanel.goDown();
-					storyPanel.printDetails(mapPanel.getRoomName(), mapPanel.getRoomDesc());
-					break;
-				default:
-					break;
-			}
-		}
-
-	}
+   /**
+    * Move player character in the direction specified
+    * @param direction the direction code
+    */
+	private void goDirection(char direction){
+      switch (direction){
+         case WEST:
+            mapPanel.goLeft();
+            storyPanel.printDetails(mapPanel.getRoomName(), mapPanel.getRoomDesc());
+            break;
+         case EAST:
+            mapPanel.goRight();
+            storyPanel.printDetails(mapPanel.getRoomName(), mapPanel.getRoomDesc());
+            break;
+         case NORTH:
+            mapPanel.goUp();
+            storyPanel.printDetails(mapPanel.getRoomName(), mapPanel.getRoomDesc());
+            break;
+         case SOUTH:
+            mapPanel.goDown();
+            storyPanel.printDetails(mapPanel.getRoomName(), mapPanel.getRoomDesc());
+            break;
+         default:
+            break;
+      }
+   }
 }

@@ -13,7 +13,7 @@ public class StoryPanel extends JPanel {
 	private JTextArea textArea;
 
    public StoryPanel(MapPanel mp) {
-		mapPanel = mp;
+      mapPanel = mp;
 		jPanel = new JPanel();
 		jPanel.setLayout(new BoxLayout(jPanel,BoxLayout.PAGE_AXIS));
 		initialize();
@@ -23,43 +23,27 @@ public class StoryPanel extends JPanel {
 	}
 
     private void initialize() {
-        textArea = new JTextArea("Begin exploring with WASD.");
-        printDetails(mapPanel.getRoomName(), mapPanel.getRoomDesc());
+      textArea = new JTextArea("Begin exploring with WASD.");
+      printDetails(mapPanel.getRoomName(), mapPanel.getRoomDesc());
 
-        JPanel root = new JPanel();
-        root.setLayout(new BoxLayout(root,BoxLayout.PAGE_AXIS));
+      JPanel root = new JPanel();
+      root.setLayout(new BoxLayout(root,BoxLayout.PAGE_AXIS));
 
-        JPanel topBar = new PlayerTopBar().getMainJPanel();
-        root.add(topBar,BorderLayout.PAGE_START);
+      JPanel topBar = new PlayerTopBar().getMainJPanel();
+      root.add(topBar,BorderLayout.PAGE_START);
 
-        textArea.setLineWrap(true);
-        textArea.setEditable(false);
-        textArea.setSize(400,400);
-        textArea.setFocusable(false);
-        root.add(textArea,BorderLayout.PAGE_END);
+      textArea.setLineWrap(true);
+      textArea.setEditable(false);
+      textArea.setSize(400,400);
+      textArea.setFocusable(false);
+      root.add(textArea,BorderLayout.PAGE_END);
 
-        root.setSize(400,400);
+      root.setSize(400,400);
 
-       UIManager.getDefaults().put("ScrollPane.ancestorInputMap",
-          new UIDefaults.LazyInputMap(new Object[] {}));
 
-       UIManager.getDefaults().put("JSplitPane.ancestorInputMap",
-          new UIDefaults.LazyInputMap(new Object[] {}));
+      JScrollPane pane = new JScrollPane(root);
 
-       UIManager.getDefaults().put("JButtom.ancestorInputMap",
-          new UIDefaults.LazyInputMap(new Object[] {}));
-
-        JScrollPane pane = new JScrollPane(root);
-        //remove scroll actions so that the player can move with arrow keys
-        pane.getActionMap().remove("unitScrollUp");
-        pane.getActionMap().remove("unitScrollDown");
-        pane.getActionMap().remove("unitScrollLeft");
-        pane.getActionMap().remove("unitScrollRight");
-        pane.getActionMap().remove("scrollUp");
-        pane.getActionMap().remove("scrollDown");
-        pane.getActionMap().remove("scrollLeft");
-        pane.getActionMap().remove("scrollRight");
-        jPanel.add(pane);
+      jPanel.add(pane);
 
     }
 
