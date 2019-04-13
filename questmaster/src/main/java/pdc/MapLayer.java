@@ -14,6 +14,9 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Optional;
+import pdc.Geometry;
+
+import static pdc.Geometry.point2DToPoint;
 
 
 /**
@@ -32,7 +35,7 @@ public abstract class MapLayer implements StateEditable, Serializable {
    public boolean throwAlerts;
    private boolean walling;
    protected Room selectedRoom;
-   protected ArrayList<Wall> wallList;
+   public ArrayList<Wall> wallList;
    private boolean firstClick;
    private Wall lastWall;
    //private UndoableEditSupport undoSupport;
@@ -77,7 +80,7 @@ public abstract class MapLayer implements StateEditable, Serializable {
          //startStateEdit();
 
          lastWall = new Wall(new Line2D.Double(lastPoint, p), WallType.OPAQUE);
-         wallList.add(lastWall);
+         addToWallList(lastWall);
          detectRooms();
          //add lastPoint if it hasn't been added yet
          if (wasFirstClick) {
@@ -93,7 +96,64 @@ public abstract class MapLayer implements StateEditable, Serializable {
 
 	}
 
-   /*private void startStateEdit(){
+   /**
+    * Adds walls to the wall list, combining collinear walls if they exist to eliminate duplicate walls
+    * @param candidateWall the most recent candidate wall
+    */
+	private void addToWallList(Wall candidateWall){
+	   boolean addCandidateWall = true;
+      Line2D candidateWallRep = candidateWall.getLineRepresentation();
+      ArrayList<Wall> wallsToRemove = new ArrayList<>();
+      ArrayList<Wall> wallsToAdd = new ArrayList<>();
+	   for (Wall wallInList : wallList){
+	      Line2D wallInListRep = wallInList.getLineRepresentation();
+	      //handle collinear intersecting walls
+         //  - lines match, don't add candidate wall
+         if(Geometry.lineSegmentsMatch(candidateWallRep,wallInListRep)){
+            addCandidateWall = false;
+         }else if(Geometry.lineSegmentsIntersectAndCollinear(wallInListRep,candidateWallRep)){
+            //line segments overlap
+            Optional<Point> sharedEndpoint = Geometry.lineSegmentsShareSingleEndpoint(candidateWallRep,wallInListRep);
+            if(sharedEndpoint.isPresent()){
+               boolean endpointIsUnique = true;
+               for(Wall otherWall: wallList){
+                  if(!otherWall.equals(wallInList)&&otherWall.hasEndpoint(sharedEndpoint.get())){
+                     endpointIsUnique = false;
+                     break;
+                  }
+               }
+               if(endpointIsUnique){
+                  // - exactly one shared endpoint shared exclusively by the two walls
+                  addCandidateWall = false;
+                  wallsToRemove.add(wallInList);
+                  if(wallInList.isLongerThan(candidateWall)){
+                     Point otherPoint = wallInList.getP1().equals(sharedEndpoint.get()) ? point2DToPoint(wallInList.getP2()) : point2DToPoint(wallInList.getP1());
+                     wallsToAdd.add(new Wall(new Line2D.Double(sharedEndpoint.get(),otherPoint),WallType.OPAQUE));
+                  }else if(candidateWall.isLongerThan(wallInList)){
+                     Point otherPoint = candidateWall.getP1().equals(sharedEndpoint.get()) ? point2DToPoint(candidateWall.getP2()) : point2DToPoint(candidateWall.getP1());
+                     wallsToAdd.add(new Wall(new Line2D.Double(sharedEndpoint.get(),otherPoint),WallType.OPAQUE));
+                  }
+               }
+            }else{
+               //  - no shared endpoint, one contains the other
+               if(wallInList.isLongerThan(candidateWall)){
+                  addCandidateWall = false;
+               }else{
+                  addCandidateWall = true;
+                  wallsToRemove.add(wallInList);
+               }
+            }
+         }
+      }
+	   wallList.removeAll(wallsToRemove);
+	   wallList.addAll(wallsToAdd);
+	   if(addCandidateWall){
+	      wallList.add(candidateWall);
+      }
+   }
+
+   /*
+   private void startStateEdit(){
       stateEdit = new StateEdit(MapLayer.this);
       RoomList.getInstance().startStateEdit();
    }
@@ -102,12 +162,13 @@ public abstract class MapLayer implements StateEditable, Serializable {
       stateEdit.end();
       RoomList.getInstance().endStateEdit();
       undoManager.addEdit(stateEdit);
-   }*/
+   }
+   */
 
    /**
     * Method called to detect rooms from lines drawn on the map
     */
-	public void detectRooms(){
+   private void detectRooms(){
       breakUpWallsAtIntersections();
 
       ArrayList<Room> tempRoomList = getRooms();
@@ -187,7 +248,7 @@ public abstract class MapLayer implements StateEditable, Serializable {
          for(int i = 0;i<cycle.length-1;i++){
             Line2D line = new Line2D.Double(cycle[i],cycle[i+1]);
             for(Wall wall : wallList){
-               if(linesMatch(wall.getLineRepresentation(),line)){
+               if(Geometry.lineSegmentsMatch(wall.getLineRepresentation(),line)){
                   currentCycle.add(wall);
                }
             }
@@ -195,7 +256,7 @@ public abstract class MapLayer implements StateEditable, Serializable {
          //add edge back to the starting vertex
          Line2D line = new Line2D.Double(cycle[cycle.length-1],cycle[0]);
          for(Wall wall : wallList){
-            if(linesMatch(wall.getLineRepresentation(),line)){
+            if(Geometry.lineSegmentsMatch(wall.getLineRepresentation(),line)){
                currentCycle.add(wall);
             }
          }
@@ -225,52 +286,13 @@ public abstract class MapLayer implements StateEditable, Serializable {
    }
 
    /**
-    * Helper method to determine if 2 lines are the same
-    * @param lineA the first line
-    * @param lineB the second line
-    * @return true if lineA and lineB have the same coordinates in either order
-    */
-   private boolean linesMatch(Line2D lineA, Line2D lineB){
-	   return xMatch(lineA,lineB)&&yMatch(lineA,lineB);
-   }
-
-   /**
-    * Helper method to determine if the x coordinates of the 2 lines are the same
-    * @param lineA the first line
-    * @param lineB the second line
-    * @return true of lineA and lineB have the same x coordinate in either order
-    */
-   private boolean xMatch(Line2D lineA, Line2D lineB){
-	   return (lineA.getX1()==lineB.getX1()
-         ||lineA.getX1()==lineB.getX2())
-         &&
-         (lineA.getX2()==lineB.getX1()
-         ||lineA.getX2()==lineB.getX2());
-   }
-
-   /**
-    * Helper method to determine if the y coordinates of the 2 lines are the same
-    * @param lineA the first line
-    * @param lineB the second line
-    * @return true of lineA and lineB have the same y coordinate in either order
-    */
-   private boolean yMatch(Line2D lineA, Line2D lineB){
-      return (lineA.getY1()==lineB.getY1()
-         ||lineA.getY1()==lineB.getY2())
-         &&
-         (lineA.getY2()==lineB.getY1()
-         ||lineA.getY2()==lineB.getY2());
-   }
-
-   /**
     * Breaks up walls that intersect into separate line segments so that they are easier to work with
     */
    private void breakUpWallsAtIntersections() {
       HashMap<Wall, ArrayList<Point>> wallsToBreak = new HashMap<>();
       for (Wall wallA : wallList) {
-         if (Line2D.linesIntersect(wallA.getX1(), wallA.getY1(), wallA.getX2(), wallA.getY2(),
-            lastWall.getX1(), lastWall.getY1(), lastWall.getX2(), lastWall.getY2())) {
-            Optional<Point> intersection = intersectionPoint(wallA.getLineRepresentation(), lastWall.getLineRepresentation());
+         if (wallA.getLineRepresentation().intersectsLine(lastWall.getLineRepresentation())) {
+            Optional<Point> intersection = Geometry.intersectionPoint(wallA.getLineRepresentation(), lastWall.getLineRepresentation());
             intersection.ifPresent(point -> {
                if ((wallA.getP1().equals(point) || wallA.getP2().equals(point))
                   && !(lastWall.getP1().equals(point) || lastWall.getP2().equals(point))) {
@@ -320,8 +342,8 @@ public abstract class MapLayer implements StateEditable, Serializable {
       points.sort(ps);
       Point lastPoint = null;
       ArrayList<Point> wallPoints = new ArrayList<>();
-      wallPoints.add(new Point((int)wall.getX1(),(int)wall.getY1()));
-      wallPoints.add(new Point((int)wall.getX2(),(int)wall.getY2()));
+      wallPoints.add(point2DToPoint(wall.getP1()));
+      wallPoints.add(point2DToPoint(wall.getP2()));
       wallPoints.sort(ps);
       for(Point point : points){
          if(lastPoint == null){
@@ -364,17 +386,17 @@ public abstract class MapLayer implements StateEditable, Serializable {
       ArrayList<Room> roomsToUpdate = new ArrayList<>();
       boolean flag = false;
       int flagerror = 0;
-      Wall portalWallObj = null;
+      Wall wallToPlacePortalOn = null;
       for(int i = 0; i< this.wallList.size(); i++) {
          if (this.wallList.get(i).getDistance(point) ==0) {
-            portalWallObj = this.wallList.get(i);
-            portalWall = portalWallObj.getLineRepresentation();
+            wallToPlacePortalOn = this.wallList.get(i);
+            portalWall = wallToPlacePortalOn.getLineRepresentation();
             if(Math.sqrt( ( ( portalWall.getX2() - portalWall.getX1() ) * ( portalWall.getX2() - portalWall.getX1() ) ) + ( ( portalWall.getY2() - portalWall.getY1() ) * ( portalWall.getY2() - portalWall.getY1() ) ) )>= 15) {
                if (portalWall.getX1() == portalWall.getX2()) {
                   if ((Math.abs(point.getY() - portalWall.getY1()) > 15) && (Math.abs(point.getY() - portalWall.getY2()) > 15)) {
-                     this.wallList.remove(portalWallObj);
+                     this.wallList.remove(wallToPlacePortalOn);
                      for (Room room : RoomList.getInstance().list) {
-                        if (room.walls.contains(portalWallObj)) {
+                        if (room.walls.contains(wallToPlacePortalOn)) {
                            roomsToUpdate.add(room);
                         }
                      }
@@ -385,9 +407,9 @@ public abstract class MapLayer implements StateEditable, Serializable {
                   }
                } else if(portalWall.getY1() == portalWall.getY2()){
                   if ((Math.abs(point.getX() - portalWall.getX1()) > 15) && (Math.abs(point.getX() - portalWall.getX2()) > 15)) {
-                     this.wallList.remove(portalWallObj);
+                     this.wallList.remove(wallToPlacePortalOn);
                      for (Room room : RoomList.getInstance().list) {
-                        if (room.walls.contains(portalWallObj)) {
+                        if (room.walls.contains(wallToPlacePortalOn)) {
                            roomsToUpdate.add(room);
                         }
                      }
@@ -420,17 +442,18 @@ public abstract class MapLayer implements StateEditable, Serializable {
             }
          }
          Wall newEndWall = new Wall(new Line2D.Double(endDoor, end),WallType.OPAQUE);
-         Wall doorSeg = new Wall(new Line2D.Double(point, endDoor),type);
+         Wall portalSeg = new Wall(new Line2D.Double(point, endDoor),type);
          this.wallList.add(newStartWall);
-         this.wallList.add(doorSeg);
+         this.wallList.add(portalSeg);
          this.wallList.add(newEndWall);
          for(Room room:roomsToUpdate){
-            room.walls.remove(portalWallObj);
+            room.walls.remove(wallToPlacePortalOn);
             ArrayList<Wall> newWallList = room.walls;
             newWallList.add(newStartWall);
-            newWallList.add(doorSeg);
+            newWallList.add(portalSeg);
             newWallList.add(newEndWall);
             room.updatePath(newWallList);
+            room.setPortalDirection(portalSeg);
          }
       } else {
          String portalTypeForDialog = "Portal";
@@ -444,40 +467,6 @@ public abstract class MapLayer implements StateEditable, Serializable {
          } else {
             dialog(portalTypeForDialog+" must be placed on a wall.");
          }
-      }
-   }
-
-   /**
-    * Determines where the specified Line2Ds intersect
-    * Adapted from https://www.geeksforgeeks.org/program-for-point-of-intersection-of-two-lines/
-    * and https://www.baeldung.com/java-intersection-of-two-lines
-    * @param lineA the first line
-    * @param lineB the second line
-    * @return the intersection as a point if the lines intersect, Optional.Empty() if not
-    */
-   private Optional<Point> intersectionPoint(Line2D lineA, Line2D lineB) {
-      // Line AB represented as a1x + b1y = c1
-      double a1 = lineA.getY2() - lineA.getY1();
-      double b1 = lineA.getX1() - lineA.getX2();
-      double c1 = a1*(lineA.getX1()) + b1*(lineA.getY1());
-
-      // Line CD represented as a2x + b2y = c2
-      double a2 = lineB.getY2() - lineB.getY1();
-      double b2 = lineB.getX1() - lineB.getX2();
-      double c2 = a2*(lineB.getX1())+ b2*(lineB.getY1());
-
-      double determinant = a1*b2 - a2*b1;
-
-      if (determinant == 0)
-      {
-         // The lines are parallel
-            return Optional.empty();
-      }
-      else
-      {
-         double x = (b2*c1 - b1*c2)/determinant;
-         double y = (a1*c2 - a2*c1)/determinant;
-         return Optional.of(new Point((int)x, (int)y));
       }
    }
 

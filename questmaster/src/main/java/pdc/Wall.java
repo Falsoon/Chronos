@@ -22,23 +22,12 @@ public class Wall implements Serializable{
       this.lineRepresentation = new Line2D.Double(pointA,pointB);
       this.wallType = wallType;
    }
+
    public void setType(WallType type)
    {
       this.wallType = type;
    }
-   public double getX1(){
-      return lineRepresentation.getX1();
-   }
 
-   public double getX2(){
-      return lineRepresentation.getX2();
-   }
-   public double getY1(){
-      return lineRepresentation.getY1();
-   }
-   public double getY2(){
-      return lineRepresentation.getY2();
-   }
    public Point2D getP1(){
       return lineRepresentation.getP1();
    }
@@ -55,6 +44,23 @@ public class Wall implements Serializable{
       return wallType;
    }
    public void setWallType(WallType newType) {this.wallType = newType;}
+
+   /**
+    * Determines if this is longer than the specified Wall. Used for collinearity
+    * @param wall the wall to check against
+    * @return true if this is longer than wall
+    */
+   public boolean isLongerThan(Wall wall){
+      double thisXDelta = Math.pow(this.getLineRepresentation().getX2()-this.getLineRepresentation().getX1(),2);
+      double thisYDelta = Math.pow(this.getLineRepresentation().getY2()-this.getLineRepresentation().getY1(),2);
+      double thisLength = Math.sqrt(thisXDelta+thisYDelta);
+
+      double wallXDelta = Math.pow(wall.getLineRepresentation().getX2()-wall.getLineRepresentation().getX1(),2);
+      double wallYDelta = Math.pow(wall.getLineRepresentation().getY2()-wall.getLineRepresentation().getY1(),2);
+      double wallLength = Math.sqrt(wallXDelta+wallYDelta);
+
+      return thisLength > wallLength;
+   }
 
    /**
     * Determines if p is an endpoint of this

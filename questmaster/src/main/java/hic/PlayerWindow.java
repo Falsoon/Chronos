@@ -1,5 +1,7 @@
 package hic;
 
+import pdc.CardinalDirection;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
@@ -14,11 +16,6 @@ public class PlayerWindow {
 	public JFrame frame;
 	private MapPanel mapPanel;
 	private StoryPanel storyPanel;
-
-	private static final char NORTH = 'N';
-	private static final char SOUTH = 'S';
-	private static final char EAST = 'E';
-	private static final char WEST = 'W';
 
 	private static final int KEYCODE_W = 87;
    private static final int KEYCODE_A = 65;
@@ -63,19 +60,19 @@ public class PlayerWindow {
                switch (e.getKeyCode()) {
                   case KEYCODE_A:
                   case KEYCODE_LEFT_ARROW:
-                     goDirection(WEST);
+                     goDirection(CardinalDirection.WEST);
                      return true;
                   case KEYCODE_W:
                   case KEYCODE_UP_ARROW:
-                     goDirection(NORTH);
+                     goDirection(CardinalDirection.NORTH);
                      return true;
                   case KEYCODE_D:
                   case KEYCODE_RIGHT_ARROW:
-                     goDirection(EAST);
+                     goDirection(CardinalDirection.EAST);
                      return true;
                   case KEYCODE_S:
                   case KEYCODE_DOWN_ARROW:
-                     goDirection(SOUTH);
+                     goDirection(CardinalDirection.SOUTH);
                      return true;
                }
             }
@@ -145,7 +142,7 @@ public class PlayerWindow {
     * Move player character in the direction specified
     * @param direction the direction code
     */
-	private void goDirection(char direction){
+	private void goDirection(CardinalDirection direction){
       switch (direction){
          case WEST:
             mapPanel.goLeft();
