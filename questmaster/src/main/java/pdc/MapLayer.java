@@ -451,8 +451,8 @@ public abstract class MapLayer implements StateEditable, Serializable {
             portalTypeForDialog = "Archway";
          }
         else if(type.equals(WallType.LOCKDOOR)){
-           portalTypeForDialog = "Archway";
-        }
+           portalTypeForDialog = "Locked Door";
+         }
          if(flagerror ==1) {
             dialog(portalTypeForDialog+" cannot be placed here.");
          } else {
@@ -663,4 +663,12 @@ public abstract class MapLayer implements StateEditable, Serializable {
          d.setVisible(true);
       }
    }
+    protected void dialogPlayer(String type, String message) {
+        if(throwAlerts) {
+            JOptionPane jop = new JOptionPane(message);
+            final JDialog d = jop.createDialog(type);
+            d.setLocation(250, 250);
+            d.setVisible(true);
+        }
+    }
 }

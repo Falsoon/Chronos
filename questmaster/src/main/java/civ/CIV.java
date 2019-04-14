@@ -233,6 +233,7 @@ public class CIV {
 	public void stopDrawing() {
 		map.stopDrawing();
 	}
+	public void lockDoor(){map.getPlayer().lockDoor();}
 
 	public void archwayAdd() {
 		stopDrawing();

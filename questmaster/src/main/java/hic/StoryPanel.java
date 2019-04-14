@@ -84,8 +84,10 @@ public class StoryPanel extends JPanel {
                             printDetails(mapPanel.getRoomName(), mapPanel.getRoomDesc(), t);
                             break;
                         case K:
-                            System.out.println("K");
                             mapPanel.pickUpKey();
+                            break;
+                        case L:
+                            mapPanel.lockDoor();
                             break;
                         default:
                             break;

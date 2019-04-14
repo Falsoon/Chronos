@@ -72,6 +72,50 @@ public class Player implements Serializable {
 		return position;
 	}
 
+	public void lockDoor() {
+	    if(keysOwned.size()>0) {
+            ArrayList<Point> directions = new ArrayList<>();
+            directions.add(new Point(position.x, position.y - GRIDDISTANCE));
+            directions.add(new Point(position.x, position.y + GRIDDISTANCE));
+            directions.add(new Point(position.x - GRIDDISTANCE, position.y));
+            directions.add(new Point(position.x + GRIDDISTANCE, position.y));
+            for (Point d : directions) {
+                double closestCollision = Double.MAX_VALUE;
+                double closestNonCollision = Double.MAX_VALUE;
+                //TODO would like to not iterate through all walls. CurrentRoom currently does not store archways
+                for (Wall w : mapLayer.wallList) {
+                    // System.out.println("Wall WallType: " + w.getWallType());
+                    double distance = w.getDistance(d);
+                    if (w.getWallType() == WallType.LOCKDOOR) {
+                        if (distance < closestCollision) {
+                            closestCollision = distance;
+                            if (closestCollision < closestNonCollision && closestCollision < COLLISION_MARGIN) {
+                                w.setType(WallType.OPENLOCKDOOR);
+                                mapLayer.dialogPlayer("Door","UNLOCKED!");
+                                break;
+                            }
+                        }
+                    } else if (w.getWallType() == WallType.OPENLOCKDOOR) {
+                        if (distance < closestCollision) {
+                            closestCollision = distance;
+                            if (closestCollision < closestNonCollision && closestCollision < COLLISION_MARGIN) {
+                                w.setType(WallType.LOCKDOOR);
+                                mapLayer.dialogPlayer("Door","LOCKED!");
+                                break;
+                            }
+                        }
+                    }
+
+                }
+            }
+        }
+        else
+        {
+            mapLayer.dialogPlayer("Error","You do not have any keys.");
+        }
+
+    }
+
 	public void goUp() {
 		if (playing && !collides(new Point(position.x, position.y - GRIDDISTANCE))) {
 			position.move(position.x, position.y - GRIDDISTANCE);
@@ -110,15 +154,23 @@ public class Player implements Serializable {
 
    public void pickUpKey()
    {
+       boolean keyPresent = false;
        for(Key K :mapLayer.keyList)
        {
            if(Math.abs(K.getPosition().getX() - position.getX()) < 5 &&Math.abs(K.getPosition().getY() - position.getY())<5)
            {
                mapLayer.keyList.remove(K);
                keysOwned.add(K);
+               mapLayer.dialogPlayer("Inventory", "Key Added.");
+               keyPresent = true;
                break;
            }
        }
+       if(!keyPresent)
+       {
+           mapLayer.dialogPlayer("Inventory", "No Key Here.");
+       }
+
    }
 
    public void dropKey()
@@ -128,6 +180,11 @@ public class Player implements Serializable {
        if(keysOwned.size()>0) {
            mapLayer.placeKey(p);
            keysOwned.remove(0);
+           mapLayer.dialogPlayer("Inventory", "Key Dropped.");
+       }
+       else
+       {
+           mapLayer.dialogPlayer("Inventory", "No Key to Drop.");
        }
    }
 	
@@ -142,7 +199,7 @@ public class Player implements Serializable {
 		for (Wall w : mapLayer.wallList) {
 			// System.out.println("Wall WallType: " + w.getWallType());
 			double distance = w.getDistance(p);
-			if (w.getWallType() == WallType.OPAQUE) {
+			if (w.getWallType() == WallType.OPAQUE||w.getWallType() == WallType.LOCKDOOR) {
 				if (distance < closestCollision) {
 					closestCollision = distance;
 				}

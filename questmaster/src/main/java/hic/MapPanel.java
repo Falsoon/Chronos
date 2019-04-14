@@ -97,6 +97,7 @@ public class MapPanel extends JPanel {
 		civ.stopPlacingPlayer();
 		civ.keyAdd();
 	}
+
     public void dropKey() {
         civ.dropKey();
         repaint();
@@ -180,6 +181,11 @@ public class MapPanel extends JPanel {
 		return civ.placedPlayer();
 	}
 
+    public void lockDoor()
+    {
+        civ.lockDoor();
+        repaint();
+    }
 	public void goUp() {
 		civ.goUp();
 		repaint();
