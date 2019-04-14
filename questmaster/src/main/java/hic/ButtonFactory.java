@@ -28,23 +28,32 @@ public class ButtonFactory {
 		authorWindow.authorPanel = new AuthorPanel();
 
 		btnOpaqueWalls = new JToggleButton("Opaque Walls");
+        btnOpaqueWalls.setMaximumSize(new Dimension(200, 30));
 		btnOpaqueWalls.setAlignmentX(Component.CENTER_ALIGNMENT);
 		btnTransWalls = new JToggleButton("Transparent Walls");
+        btnTransWalls.setMaximumSize(new Dimension(200, 30));
 		btnTransWalls.setAlignmentX(Component.CENTER_ALIGNMENT);
 		btnArchways = new JToggleButton("Archways");
+        btnArchways.setMaximumSize(new Dimension(200, 30));
 		btnArchways.setAlignmentX(Component.CENTER_ALIGNMENT);
 		btnDoors = new JToggleButton("Doors");
+        btnDoors.setMaximumSize(new Dimension(200, 30));
 		btnDoors.setAlignmentX(Component.CENTER_ALIGNMENT);
-        btnLock = new JToggleButton("Locked Doors");
+        btnLock = new JToggleButton("Locked Door");
+        btnLock.setMaximumSize(new Dimension(200, 30));
         btnLock.setAlignmentX(Component.CENTER_ALIGNMENT);
 		btnKey = new JToggleButton("Key");
+        btnKey.setMaximumSize(new Dimension(200, 30));
 		btnKey.setAlignmentX(Component.CENTER_ALIGNMENT);
 		btnProp = new JToggleButton("Set Properties");
+        btnProp.setMaximumSize(new Dimension(200, 30));
 		btnProp.setAlignmentX(Component.CENTER_ALIGNMENT);
 		btnDelete = new JToggleButton("Delete Walls/Passageways");
+        btnDelete.setMaximumSize(new Dimension(200, 30));
 		btnDelete.setAlignmentX(Component.CENTER_ALIGNMENT);
 
 		btnPlayer = new JButton("Set Start Point");
+        btnPlayer.setMaximumSize(new Dimension(200, 30));
 		btnPlayer.setAlignmentX(Component.CENTER_ALIGNMENT);
 
 		JSeparator line1 = new JSeparator(SwingConstants.HORIZONTAL);
@@ -52,21 +61,26 @@ public class ButtonFactory {
 		JSeparator line2 = new JSeparator(SwingConstants.HORIZONTAL);
 
 		btnUndo = new JButton("Undo");
+        btnUndo.setMaximumSize(new Dimension(200, 30));
 		btnUndo.setAlignmentX(Component.CENTER_ALIGNMENT);
 
 		btnSave = new JButton("Save Map");
+        btnSave.setMaximumSize(new Dimension(200, 30));
 		btnSave.setAlignmentX(Component.CENTER_ALIGNMENT);
 		btnRestore = new JButton("Restore Map");
+        btnRestore.setMaximumSize(new Dimension(200, 30));
 		btnRestore.setAlignmentX(Component.CENTER_ALIGNMENT);
 
 		JSeparator line3 = new JSeparator(SwingConstants.HORIZONTAL);
 
 		btnPlay = new JButton("Play");
+        btnPlay.setMaximumSize(new Dimension(200, 30));
 		btnPlay.setAlignmentX(Component.CENTER_ALIGNMENT);
 
 		JSeparator line4 = new JSeparator(SwingConstants.HORIZONTAL);
 
 		btnClear = new JButton("Clear");
+        btnClear.setMaximumSize(new Dimension(70, 10));
 		btnClear.setAlignmentX(Component.CENTER_ALIGNMENT);
 
 		authorWindow.authorPanel.add(btnOpaqueWalls);
