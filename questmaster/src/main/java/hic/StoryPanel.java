@@ -67,6 +67,8 @@ public class StoryPanel extends JPanel {
                             printDetails(mapPanel.getRoomName(), mapPanel.getRoomDesc(), t);
                             break;
                         case D:
+                            mapPanel.dropKey();
+                            break;
                         case RIGHT:
                             mapPanel.goRight();
                             printDetails(mapPanel.getRoomName(), mapPanel.getRoomDesc(), t);
@@ -80,6 +82,10 @@ public class StoryPanel extends JPanel {
                         case DOWN:
                             mapPanel.goDown();
                             printDetails(mapPanel.getRoomName(), mapPanel.getRoomDesc(), t);
+                            break;
+                        case K:
+                            System.out.println("K");
+                            mapPanel.pickUpKey();
                             break;
                         default:
                             break;

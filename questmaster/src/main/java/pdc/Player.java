@@ -15,16 +15,20 @@ public class Player implements Serializable {
 	private boolean placed, playing, placing;
 	private Room currentRoom;
 	private MapLayer mapLayer;
+	private ArrayList<Key> keysOwned;
 	private String representation;
 	private final int XOFFSET = 2;
 	private final int YOFFSET = 4;
 	private final double COLLISION_MARGIN = 13.01;
+	private Key key;
 	
 	public Player(MapLayer mapLayer){
 		placed = false;
 		playing = false;
 		placing = false;
+		keysOwned = new ArrayList<>();
 		this.mapLayer = mapLayer;
+
 		representation = "\u00B6";
 	}
 	
@@ -62,6 +66,7 @@ public class Player implements Serializable {
 	public void stopPlacing() {
 		placing = false;
 	}
+	public boolean hasKey(){return keysOwned.size()>0;}
 
 	public Point getPosition() {
 		return position;
@@ -101,6 +106,29 @@ public class Player implements Serializable {
 			position.move(position.x + GRIDDISTANCE, position.y);
 		}
       positionDebug();
+   }
+
+   public void pickUpKey()
+   {
+       for(Key K :mapLayer.keyList)
+       {
+           if(Math.abs(K.getPosition().getX() - position.getX()) < 5 &&Math.abs(K.getPosition().getY() - position.getY())<5)
+           {
+               mapLayer.keyList.remove(K);
+               keysOwned.add(K);
+               break;
+           }
+       }
+   }
+
+   public void dropKey()
+   {
+        Point p  = new Point();
+        p.setLocation(position.getX(), position.getY());
+       if(keysOwned.size()>0) {
+           mapLayer.placeKey(p);
+           keysOwned.remove(0);
+       }
    }
 	
 	/**

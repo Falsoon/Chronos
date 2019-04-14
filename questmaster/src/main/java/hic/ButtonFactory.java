@@ -15,7 +15,7 @@ public class ButtonFactory {
 	public RoomDescInsert rdi;
 	public JButton btnPlay, btnPlayer, btnUndo, btnClear;
 	public JButton btnSave, btnRestore;
-	public JToggleButton btnOpaqueWalls, btnTransWalls, btnArchways, btnProp, btnDoors, btnDelete;
+	public JToggleButton btnOpaqueWalls, btnTransWalls, btnArchways, btnProp, btnDoors,btnLock, btnDelete, btnKey;
 	
 	public ButtonFactory(AuthorWindow aw) {
 		this.authorWindow = aw;
@@ -35,6 +35,10 @@ public class ButtonFactory {
 		btnArchways.setAlignmentX(Component.CENTER_ALIGNMENT);
 		btnDoors = new JToggleButton("Doors");
 		btnDoors.setAlignmentX(Component.CENTER_ALIGNMENT);
+        btnLock = new JToggleButton("Locked Doors");
+        btnLock.setAlignmentX(Component.CENTER_ALIGNMENT);
+		btnKey = new JToggleButton("Key");
+		btnKey.setAlignmentX(Component.CENTER_ALIGNMENT);
 		btnProp = new JToggleButton("Set Properties");
 		btnProp.setAlignmentX(Component.CENTER_ALIGNMENT);
 		btnDelete = new JToggleButton("Delete Walls/Passageways");
@@ -69,6 +73,8 @@ public class ButtonFactory {
 		authorWindow.authorPanel.add(btnTransWalls);
 		authorWindow.authorPanel.add(btnArchways);
 		authorWindow.authorPanel.add(btnDoors);
+        authorWindow.authorPanel.add(btnLock);
+        authorWindow.authorPanel.add(btnKey);
 		authorWindow.authorPanel.add(btnProp);
 		authorWindow.authorPanel.add(btnPlayer);
 		authorWindow.authorPanel.add(btnDelete);
@@ -90,6 +96,8 @@ public class ButtonFactory {
 		btnList.add(btnTransWalls);
 		btnList.add(btnArchways);
 		btnList.add(btnDoors);
+        btnList.add(btnLock);
+		btnList.add(btnKey);
 		btnList.add(btnProp);
 		btnList.add(btnDelete);
 
@@ -132,6 +140,13 @@ public class ButtonFactory {
 				authorWindow.mapPanel.paintDoors();
 			}
 		});
+        btnLock.addItemListener(e -> {
+            if (e.getStateChange() == ItemEvent.SELECTED) {
+                //authorWindow.mapPanel.stopDrawing();
+                //authorWindow.mapPanel.stopPlacingPlayer();
+                authorWindow.mapPanel.paintLockDoors();
+            }
+        });
 
 		btnProp.addItemListener(e -> {
 			if (e.getStateChange() == ItemEvent.SELECTED) {
@@ -154,6 +169,11 @@ public class ButtonFactory {
 
 		});
 
+		btnKey.addActionListener(e -> {
+
+			authorWindow.mapPanel.paintKey();
+
+		});
 		btnUndo.addActionListener(e -> {
         	authorWindow.mapPanel.undo();
         	authorWindow.authorPanel.grabFocus();

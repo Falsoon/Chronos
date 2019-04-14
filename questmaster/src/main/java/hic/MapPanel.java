@@ -87,6 +87,24 @@ public class MapPanel extends JPanel {
 		civ.stopPlacingPlayer();
 		civ.doorAdd();
 	}
+    public void paintLockDoors() {
+        civ.stopDrawing();
+        civ.stopPlacingPlayer();
+        civ.lockDoorAdd();
+    }
+	public void paintKey() {
+		civ.stopDrawing();
+		civ.stopPlacingPlayer();
+		civ.keyAdd();
+	}
+    public void dropKey() {
+        civ.dropKey();
+        repaint();
+    }
+    public void pickUpKey() {
+        civ.pickUpKey();
+        repaint();
+    }
 
    /**
     * Changes state of MapPanel to add Archway

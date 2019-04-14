@@ -45,7 +45,7 @@
     <property name="java.class.path" value="C:\Users\Becca\Downloads\apache-maven-3.6.0-bin\apache-maven-3.6.0\bin\..\boot\plexus-classworlds-2.5.2.jar"/>
     <property name="java.vm.specification.version" value="10"/>
     <property name="sun.arch.data.model" value="64"/>
-    <property name="sun.java.command" value="org.codehaus.plexus.classworlds.launcher.Launcher package"/>
+    <property name="sun.java.command" value="org.codehaus.plexus.classworlds.launcher.Launcher package -DskipTest"/>
     <property name="java.home" value="C:\Program Files\Java\jdk-10.0.2"/>
     <property name="user.language" value="en"/>
     <property name="java.specification.vendor" value="Oracle Corporation"/>
@@ -53,6 +53,7 @@
     <property name="java.vm.info" value="mixed mode"/>
     <property name="java.version" value="10.0.2"/>
     <property name="java.vendor" value="Oracle Corporation"/>
+    <property name="skipTest" value="true"/>
     <property name="sun.stderr.encoding" value="cp437"/>
     <property name="maven.home" value="C:\Users\Becca\Downloads\apache-maven-3.6.0-bin\apache-maven-3.6.0\bin\.."/>
     <property name="file.separator" value="\"/>
@@ -65,5 +66,5 @@
     <property name="sun.desktop" value="windows"/>
     <property name="sun.cpu.isalist" value="amd64"/>
   </properties>
-  <testcase name="testApp" classname="explorer.AppTest" time="0.002"/>
+  <testcase name="testApp" classname="explorer.AppTest" time="0.001"/>
 </testsuite>

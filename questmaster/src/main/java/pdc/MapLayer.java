@@ -26,6 +26,7 @@ import java.util.Optional;
 public abstract class MapLayer implements StateEditable, Serializable {
    protected boolean drawingTransparent;
    protected Point start;
+   protected Key key;
    protected ArrayList<GeneralPath> pathList;
    public ArrayList<Point> pointList;
    public GeneralPath guiPath;
@@ -35,6 +36,7 @@ public abstract class MapLayer implements StateEditable, Serializable {
    protected ArrayList<Wall> wallList;
    private boolean firstClick;
    private Wall lastWall;
+   protected ArrayList<Key> keyList;
    //private UndoableEditSupport undoSupport;
    //private UndoManager undoManager;
    //private StateEdit stateEdit;
@@ -50,6 +52,7 @@ public abstract class MapLayer implements StateEditable, Serializable {
 
 		this.pathList = new ArrayList<>();
 		this.pointList = new ArrayList<>();
+		this.keyList = new ArrayList<>();
 		wallList = new ArrayList<>();
       throwAlerts = true;
 		this.selectedRoom = null;
@@ -354,6 +357,14 @@ public abstract class MapLayer implements StateEditable, Serializable {
       placePortal(point,WallType.CLOSEDDOOR);
    }
 
+    /**
+     * Places a locked door at the specified Point
+     * @param point the point at which to place the archway
+     */
+    public void placeLockDoor(Point point){
+        placePortal(point,WallType.LOCKDOOR);
+    }
+
    /**
     * Method to add portal to map
     * @param point the point that was clicked
@@ -439,12 +450,21 @@ public abstract class MapLayer implements StateEditable, Serializable {
          }else if(type.equals(WallType.ARCHWAY)){
             portalTypeForDialog = "Archway";
          }
+        else if(type.equals(WallType.LOCKDOOR)){
+           portalTypeForDialog = "Archway";
+        }
          if(flagerror ==1) {
             dialog(portalTypeForDialog+" cannot be placed here.");
          } else {
             dialog(portalTypeForDialog+" must be placed on a wall.");
          }
       }
+   }
+
+   public void placeKey(Point p)
+   {
+       key = new Key(p, this);
+       keyList.add(key);
    }
 
    /**
