@@ -63,6 +63,8 @@ public class PlaceWallTest {
       Point point4 = new Point(90,105);
       civ.mousePressed(point1, false, true, false);
       civ.mousePressed(point2, false, true, false);
+      civ.stopDrawing();
+      civ.outlining();
       civ.mousePressed(point3, false, true, false);
       civ.mousePressed(point4, false, true, false);
       assertTrue(civ.getRoomList().isEmpty());
@@ -71,6 +73,7 @@ public class PlaceWallTest {
       assertTrue(civ.map.mapLayer.pointList.contains(point2));
       assertTrue(civ.map.mapLayer.pointList.contains(point3));
       assertTrue(civ.map.mapLayer.pointList.contains(point4));
+      assertEquals(2,civ.map.mapLayer.wallList.size());
    }
 
    // N -  User draws 2 lines that intersect
@@ -82,13 +85,13 @@ public class PlaceWallTest {
       Point point3 = new Point(75,30);
       civ.mousePressed(point1, false, true, false);
       civ.mousePressed(point2, false, true, false);
-      civ.mousePressed(point2, false, true, false);
       civ.mousePressed(point3, false, true, false);
       assertTrue(civ.getRoomList().isEmpty());
       assertTrue(civ.map.isCreating());
       assertTrue(civ.map.mapLayer.pointList.contains(point1));
       assertTrue(civ.map.mapLayer.pointList.contains(point2));
       assertTrue(civ.map.mapLayer.pointList.contains(point3));
+      assertEquals(2,civ.map.mapLayer.wallList.size());
    }
 
    // N -  Right mouse button stops drawing

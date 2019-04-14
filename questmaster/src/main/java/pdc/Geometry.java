@@ -119,4 +119,15 @@ class Geometry {
          (lineA.getY2()==lineB.getY1()
             ||lineA.getY2()==lineB.getY2());
    }
+
+   /**
+    * Determines if the Point p lies on the line
+    * @param p the point
+    * @param line the line
+    * @return true if the point lies on the line
+    */
+   public static boolean pointLiesOnLine(Point2D p, Line2D line){
+      return (line.getP1().distance(p) + line.getP2().distance(p) == line.getP1().distance(line.getP2()));
+   }
+
 }

@@ -4,6 +4,9 @@ import java.awt.*;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.io.Serializable;
+import java.util.ArrayList;
+
+import static pdc.Geometry.point2DToPoint;
 
 /**
  * Representation of a wall as a Line2D and wallType of wall
@@ -44,22 +47,21 @@ public class Wall implements Serializable{
       return wallType;
    }
    public void setWallType(WallType newType) {this.wallType = newType;}
-
-   /**
-    * Determines if this is longer than the specified Wall. Used for collinearity
-    * @param wall the wall to check against
-    * @return true if this is longer than wall
-    */
-   public boolean isLongerThan(Wall wall){
-      double thisXDelta = Math.pow(this.getLineRepresentation().getX2()-this.getLineRepresentation().getX1(),2);
-      double thisYDelta = Math.pow(this.getLineRepresentation().getY2()-this.getLineRepresentation().getY1(),2);
-      double thisLength = Math.sqrt(thisXDelta+thisYDelta);
-
-      double wallXDelta = Math.pow(wall.getLineRepresentation().getX2()-wall.getLineRepresentation().getX1(),2);
-      double wallYDelta = Math.pow(wall.getLineRepresentation().getY2()-wall.getLineRepresentation().getY1(),2);
-      double wallLength = Math.sqrt(wallXDelta+wallYDelta);
-
-      return thisLength > wallLength;
+   public boolean containsWall(Wall wall){
+      return containsPoint(wall.getP1())&&containsPoint(wall.getP2());
+   }
+   public boolean containsPoint(Point2D p){
+      return Geometry.pointLiesOnLine(p,lineRepresentation);
+   }
+   public boolean containsAll(ArrayList<Wall> walls){
+      boolean containsAll = true;
+      for(Wall wall : walls){
+         if(!containsWall(wall)){
+            containsAll = false;
+            break;
+         }
+      }
+      return containsAll;
    }
 
    /**

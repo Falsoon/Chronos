@@ -14,9 +14,8 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Optional;
-import pdc.Geometry;
 
-import static pdc.Geometry.point2DToPoint;
+import static pdc.Geometry.*;
 
 
 /**
@@ -80,6 +79,7 @@ public abstract class MapLayer implements StateEditable, Serializable {
          //startStateEdit();
 
          lastWall = new Wall(new Line2D.Double(lastPoint, p), WallType.OPAQUE);
+         //wallList.add(lastWall);
          addToWallList(lastWall);
          detectRooms();
          //add lastPoint if it hasn't been added yet
@@ -96,60 +96,132 @@ public abstract class MapLayer implements StateEditable, Serializable {
 
 	}
 
+
    /**
-    * Adds walls to the wall list, combining collinear walls if they exist to eliminate duplicate walls
+    * Adds the specified Wall to the wall list if it is valid, breaking it up into parts if it overlaps any existing walls
     * @param candidateWall the most recent candidate wall
     */
 	private void addToWallList(Wall candidateWall){
-	   boolean addCandidateWall = true;
+	   //make an array of candidate Walls in case the original candidate wall needs to be broken up
+	   ArrayList<Wall> candidateWalls = new ArrayList<>();
+	   candidateWalls.add(candidateWall);
       Line2D candidateWallRep = candidateWall.getLineRepresentation();
-      ArrayList<Wall> wallsToRemove = new ArrayList<>();
-      ArrayList<Wall> wallsToAdd = new ArrayList<>();
-	   for (Wall wallInList : wallList){
-	      Line2D wallInListRep = wallInList.getLineRepresentation();
+      boolean addCandidateWall = true;
+	   for (Wall existingWall : wallList){
+	      Line2D existingWallRep = existingWall.getLineRepresentation();
 	      //handle collinear intersecting walls
-         //  - lines match, don't add candidate wall
-         if(Geometry.lineSegmentsMatch(candidateWallRep,wallInListRep)){
+         if(Geometry.lineSegmentsMatch(candidateWallRep,existingWallRep) || existingWall.containsAll(candidateWalls)){
+            //lines match or candidate wall is totally contained, don't add candidate wall
             addCandidateWall = false;
-         }else if(Geometry.lineSegmentsIntersectAndCollinear(wallInListRep,candidateWallRep)){
-            //line segments overlap
-            Optional<Point> sharedEndpoint = Geometry.lineSegmentsShareSingleEndpoint(candidateWallRep,wallInListRep);
-            if(sharedEndpoint.isPresent()){
-               boolean endpointIsUnique = true;
-               for(Wall otherWall: wallList){
-                  if(!otherWall.equals(wallInList)&&otherWall.hasEndpoint(sharedEndpoint.get())){
-                     endpointIsUnique = false;
-                     break;
+            break;
+         }
+         ArrayList<Wall> candidateWallsToRemove = new ArrayList<>();
+         ArrayList<Wall> candidateWallsToAdd = new ArrayList<>();
+         for(Wall cWall : candidateWalls){
+            Line2D cWallRep = cWall.getLineRepresentation();
+            if(Geometry.lineSegmentsIntersectAndCollinear(existingWallRep,cWallRep)){
+               if(existingWall.containsPoint(cWall.getP1())||existingWall.containsPoint(cWall.getP2())){
+                  //cWall partially overlaps wallInList
+                  Optional<Point> sharedEndpoint = Geometry.lineSegmentsShareSingleEndpoint(cWallRep,existingWallRep);
+                  if(sharedEndpoint.isPresent()){
+                     //cWall and wallInList have a shared endpoint
+                     if(cWallRep.getP1().equals(sharedEndpoint.get())){
+                        candidateWallsToAdd.add(new Wall(sharedEndpoint.get(),cWall.getP2(),candidateWall.getWallType()));
+                     }else{
+                        candidateWallsToAdd.add(new Wall(sharedEndpoint.get(),cWall.getP1(),candidateWall.getWallType()));
+                     }
+                  }else{
+                     //an endpoint of cWall is contained by wallInList
+                     Point2D newCWallEndpoint;
+                     Point2D existingCWallEndpoint;
+                     if(existingWall.containsPoint(cWall.getP1())){
+                        existingCWallEndpoint = cWall.getP2();
+                     }else{
+                        existingCWallEndpoint = cWall.getP1();
+                     }
+                     if(cWall.containsPoint(existingWall.getP1())) {
+                        newCWallEndpoint = existingWall.getP1();
+                     }else{
+                        newCWallEndpoint = existingWall.getP2();
+                     }
+                     candidateWallsToAdd.add(new Wall(newCWallEndpoint,existingCWallEndpoint,candidateWall.getWallType()));
                   }
-               }
-               if(endpointIsUnique){
-                  // - exactly one shared endpoint shared exclusively by the two walls
-                  addCandidateWall = false;
-                  wallsToRemove.add(wallInList);
-                  if(wallInList.isLongerThan(candidateWall)){
-                     Point otherPoint = wallInList.getP1().equals(sharedEndpoint.get()) ? point2DToPoint(wallInList.getP2()) : point2DToPoint(wallInList.getP1());
-                     wallsToAdd.add(new Wall(new Line2D.Double(sharedEndpoint.get(),otherPoint),WallType.OPAQUE));
-                  }else if(candidateWall.isLongerThan(wallInList)){
-                     Point otherPoint = candidateWall.getP1().equals(sharedEndpoint.get()) ? point2DToPoint(candidateWall.getP2()) : point2DToPoint(candidateWall.getP1());
-                     wallsToAdd.add(new Wall(new Line2D.Double(sharedEndpoint.get(),otherPoint),WallType.OPAQUE));
-                  }
-               }
-            }else{
-               //  - no shared endpoint, one contains the other
-               if(wallInList.isLongerThan(candidateWall)){
-                  addCandidateWall = false;
                }else{
-                  addCandidateWall = true;
-                  wallsToRemove.add(wallInList);
+                  //cWall totally overlaps wallInList, break cWall into 2 lines
+                  if(new Line2D.Double(cWall.getP1(),existingWall.getP1()).contains(existingWall.getP2())){
+                     candidateWallsToAdd.add(new Wall(cWall.getP2(),existingWall.getP1(),candidateWall.getWallType()));
+                     candidateWallsToAdd.add(new Wall(cWall.getP1(),existingWall.getP2(),candidateWall.getWallType()));
+                  }else{
+                     candidateWallsToAdd.add(new Wall(cWall.getP1(),existingWall.getP1(),candidateWall.getWallType()));
+                     candidateWallsToAdd.add(new Wall(cWall.getP2(),existingWall.getP2(),candidateWall.getWallType()));
+                  }
+               }
+               candidateWallsToRemove.add(cWall);
+            }
+         }
+         candidateWalls.removeAll(candidateWallsToRemove);
+         candidateWalls.addAll(candidateWallsToAdd);
+      }
+      //remove any "Walls" that have identical endpoints
+      candidateWalls.removeAll(candidateWalls.stream().filter(wall -> wall.getP1().equals(wall.getP2())).collect(Collectors.toCollection(ArrayList::new)));
+	   if(addCandidateWall) {
+         wallList.addAll(candidateWalls);
+      }
+   }
+
+   /**
+    * Combines all collinear walls that share an endpoint
+    */
+   private void combineWalls(){
+      //now that there are no overlapping Walls, combine Walls that share an endpoint and are not part of a Room
+
+      boolean combined;
+      do {
+         ArrayList<Wall> wallsToAdd = new ArrayList<>();
+         ArrayList<Wall> wallsToRemove = new ArrayList<>();
+         combined = false;
+         for (int j = 0; j < wallList.size(); j++) {
+            Wall wallA = wallList.get(j);
+            if (!wallsToRemove.contains(wallA)
+               && !wallA.isPortal()
+               && RoomList.getInstance().list.stream().noneMatch(room -> room.walls.contains(wallA))) {
+               for (int i = j + 1; i < wallList.size(); i++) {
+                  Wall wallB = wallList.get(i);
+                  if (!wallsToRemove.contains(wallB)
+                     && wallA.getWallType().equals(wallB.getWallType())
+                     && RoomList.getInstance().list.stream().noneMatch(room -> room.walls.contains(wallB))) {
+                     Optional<Point> sharedEndpoint = lineSegmentsShareSingleEndpoint(wallA.getLineRepresentation(),
+                        wallB.getLineRepresentation());
+                     if (sharedEndpoint.isPresent()
+                        && lineSegmentsIntersectAndCollinear(wallA.getLineRepresentation(), wallB.getLineRepresentation())) {
+                        Point sharedPoint = sharedEndpoint.get();
+                        Point2D newPoint1;
+                        Point2D newPoint2;
+                        if (wallA.getP1().equals(sharedPoint)) {
+                           newPoint1 = wallA.getP2();
+                        } else {
+                           newPoint1 = wallA.getP1();
+                        }
+
+                        if (wallB.getP1().equals(sharedPoint)) {
+                           newPoint2 = wallB.getP2();
+                        } else {
+                           newPoint2 = wallB.getP1();
+                        }
+                        wallsToAdd.add(new Wall(newPoint1, newPoint2, wallA.getWallType()));
+                        wallsToRemove.add(wallA);
+                        wallsToRemove.add(wallB);
+                        combined = true;
+                     }
+                  }
                }
             }
          }
-      }
-	   wallList.removeAll(wallsToRemove);
-	   wallList.addAll(wallsToAdd);
-	   if(addCandidateWall){
-	      wallList.add(candidateWall);
-      }
+         wallList.removeAll(wallsToRemove);
+         for (Wall wall : wallsToAdd) {
+            addToWallList(wall);
+         }
+      }while(combined);
    }
 
    /*
@@ -169,6 +241,7 @@ public abstract class MapLayer implements StateEditable, Serializable {
     * Method called to detect rooms from lines drawn on the map
     */
    private void detectRooms(){
+      combineWalls();
       breakUpWallsAtIntersections();
 
       ArrayList<Room> tempRoomList = getRooms();
