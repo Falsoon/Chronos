@@ -1,13 +1,15 @@
 package pdc;
 
-import javafx.geometry.Point2D;
-
 import java.awt.*;
 import java.awt.geom.GeneralPath;
+import java.awt.geom.Point2D;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.stream.Collectors;
+
+import static pdc.Geometry.point2DToPoint;
 
 /**
  * Represents a room on the map
@@ -21,6 +23,7 @@ public class Room implements Serializable{
 	public static int idCount = 1;
 	private ArrayList<Door> doors;
 	public GeneralPath path;
+	private HashMap<CardinalDirection,Wall> portals = new HashMap<>();
 
    /**
     * Create a room from a list of walls, typical case
@@ -95,21 +98,13 @@ public class Room implements Serializable{
 
 	private void makePointList(ArrayList<Wall> walls) {
 		walls.forEach(wall->{
-         pointList.add(new Point((int)wall.getX2(),(int)wall.getY2()));
-         pointList.add(new Point((int)wall.getX1(),(int)wall.getY1()));
+         pointList.add(point2DToPoint(wall.getP1()));
+         pointList.add(point2DToPoint(wall.getP2()));
       });
 	}
 
-	public void addDoor(Door d) {
-		this.doors.add(d);
-	}
-	
 	public ArrayList<Door> getDoors() {
 		return this.doors;
-	}
-
-	public int doorCount() {
-		return this.doors.size();
 	}
 
 	private void makePath() {
@@ -120,7 +115,6 @@ public class Room implements Serializable{
          path.reset();
       }
       addWallsInOrder();
-
 	}
 
    /**
@@ -134,9 +128,11 @@ public class Room implements Serializable{
          if(isFirstWall){
             isFirstWall = false;
             Wall firstWall = walls.get(0);
-            path.moveTo(firstWall.getX1(),firstWall.getY1());
-            path.lineTo(firstWall.getX2(),firstWall.getY2());
-            lastAddedPoint = new Point((int)firstWall.getX2(),(int)firstWall.getY2());
+            Point p1 = point2DToPoint(firstWall.getP1());
+            Point p2 = point2DToPoint(firstWall.getP2());
+            path.moveTo(p1.x,p1.y);
+            path.lineTo(p2.x,p2.y);
+            lastAddedPoint = p2;
             addedWalls.add(firstWall);
             for(int i = 1;i<walls.size();i++){
                Wall wall = walls.get(i);
@@ -148,6 +144,54 @@ public class Room implements Serializable{
             }
          }
       }
+      //addedWalls has the walls in a nice sorted order, so give its value to walls
+      walls = addedWalls;
+      for(Wall wall : walls){
+         if(wall.isPortal()){
+            setPortalDirection(wall);
+         }
+      }
+   }
+
+   /**
+    * Determines if the Walls of the Room were added in clockwise order or not based on the direction changes, then
+    * sets the cardinal directions of this' Walls appropriately
+    * @param directionChanges the changes of direction
+    * @return true if the walls were drawn in clockwise order
+    * @throws IllegalArgumentException if the orientation of the room cannot be determined from the provided arguments
+    */
+   private boolean isClockwiseOrientation(ArrayList<DirectionChange> directionChanges) throws IllegalArgumentException{
+      long rights = directionChanges.stream().filter(directionChange -> directionChange.equals(DirectionChange.RIGHT)).count();
+      long lefts = directionChanges.stream().filter(directionChange -> directionChange.equals(DirectionChange.LEFT)).count();
+      if(lefts!=rights) {
+         return rights > lefts;
+      } else throw new IllegalArgumentException("Cannot determine room orientation from provided direction changes");
+
+   }
+
+   /**
+    * Determine the direction the Wall represented by Points p1 and p2 is drawn.  Used to determine portal cardinal
+    * direction
+    * @param p1 the first point
+    * @param p2 the next point
+    * @return the absolute direction of the line
+    * @throws IllegalArgumentException if p1 and p2 are the same point
+    */
+   private AbsoluteDirection getWallAbsoluteDirection(Point2D p1, Point2D p2) throws IllegalArgumentException{
+      double xDelta = p2.getX() - p1.getX();
+      if(xDelta > 0){
+         return AbsoluteDirection.WEST_EAST;
+      }else if(xDelta < 0){
+         return AbsoluteDirection.EAST_WEST;
+      }
+      double yDelta = p2.getY() - p1.getY();
+      if(yDelta > 0){
+         return AbsoluteDirection.NORTH_SOUTH;
+      }else if(yDelta < 0){
+         return AbsoluteDirection.SOUTH_NORTH;
+      }
+
+      throw new IllegalArgumentException("Points p1 and p2 are the same.");
    }
 
    /**
@@ -160,23 +204,19 @@ public class Room implements Serializable{
    private Point addWallToPath(ArrayList<Wall> addedWalls, Point lastAddedPoint, Wall wall) {
       if(!addedWalls.contains(wall)) {
          if (wall.getP1().equals(lastAddedPoint)) {
-            path.lineTo(wall.getX2(), wall.getY2());
+            path.lineTo(wall.getP2().getX(), wall.getP2().getY());
+            Point p2 = point2DToPoint(wall.getP2());
             addedWalls.add(wall);
-            lastAddedPoint = new Point((int)wall.getX2(),(int)wall.getY2());
+            lastAddedPoint = p2;
          } else if (wall.getP2().equals(lastAddedPoint)) {
-            path.lineTo(wall.getX1(), wall.getY1());
+            path.lineTo(wall.getP1().getX(), wall.getP1().getY());
+            Point p1 = point2DToPoint(wall.getP1());
             addedWalls.add(wall);
-            lastAddedPoint = new Point((int)wall.getX1(),(int)wall.getY1());
+            lastAddedPoint = p1;
          }
       }
       return lastAddedPoint;
    }
-
-   private boolean pointBetween(Point p1, Point p2, Point p3) {
-		return Point.distance(p2.getX(), p2.getY(), p1.getX(), p1.getY())
-				+ Point.distance(p1.getX(), p1.getY(), p3.getX(), p3.getY()) == Point.distance(p2.getX(), p2.getY(),
-						p3.getX(), p3.getY());
-	}
 
 	public boolean contains(Point p) {
 		if (this.path == null) {
@@ -214,33 +254,37 @@ public class Room implements Serializable{
 	public boolean contains (Room r){
 	   //for each point p of r, check that each point immediately northwest, northeast, southeast, and southwest of p is
       // contained by r.  If p is contained by r but not by this, then this does not contain r
+      ArrayList<Point> pointsToCheck = new ArrayList<>();
       for (Point p : r.pointList) {
-         if(!(bothContain(r,p,-1,-1)
-            && bothContain(r,p,1,-1)
-            && bothContain(r,p,1,1)
-            && bothContain(r,p,-1,1))){
+         int xOffset = -1;
+         int yOffset = -1;
+         Point offsetPoint = new Point(p.x+xOffset,p.y+yOffset);
+         if(r.contains(offsetPoint)){
+            pointsToCheck.add(offsetPoint);
+         }
+         xOffset = 1;
+         offsetPoint = new Point(p.x+xOffset,p.y+yOffset);
+         if(r.contains(offsetPoint)){
+            pointsToCheck.add(offsetPoint);
+         }
+         yOffset = 1;
+         offsetPoint = new Point(p.x+xOffset,p.y+yOffset);
+         if(r.contains(offsetPoint)){
+            pointsToCheck.add(offsetPoint);
+         }
+         xOffset = -1;
+         offsetPoint = new Point(p.x+xOffset,p.y+yOffset);
+         if(r.contains(offsetPoint)){
+            pointsToCheck.add(offsetPoint);
+         }
+      }
+      for(Point p : pointsToCheck){
+         if(!this.contains(p)){
             return false;
          }
       }
       return true;
 	}
-
-   /**
-    * Helper method for contains(Room r).  Checks that r and this contain the point p offset by xOffset and yOffset
-    * @param r the Room to check is contained by this
-    * @param point the current point to check
-    * @param xOffset the x offset for the point
-    * @param yOffset the y offset for the point
-    * @return true if r does not contain point offset by xOffset and yOffset, or both r and this contain point offset
-    * by xOffset and yOffset
-    */
-	private boolean bothContain(Room r, Point point, int xOffset, int yOffset){
-	   Point p = new Point(point.x+xOffset,point.y+yOffset);
-	   if(r.contains(p)){
-         return this.contains(p);
-      }
-	   return true;
-   }
 
 	@Override
 	public String toString() {
@@ -257,11 +301,12 @@ public class Room implements Serializable{
     * @return true if the specified point lies on the boundary of this
     */
 	public boolean onBoundary(Point p) {
-		boolean found = false;
-		for (int i = 0; !found && i < this.pointList.size() - 1; i++) {
-			found = this.pointBetween(p, this.pointList.get(i), this.pointList.get(i + 1));
-		}
-		return found;
+		for(Wall wall : walls){
+		   if(wall.containsPoint(p)){
+		      return true;
+         }
+      }
+		return false;
 	}
 
 	public boolean isDrawn() {
@@ -298,9 +343,9 @@ public class Room implements Serializable{
    }
 
 	private String getDirection(Room r) {
-		Point2D roomCenter, otherCenter;
-		roomCenter = new Point2D(this.path.getBounds2D().getCenterX(), this.path.getBounds2D().getCenterY());
-		otherCenter = new Point2D(r.path.getBounds2D().getCenterX(), r.path.getBounds2D().getCenterY());
+		Point roomCenter, otherCenter;
+		roomCenter = new Point((int)this.path.getBounds2D().getCenterX(), (int)this.path.getBounds2D().getCenterY());
+		otherCenter = new Point((int)r.path.getBounds2D().getCenterX(), (int)r.path.getBounds2D().getCenterY());
 		double angle = Math.toDegrees(
 				Math.atan((otherCenter.getY() - roomCenter.getY()) / (otherCenter.getX() - roomCenter.getX())));
 		if (otherCenter.getX() - roomCenter.getX() >= 0) {
@@ -347,11 +392,7 @@ public class Room implements Serializable{
 					pOnBoundary++;
 				}
 			}
-			if(pOnBoundary>=2) {
-				return true;
-			}else {
-				return false;
-			}
+         return pOnBoundary >= 2;
 		}
 	}
 
@@ -492,5 +533,145 @@ public class Room implements Serializable{
        return new ArrayList<>(rooms);
    }
 
+   /**
+    * Sets the cardinal direction of the specified Wall portal.
+    * @param portal the Wall representing a portal
+    */
+   private void setPortalDirection(Wall portal) {
+      CardinalDirection direction = getWallDirection(portal);
+      updateRoomPortals(portal,direction);
+   }
+
+   private DirectionChange getDirectionChange(AbsoluteDirection previousDirection, AbsoluteDirection nextDirection){
+      switch (previousDirection){
+         case WEST_EAST:
+            switch (nextDirection) {
+               case NORTH_SOUTH:
+                  return DirectionChange.RIGHT;
+               case SOUTH_NORTH:
+                  return DirectionChange.LEFT;
+            }
+         case EAST_WEST:
+            switch (nextDirection) {
+               case NORTH_SOUTH:
+                  return DirectionChange.LEFT;
+               case SOUTH_NORTH:
+                  return DirectionChange.RIGHT;
+            }
+         case SOUTH_NORTH:
+            switch (nextDirection) {
+               case WEST_EAST:
+                  return DirectionChange.RIGHT;
+               case EAST_WEST:
+                  return DirectionChange.LEFT;
+            }
+         case NORTH_SOUTH:
+            switch (nextDirection) {
+               case WEST_EAST:
+                  return DirectionChange.LEFT;
+               case EAST_WEST:
+                  return DirectionChange.RIGHT;
+            }
+      }
+      throw new IllegalArgumentException("Invalid direction change: "+previousDirection.toString()+" to "+nextDirection.toString());
+   }
+
+   /**
+    * Updates this' directional portals based on the CardinalDirection of Wall portal
+    * @param portal the Wall Object representing a portal
+    * @param direction the Cardinal of portal
+    */
+   private void updateRoomPortals(Wall portal, CardinalDirection direction){
+      if(!portals.containsKey(direction)) {
+         portals.put(direction, portal);
+      }else if (!portals.get(direction).equals(portal)){
+         throw new IllegalStateException("There is already a "+direction.toString()+" portal.");
+      }
+
+   }
+
+   public HashMap<CardinalDirection,Wall> getPortals(){
+      return portals;
+   }
+
+   public boolean hasPortalInDirection(CardinalDirection direction){
+      return portals.containsKey(direction);
+   }
+
+   public boolean canPlacePortalOnWall(Wall wall){
+      return(hasPortalInDirection(getWallDirection(wall)));
+   }
+
+   public CardinalDirection getWallDirection(Wall wallToCheck){
+      AbsoluteDirection lastDirection = null;
+      AbsoluteDirection wallAbsoluteDirection = null;
+      AbsoluteDirection currentDirection;
+      Point2D lastPoint = new Point2D.Double();
+      ArrayList<DirectionChange> directionChanges = new ArrayList<>();
+      boolean isFirstWall = true;
+      for(Wall wall : walls){
+         Point2D p1 = wall.getP1();
+         Point2D p2 = wall.getP2();
+         if(isFirstWall){
+            isFirstWall = false;
+         }else{
+            if(wall.getP1().equals(lastPoint)){
+               p1 = wall.getP1();
+               p2 = wall.getP2();
+            }else{
+               p2 = wall.getP1();
+               p1 = wall.getP2();
+            }
+         }
+         lastPoint = p2;
+
+         currentDirection = getWallAbsoluteDirection(p1,p2);
+         if(wall.equals(wallToCheck)){
+            wallAbsoluteDirection = currentDirection;
+         }
+         if(lastDirection != null && !currentDirection.equals(lastDirection)){
+            directionChanges.add(getDirectionChange(lastDirection,currentDirection));
+         }
+         lastDirection = currentDirection;
+      }
+      boolean isClockwiseOrientation = isClockwiseOrientation(directionChanges);
+      return getCardinalDirection(isClockwiseOrientation,wallAbsoluteDirection);
+   }
+
+   private CardinalDirection getCardinalDirection(boolean clockwise, AbsoluteDirection absoluteDirection){
+      CardinalDirection direction = null;
+      if(clockwise){
+         switch (absoluteDirection){
+            case NORTH_SOUTH:
+               direction = CardinalDirection.EAST;
+               break;
+            case SOUTH_NORTH:
+               direction = CardinalDirection.WEST;
+               break;
+            case EAST_WEST:
+               direction = CardinalDirection.SOUTH;
+               break;
+            case WEST_EAST:
+               direction = CardinalDirection.NORTH;
+               break;
+         }
+      }else{
+         switch (absoluteDirection){
+            case NORTH_SOUTH:
+               direction = CardinalDirection.WEST;
+               break;
+            case SOUTH_NORTH:
+               direction = CardinalDirection.EAST;
+               break;
+            case EAST_WEST:
+               direction = CardinalDirection.NORTH;
+               break;
+            case WEST_EAST:
+               direction = CardinalDirection.SOUTH;
+               break;
+         }
+      }
+      return direction;
+   }
 
 }

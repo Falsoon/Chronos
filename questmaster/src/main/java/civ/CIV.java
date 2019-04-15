@@ -24,7 +24,7 @@ public class CIV {
 	public Map map;
 	public FormCiv formCiv;
 	private UndoableEditSupport undoSupport;
-    private UndoManager manager;
+	private UndoManager manager;
 	private AuthorWindow authorWindow;
 
 	public CIV() {

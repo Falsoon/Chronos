@@ -1,7 +1,11 @@
 package hic;
 
+import pdc.CardinalDirection;
+import pdc.Player;
+
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
@@ -12,11 +16,22 @@ public class PlayerWindow {
 
 	public JFrame frame;
 	private MapPanel mapPanel;
+	private StoryPanel storyPanel;
+
+	private static final int KEYCODE_W = 87;
+   private static final int KEYCODE_A = 65;
+   private static final int KEYCODE_S = 83;
+   private static final int KEYCODE_D = 68;
+
+   private static final int KEYCODE_LEFT_ARROW = 37;
+   private static final int KEYCODE_UP_ARROW = 38;
+   private static final int KEYCODE_RIGHT_ARROW = 39;
+   private static final int KEYCODE_DOWN_ARROW = 40;
 
 	/**
 	 * Create the application.
 	 * 
-	 * @param mapPanel
+	 * @param mp
 	 */
 	public PlayerWindow(MapPanel mp) {
 		mapPanel = mp;
@@ -28,23 +43,69 @@ public class PlayerWindow {
 	 */
 	private void initialize() {
 		frame = new JFrame();
-		//frame.setBounds(200, 200, 800, 450);
 		frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
 		//TODO: figure out how to not crash the map when returning to the editor
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		frame.setTitle("PlayerWindow");
+		frame.setTitle("Explorer");
 
 		JSplitPane splitPane = new JSplitPane();
 		frame.getContentPane().add(splitPane, BorderLayout.CENTER);
 		splitPane.setDividerLocation(800);
 		splitPane.setRightComponent(mapPanel);
 		
-		StoryPanel storyPanel = new StoryPanel(mapPanel);
+		storyPanel = new StoryPanel(mapPanel);
+      storyPanel.updateExits(mapPanel.getRoom(mapPanel.civ.map.getPlayer().getPosition()));
+
+      KeyboardFocusManager.getCurrentKeyboardFocusManager()
+         .addKeyEventDispatcher(e -> {
+            if(e.getID() == KeyEvent.KEY_PRESSED) {
+               switch (e.getKeyCode()) {
+                  case KEYCODE_A:
+                  case KEYCODE_LEFT_ARROW:
+                     goDirection(CardinalDirection.WEST);
+                     return true;
+                  case KEYCODE_W:
+                  case KEYCODE_UP_ARROW:
+                     goDirection(CardinalDirection.NORTH);
+                     return true;
+                  case KEYCODE_D:
+                  case KEYCODE_RIGHT_ARROW:
+                     goDirection(CardinalDirection.EAST);
+                     return true;
+                  case KEYCODE_S:
+                  case KEYCODE_DOWN_ARROW:
+                     goDirection(CardinalDirection.SOUTH);
+                     return true;
+               }
+            }
+            //return false if not key pressed or not one of the reserved keys so other components can grab the key
+            return false;
+         });
 		
 		splitPane.setLeftComponent(storyPanel);
 
-
 		WindowListener wl = new WindowListener(){
+
+			@Override
+			public void windowClosing(WindowEvent e) {
+
+				EventQueue.invokeLater(() -> {
+					try {
+						mapPanel = null;
+						frame = null;
+						AuthorWindow window = new AuthorWindow();
+						window.frame.setTitle("QuestMaster");
+						window.frame.setVisible(true);
+						window.mapPanel.restore();
+						window.mapPanel.civ.stopDrawing();
+						window.civ.setPlayerMode(false);
+						window.civ.map.player.stopPlaying();
+						window.civ.setSelectedRoom(null);
+					} catch (Exception e1) {
+						e1.printStackTrace();
+					}
+				});
+			}
 		
 			@Override
 			public void windowOpened(WindowEvent e) {
@@ -67,29 +128,6 @@ public class PlayerWindow {
 			}
 		
 			@Override
-			public void windowClosing(WindowEvent e) {
-				
-				EventQueue.invokeLater(new Runnable() {
-					public void run() {
-						try {
-							mapPanel = null;
-							frame = null;
-							AuthorWindow window = new AuthorWindow();
-							window.frame.setTitle("ArenaMapMaker");
-							window.frame.setVisible(true);
-							window.mapPanel.restore();
-							window.mapPanel.civ.stopDrawing();
-							window.civ.setPlayerMode(false);
-							window.civ.map.player.stopPlaying();
-							window.civ.setSelectedRoom(null);
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
-					}
-				});
-			}
-		
-			@Override
 			public void windowClosed(WindowEvent e) {
 				
 			}
@@ -101,4 +139,29 @@ public class PlayerWindow {
 		};
 		frame.addWindowListener(wl);
 	}
+
+   /**
+    * Move player character in the direction specified
+    * @param direction the direction code
+    */
+	private void goDirection(CardinalDirection direction){
+      switch (direction){
+         case WEST:
+            mapPanel.goLeft();
+            break;
+         case EAST:
+            mapPanel.goRight();
+            break;
+         case NORTH:
+            mapPanel.goUp();
+            break;
+         case SOUTH:
+            mapPanel.goDown();
+            break;
+         default:
+            break;
+      }
+      storyPanel.printDetails(mapPanel.getRoomName(), mapPanel.getRoomDesc());
+      storyPanel.updateExits(mapPanel.getRoom(mapPanel.civ.map.getPlayer().getPosition()));
+   }
 }
