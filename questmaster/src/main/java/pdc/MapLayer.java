@@ -78,19 +78,38 @@ public abstract class MapLayer implements StateEditable, Serializable {
 	      //check that the last 2 points clicked are not the same
          if(!lastPoint.equals(p)) {
          //startStateEdit();
+            if(Math.abs(lastPoint.getX()-p.getX()) > Math.abs(lastPoint.getY()-p.getY())) {
+                p.setLocation(p.getX(),lastPoint.getY());
+                lastWall = new Wall(new Line2D.Double(lastPoint, p), WallType.OPAQUE);
+                wallList.add(lastWall);
+                detectRooms();
+                //add lastPoint if it hasn't been added yet
+                if (wasFirstClick) {
+                    pointList.add(lastPoint);
+                    wasFirstClick = false;
+                }
+                pointList.add(p);
+                lastPoint = p;
 
-         lastWall = new Wall(new Line2D.Double(lastPoint, p), WallType.OPAQUE);
-         wallList.add(lastWall);
-         detectRooms();
-         //add lastPoint if it hasn't been added yet
-         if (wasFirstClick) {
-            pointList.add(lastPoint);
-            wasFirstClick = false;
-         }
-         pointList.add(p);
-         lastPoint = p;
+                //endStateEdit();
+            }
+            else
+            {
 
-         //endStateEdit();
+                p.setLocation(lastPoint.getX(), p.getY());
+                lastWall = new Wall(new Line2D.Double(lastPoint, p), WallType.OPAQUE);
+                wallList.add(lastWall);
+                detectRooms();
+                //add lastPoint if it hasn't been added yet
+                if (wasFirstClick) {
+                    pointList.add(lastPoint);
+                    wasFirstClick = false;
+                }
+                pointList.add(p);
+                lastPoint = p;
+
+                //endStateEdit();
+            }
          }
       }
 
@@ -524,6 +543,14 @@ public abstract class MapLayer implements StateEditable, Serializable {
          }
       } else {
          if(candidateRoomsForTransparent.size()>0) {
+
+             if(Math.abs(lastPoint.getX()-p.getX()) > Math.abs(lastPoint.getY()-p.getY())) {
+                 p.setLocation(p.getX(), lastPoint.getY());
+             }
+             else{
+                 p.setLocation(lastPoint.getX(), p.getY());
+             }
+
             boolean secondClickValid=false;
             for(int i = 0;!secondClickValid&&i<candidateRoomsForTransparent.size();i++){
                secondClickValid = candidateRoomsForTransparent.get(i).onBoundary(p);
