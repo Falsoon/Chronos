@@ -32,7 +32,7 @@ public class RoomList implements StateEditable, Serializable {
    }
 
 	public Room getRoom(Point p) {
-		Room room = null;
+		Room room;
 		Iterator<Room> itr = list.iterator();
 		Room minAreaRoom = null;
 		double minBoundingArea = Double.POSITIVE_INFINITY;

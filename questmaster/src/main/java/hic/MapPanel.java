@@ -2,6 +2,8 @@ package hic;
 
 import civ.CIV;
 import pdc.Constants;
+import pdc.Room;
+import pdc.RoomList;
 
 import javax.swing.*;
 import java.awt.*;
@@ -19,7 +21,6 @@ import static pdc.Constants.GRIDDISTANCE;
 public class MapPanel extends JPanel {
 
 	public CIV civ;
-	public Point playerPos;
 	private AuthorWindow aw;
 
 	/**
@@ -200,6 +201,10 @@ public class MapPanel extends JPanel {
 	public String getRoomDesc() {
 		return civ.getRoomDesc();
 	}
+
+	public Room getRoom(Point p){
+      return RoomList.getInstance().getRoom(p);
+   }
 
 	public void stopDrawing() {
 		setSelectedRoom(null);
