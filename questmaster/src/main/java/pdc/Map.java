@@ -140,7 +140,6 @@ public class Map implements StateEditable, Serializable {
 		transparentWallMode = false;
 		stairing = true;
 		deleting = false;
-		System.out.println("hi!");
    }
 	public int numOfDoors() {
 		return DoorList.list.size();

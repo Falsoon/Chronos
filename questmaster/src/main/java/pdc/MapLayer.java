@@ -561,7 +561,7 @@ public abstract class MapLayer implements StateEditable, Serializable {
    public void stopDrawing() {
 	   firstClick = true;
 	   lastPoint = null;
-	   wasFirstClick = false;
+      wasFirstClick = false;
    }
 
     /** Abstract method to set whether the MapLayer is for the player mode
@@ -576,6 +576,16 @@ public abstract class MapLayer implements StateEditable, Serializable {
    public void delete(Point p) {
       ArrayList<Wall> wallsToRemove = new ArrayList<>();
       ArrayList<Wall> portalsToRemove = new ArrayList<>();
+      //----don't mind me, just checking for staircases to remove first----
+      for (Stair s : stairList) {
+         Point stairPos = s.getLocation();
+         if(Math.abs(stairPos.x - p.x) < 8 && Math.abs(stairPos.y - p.y) < 8) {
+            stairList.remove(s);
+            stairList.remove(s.linkedStair);
+            return; // BEWARE THERE'S A RETURN HERE
+         }
+      }
+      //----sorry, i'll get out of your way now----
       for(Wall wall:wallList){
          if(wall.getDistance(p)==0){
             //TODO find a good way to do this.
