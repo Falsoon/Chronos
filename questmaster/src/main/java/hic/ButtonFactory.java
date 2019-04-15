@@ -175,6 +175,7 @@ public class ButtonFactory {
 
 		btnPlay.addActionListener(e -> {
          if (authorWindow.mapPanel.placedPlayer()) {
+            rdi.clear();
             EventQueue.invokeLater(() -> {
                try {
                   authorWindow.mapPanel.civ.stopDrawing();
@@ -189,8 +190,8 @@ public class ButtonFactory {
                   e13.printStackTrace();
                }
             });
-			authorWindow.mapPanel.startGame();
-			authorWindow.frame.setVisible(false);
+			   authorWindow.mapPanel.startGame();
+			   authorWindow.frame.setVisible(false);
          }
 		});
 
@@ -203,6 +204,7 @@ public class ButtonFactory {
 				// authorWindow.authorPanel.Rooms.setSelectedIndex(0);
 				// authorWindow.wallCombo.setSelectedItem(authorWindow.wallTypes[0]);
 				authorWindow.authorPanel.grabFocus();
+				rdi.clear();
 			}
 		});
 	}

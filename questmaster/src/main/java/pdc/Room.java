@@ -1,12 +1,12 @@
 package pdc;
 
+import javax.smartcardio.Card;
 import java.awt.*;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Point2D;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.*;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static pdc.Geometry.point2DToPoint;
@@ -21,7 +21,6 @@ public class Room implements Serializable{
 	public String desc = "", title = "";
 	public int ROOMID;
 	public static int idCount = 1;
-	private ArrayList<Door> doors;
 	public GeneralPath path;
 	private HashMap<CardinalDirection,Wall> portals = new HashMap<>();
 
@@ -35,7 +34,6 @@ public class Room implements Serializable{
 		idCount++;
       pointList = new ArrayList<>();
 		makePointList(walls);
-		doors = new ArrayList<>();
 		makePath();
 	}
 
@@ -61,7 +59,6 @@ public class Room implements Serializable{
       this.desc = desc;
       pointList = new ArrayList<>();
       makePointList(walls);
-      doors = new ArrayList<>();
       makePath();
    }
 
@@ -79,7 +76,6 @@ public class Room implements Serializable{
       this.desc = desc;
       pointList = new ArrayList<>();
       makePointList(walls);
-      doors = new ArrayList<>();
       makePath();
    }
 
@@ -92,7 +88,6 @@ public class Room implements Serializable{
       this.walls = walls;
       pointList = new ArrayList<>();
       makePointList(walls);
-      doors = new ArrayList<>();
       makePath();
    }
 
@@ -101,10 +96,6 @@ public class Room implements Serializable{
          pointList.add(point2DToPoint(wall.getP1()));
          pointList.add(point2DToPoint(wall.getP2()));
       });
-	}
-
-	public ArrayList<Door> getDoors() {
-		return this.doors;
 	}
 
 	private void makePath() {
@@ -307,10 +298,6 @@ public class Room implements Serializable{
          }
       }
 		return false;
-	}
-
-	public boolean isDrawn() {
-		return this.path != null;
 	}
 
 	public String getAdjacents() {
@@ -672,6 +659,18 @@ public class Room implements Serializable{
          }
       }
       return direction;
+   }
+
+   public HashMap<Room, CardinalDirection> getConnectedRooms(){
+      HashMap<Room, CardinalDirection> connectedRooms = new HashMap<>();
+      for(Map.Entry<CardinalDirection,Wall> entry: portals.entrySet()){
+         for(Room room : RoomList.getInstance().list){
+            if(!this.equals(room)&&room.walls.contains(entry.getValue())){
+               connectedRooms.put(room,entry.getKey());
+            }
+         }
+      }
+      return connectedRooms;
    }
 
 }
