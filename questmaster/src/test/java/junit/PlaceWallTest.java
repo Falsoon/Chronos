@@ -293,7 +293,7 @@ public class PlaceWallTest {
       civ.stopDrawing();
       civ.outlining();
       civ.mousePressed(point4, false, true, false);
-      civ.mousePressed(point3, false, true, false);
+      civ.mousePressed(point2, false, true, false);
       assertTrue(civ.getRoomList().isEmpty());
       assertTrue(civ.map.isCreating());
       assertTrue(civ.map.mapLayer.pointList.contains(point1));

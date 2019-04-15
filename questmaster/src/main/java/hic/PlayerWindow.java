@@ -1,6 +1,7 @@
 package hic;
 
 import pdc.CardinalDirection;
+import pdc.Player;
 
 import javax.swing.*;
 import java.awt.*;
@@ -53,6 +54,7 @@ public class PlayerWindow {
 		splitPane.setRightComponent(mapPanel);
 		
 		storyPanel = new StoryPanel(mapPanel);
+      storyPanel.updateExits(mapPanel.getRoom(mapPanel.civ.map.getPlayer().getPosition()));
 
       KeyboardFocusManager.getCurrentKeyboardFocusManager()
          .addKeyEventDispatcher(e -> {
@@ -146,22 +148,20 @@ public class PlayerWindow {
       switch (direction){
          case WEST:
             mapPanel.goLeft();
-            storyPanel.printDetails(mapPanel.getRoomName(), mapPanel.getRoomDesc());
             break;
          case EAST:
             mapPanel.goRight();
-            storyPanel.printDetails(mapPanel.getRoomName(), mapPanel.getRoomDesc());
             break;
          case NORTH:
             mapPanel.goUp();
-            storyPanel.printDetails(mapPanel.getRoomName(), mapPanel.getRoomDesc());
             break;
          case SOUTH:
             mapPanel.goDown();
-            storyPanel.printDetails(mapPanel.getRoomName(), mapPanel.getRoomDesc());
             break;
          default:
             break;
       }
+      storyPanel.printDetails(mapPanel.getRoomName(), mapPanel.getRoomDesc());
+      storyPanel.updateExits(mapPanel.getRoom(mapPanel.civ.map.getPlayer().getPosition()));
    }
 }

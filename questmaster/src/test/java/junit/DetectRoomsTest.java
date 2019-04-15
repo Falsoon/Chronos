@@ -2,12 +2,14 @@ package junit;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.awt.Point;
+import java.util.ArrayList;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import civ.CIV;
+import pdc.Room;
 import pdc.RoomList;
 
 /**
@@ -493,7 +495,7 @@ class DetectRoomsTest {
    //B - Room 1 is entirely contained in Room 2, and one wall of Room 1 is shared with Room 2.  Room 2 drawn first
    @Test
    void testB6() {
-      civ.outlining();
+	   civ.outlining();
       Point point1 = new Point(15, 30);
       Point point2 = new Point(15, 75);
       Point point3 = new Point(75, 75);
@@ -607,7 +609,6 @@ class DetectRoomsTest {
       civ.mousePressed(point7, false, true,false);
       civ.mousePressed(point8, false, true,false);
       civ.mousePressed(point5, false, true,false);
-
 
       assertEquals(2, civ.getRoomList().size());
       assertTrue(civ.map.isCreating());

@@ -1,7 +1,11 @@
 package hic;
 
+import pdc.CardinalDirection;
+import pdc.Room;
+
 import javax.swing.*;
 import java.awt.*;
+import java.util.Set;
 
 /**
  * Presenter class used to update playerWindow and player data.
@@ -11,6 +15,7 @@ public class StoryPanel extends JPanel {
 	private final JPanel jPanel;
 	private MapPanel mapPanel;
 	private JTextArea textArea;
+	private TopBar topBar;
 
    public StoryPanel(MapPanel mp) {
       mapPanel = mp;
@@ -29,8 +34,9 @@ public class StoryPanel extends JPanel {
       JPanel root = new JPanel();
       root.setLayout(new BoxLayout(root,BoxLayout.PAGE_AXIS));
 
-      JPanel topBar = new PlayerTopBar().getMainJPanel();
-      root.add(topBar,BorderLayout.PAGE_START);
+      topBar = new PlayerTopBar();
+      JPanel topBarJPanel = topBar.getMainJPanel();
+      root.add(topBarJPanel,BorderLayout.PAGE_START);
 
       textArea.setLineWrap(true);
       textArea.setEditable(false);
@@ -49,5 +55,13 @@ public class StoryPanel extends JPanel {
 
     public void printDetails(String name, String desc) {
         textArea.setText(name + "\n\n" + desc);
+    }
+
+    public void updateExits(Room currentRoom){
+      Set<CardinalDirection> portalDirections = currentRoom.getPortals().keySet();
+      topBar.resetButtons();
+      for(CardinalDirection direction : portalDirections){
+         topBar.setEnabled(direction);
+      }
     }
 }

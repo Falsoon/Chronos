@@ -5,8 +5,10 @@ import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Optional;
 
-import static pdc.Geometry.point2DToPoint;
+import static pdc.Geometry.lineSegmentsMatch;
+import static pdc.Geometry.lineSegmentsShareSingleEndpoint;
 
 /**
  * Representation of a wall as a Line2D and wallType of wall
@@ -37,15 +39,17 @@ public class Wall implements Serializable{
    public Point2D getP2(){
       return lineRepresentation.getP2();
    }
+   public Double getX1() { return lineRepresentation.getX1();}
+   public Double getX2() { return lineRepresentation.getX2();}
+   public Double getY1() { return lineRepresentation.getY1();}
+   public Double getY2() { return lineRepresentation.getY2();}
    public double getDistance(Point2D p){
       return lineRepresentation.ptSegDist(p);
-   }
-   public Line2D getLineRepresentation(){
-      return lineRepresentation;
    }
    public WallType getWallType(){
       return wallType;
    }
+   public Line2D getLineRepresentation(){ return lineRepresentation; }
    public void setWallType(WallType newType) {this.wallType = newType;}
    public boolean containsWall(Wall wall){
       return containsPoint(wall.getP1())&&containsPoint(wall.getP2());
@@ -62,6 +66,29 @@ public class Wall implements Serializable{
          }
       }
       return containsAll;
+   }
+   public boolean intersects(Wall wall){
+      return this.lineRepresentation.intersectsLine(wall.lineRepresentation);
+   }
+
+   public Optional<Point> getIntersectionPoint(Wall otherWall){
+      return Geometry.intersectionPoint(this.lineRepresentation,otherWall.lineRepresentation);
+   }
+
+   public Optional<Point> getSharedEndpoint(Wall otherWall){
+      return lineSegmentsShareSingleEndpoint(this.lineRepresentation,otherWall.lineRepresentation);
+   }
+
+   public boolean valueEquals(Wall otherWall){
+      return this.wallType.equals(otherWall.wallType) && lineSegmentsMatch(this.lineRepresentation,otherWall.lineRepresentation);
+   }
+
+   public boolean representationMatchesLine(Line2D line){
+      return lineSegmentsMatch(lineRepresentation,line);
+   }
+
+   public boolean intersectsAndIsCollinearWith(Wall otherWall){
+      return Geometry.lineSegmentsIntersectAndCollinear(this.lineRepresentation,otherWall.lineRepresentation);
    }
 
    /**

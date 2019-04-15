@@ -105,12 +105,10 @@ public abstract class MapLayer implements StateEditable, Serializable {
 	   //make an array of candidate Walls in case the original candidate wall needs to be broken up
 	   ArrayList<Wall> candidateWalls = new ArrayList<>();
 	   candidateWalls.add(candidateWall);
-      Line2D candidateWallRep = candidateWall.getLineRepresentation();
       boolean addCandidateWall = true;
 	   for (Wall existingWall : wallList){
-	      Line2D existingWallRep = existingWall.getLineRepresentation();
 	      //handle collinear intersecting walls
-         if(Geometry.lineSegmentsMatch(candidateWallRep,existingWallRep) || existingWall.containsAll(candidateWalls)){
+         if(existingWall.valueEquals(candidateWall) || existingWall.containsAll(candidateWalls)){
             //lines match or candidate wall is totally contained, don't add candidate wall
             addCandidateWall = false;
             break;
@@ -118,22 +116,40 @@ public abstract class MapLayer implements StateEditable, Serializable {
          ArrayList<Wall> candidateWallsToRemove = new ArrayList<>();
          ArrayList<Wall> candidateWallsToAdd = new ArrayList<>();
          for(Wall cWall : candidateWalls){
-            Line2D cWallRep = cWall.getLineRepresentation();
-            if(Geometry.lineSegmentsIntersectAndCollinear(existingWallRep,cWallRep)){
+            if(existingWall.intersectsAndIsCollinearWith(cWall)){
                if(existingWall.containsPoint(cWall.getP1())||existingWall.containsPoint(cWall.getP2())){
-                  //cWall partially overlaps wallInList
-                  Optional<Point> sharedEndpoint = Geometry.lineSegmentsShareSingleEndpoint(cWallRep,existingWallRep);
+                  //cWall overlaps wallInList
+                  Optional<Point> sharedEndpoint = cWall.getSharedEndpoint(existingWall);
+                  Point2D newCWallEndpoint;
+                  Point2D existingCWallEndpoint;
                   if(sharedEndpoint.isPresent()){
                      //cWall and wallInList have a shared endpoint
-                     if(cWallRep.getP1().equals(sharedEndpoint.get())){
-                        candidateWallsToAdd.add(new Wall(sharedEndpoint.get(),cWall.getP2(),candidateWall.getWallType()));
-                     }else{
-                        candidateWallsToAdd.add(new Wall(sharedEndpoint.get(),cWall.getP1(),candidateWall.getWallType()));
+                     if(cWall.containsWall(existingWall)){
+                        //cWall totally contains existingWall
+                        if(existingWall.getP1().equals(sharedEndpoint.get())){
+                           newCWallEndpoint = existingWall.getP2();
+                           candidateWallsToAdd.add(new Wall(existingWall.getP2(), cWall.getP2(), candidateWall.getWallType()));
+                        }else{
+                           newCWallEndpoint = existingWall.getP1();
+                        }
+
+                        if(cWall.getP1().equals(sharedEndpoint.get())){
+                           existingCWallEndpoint = cWall.getP2();
+                        }else{
+                           existingCWallEndpoint = cWall.getP1();
+                        }
+                        candidateWallsToAdd.add(new Wall(newCWallEndpoint,existingCWallEndpoint,candidateWall.getWallType()));
+                     }else {
+                        //cWall partially contains existingWall
+                        if (cWall.getP1().equals(sharedEndpoint.get())) {
+                           candidateWallsToAdd.add(new Wall(sharedEndpoint.get(), cWall.getP2(), candidateWall.getWallType()));
+                        } else {
+                           candidateWallsToAdd.add(new Wall(sharedEndpoint.get(), cWall.getP1(), candidateWall.getWallType()));
+                        }
                      }
                   }else{
                      //an endpoint of cWall is contained by wallInList
-                     Point2D newCWallEndpoint;
-                     Point2D existingCWallEndpoint;
+
                      if(existingWall.containsPoint(cWall.getP1())){
                         existingCWallEndpoint = cWall.getP2();
                      }else{
@@ -174,7 +190,6 @@ public abstract class MapLayer implements StateEditable, Serializable {
     */
    private void combineWalls(){
       //now that there are no overlapping Walls, combine Walls that share an endpoint and are not part of a Room
-
       boolean combined;
       do {
          ArrayList<Wall> wallsToAdd = new ArrayList<>();
@@ -190,10 +205,8 @@ public abstract class MapLayer implements StateEditable, Serializable {
                   if (!wallsToRemove.contains(wallB)
                      && wallA.getWallType().equals(wallB.getWallType())
                      && RoomList.getInstance().list.stream().noneMatch(room -> room.walls.contains(wallB))) {
-                     Optional<Point> sharedEndpoint = lineSegmentsShareSingleEndpoint(wallA.getLineRepresentation(),
-                        wallB.getLineRepresentation());
-                     if (sharedEndpoint.isPresent()
-                        && lineSegmentsIntersectAndCollinear(wallA.getLineRepresentation(), wallB.getLineRepresentation())) {
+                     Optional<Point> sharedEndpoint = wallA.getSharedEndpoint(wallB);
+                     if (sharedEndpoint.isPresent() && wallA.intersectsAndIsCollinearWith(wallB)) {
                         Point sharedPoint = sharedEndpoint.get();
                         Point2D newPoint1;
                         Point2D newPoint2;
@@ -321,7 +334,7 @@ public abstract class MapLayer implements StateEditable, Serializable {
          for(int i = 0;i<cycle.length-1;i++){
             Line2D line = new Line2D.Double(cycle[i],cycle[i+1]);
             for(Wall wall : wallList){
-               if(Geometry.lineSegmentsMatch(wall.getLineRepresentation(),line)){
+               if(wall.representationMatchesLine(line)){
                   currentCycle.add(wall);
                }
             }
@@ -329,7 +342,7 @@ public abstract class MapLayer implements StateEditable, Serializable {
          //add edge back to the starting vertex
          Line2D line = new Line2D.Double(cycle[cycle.length-1],cycle[0]);
          for(Wall wall : wallList){
-            if(Geometry.lineSegmentsMatch(wall.getLineRepresentation(),line)){
+            if(wall.representationMatchesLine(line)){
                currentCycle.add(wall);
             }
          }
@@ -363,38 +376,42 @@ public abstract class MapLayer implements StateEditable, Serializable {
     */
    private void breakUpWallsAtIntersections() {
       HashMap<Wall, ArrayList<Point>> wallsToBreak = new HashMap<>();
-      for (Wall wallA : wallList) {
-         if (wallA.getLineRepresentation().intersectsLine(lastWall.getLineRepresentation())) {
-            Optional<Point> intersection = Geometry.intersectionPoint(wallA.getLineRepresentation(), lastWall.getLineRepresentation());
-            intersection.ifPresent(point -> {
-               if ((wallA.getP1().equals(point) || wallA.getP2().equals(point))
-                  && !(lastWall.getP1().equals(point) || lastWall.getP2().equals(point))) {
-                  //case 1: wall A intersects at an endpoint, need to break up lastWall and add its new segments
-                  if(!wallsToBreak.containsKey(lastWall)) {
-                     wallsToBreak.put(lastWall, new ArrayList<>());
-                  }
-                  wallsToBreak.get(lastWall).add(point);
-               } else if ((lastWall.getP1().equals(point) || lastWall.getP2().equals(point))
-                  && !(wallA.getP1().equals(point) || wallA.getP2().equals(point))) {
-                  //case 2: lastWall intersects at an endpoint, need to remove wallA, break it up, and add the new segments
-                  if(!wallsToBreak.containsKey(wallA)) {
-                     wallsToBreak.put(wallA, new ArrayList<>());
-                  }
-                  wallsToBreak.get(wallA).add(point);
-               } else if (!(lastWall.getP1().equals(point) || lastWall.getP2().equals(point))
-                  && !(wallA.getP1().equals(point) || wallA.getP2().equals(point))) {
-                  //case 3: neither wall intersects at an endpoint, need to break up both walls and add their new segments
-                  if(!wallsToBreak.containsKey(wallA)) {
-                     wallsToBreak.put(wallA, new ArrayList<>());
-                  }
-                  wallsToBreak.get(wallA).add(point);
+      for(int j = 0; j<wallList.size();j++){
+         Wall wallA = wallList.get(j);
+         for(int i = j+1; i< wallList.size();i++){
+            Wall wallB = wallList.get(i);
+            if(wallA.intersects(wallB)){
+               Optional<Point> intersection = wallA.getIntersectionPoint(wallB);
+               intersection.ifPresent(point -> {
+                  if ((wallA.getP1().equals(point) || wallA.getP2().equals(point))
+                     && !(wallB.getP1().equals(point) || wallB.getP2().equals(point))) {
+                     //case 1: wall A intersects at an endpoint, need to break up lastWall and add its new segments
+                     if(!wallsToBreak.containsKey(wallB)) {
+                        wallsToBreak.put(wallB, new ArrayList<>());
+                     }
+                     wallsToBreak.get(wallB).add(point);
+                  } else if ((wallB.getP1().equals(point) || wallB.getP2().equals(point))
+                     && !(wallA.getP1().equals(point) || wallA.getP2().equals(point))) {
+                     //case 2: lastWall intersects at an endpoint, need to remove wallA, break it up, and add the new segments
+                     if(!wallsToBreak.containsKey(wallA)) {
+                        wallsToBreak.put(wallA, new ArrayList<>());
+                     }
+                     wallsToBreak.get(wallA).add(point);
+                  } else if (!(wallB.getP1().equals(point) || wallB.getP2().equals(point))
+                     && !(wallA.getP1().equals(point) || wallA.getP2().equals(point))) {
+                     //case 3: neither wall intersects at an endpoint, need to break up both walls and add their new segments
+                     if(!wallsToBreak.containsKey(wallA)) {
+                        wallsToBreak.put(wallA, new ArrayList<>());
+                     }
+                     wallsToBreak.get(wallA).add(point);
 
-                  if(!wallsToBreak.containsKey(lastWall)) {
-                     wallsToBreak.put(lastWall, new ArrayList<>());
+                     if(!wallsToBreak.containsKey(wallB)) {
+                        wallsToBreak.put(wallB, new ArrayList<>());
+                     }
+                     wallsToBreak.get(wallB).add(point);
                   }
-                  wallsToBreak.get(lastWall).add(point);
-               }
-            });
+               });
+            }
          }
       }
       wallsToBreak.forEach((key, value) -> {
@@ -431,8 +448,6 @@ public abstract class MapLayer implements StateEditable, Serializable {
       wallList.add(new Wall(lastPoint,wallPoints.get(1),wall.getWallType()));
    }
 
-   //TODO: detect if the wall divides two rooms?
-
    /**
     * Places an archway at the specified Point
     * @param point the point at which to place the archway
@@ -455,19 +470,16 @@ public abstract class MapLayer implements StateEditable, Serializable {
     * @param type the type of wall to draw
     */
    private void placePortal(Point point,WallType type){
-      Line2D portalWall= new Line2D.Double();
       ArrayList<Room> roomsToUpdate = new ArrayList<>();
       boolean flag = false;
       int flagerror = 0;
       Wall wallToPlacePortalOn = null;
-      for(int i = 0; i< this.wallList.size(); i++) {
-         if (this.wallList.get(i).getDistance(point) ==0) {
-            wallToPlacePortalOn = this.wallList.get(i);
-            portalWall = wallToPlacePortalOn.getLineRepresentation();
-            if(Math.sqrt( ( ( portalWall.getX2() - portalWall.getX1() ) * ( portalWall.getX2() - portalWall.getX1() ) ) + ( ( portalWall.getY2() - portalWall.getY1() ) * ( portalWall.getY2() - portalWall.getY1() ) ) )>= 15) {
-               if (portalWall.getX1() == portalWall.getX2()) {
-                  if ((Math.abs(point.getY() - portalWall.getY1()) > 15) && (Math.abs(point.getY() - portalWall.getY2()) > 15)) {
-                     this.wallList.remove(wallToPlacePortalOn);
+      for (Wall wall : this.wallList) {
+         if (wall.getDistance(point) == 0) {
+            wallToPlacePortalOn = wall;
+            if (Math.sqrt(((wallToPlacePortalOn.getX2() - wallToPlacePortalOn.getX1()) * (wallToPlacePortalOn.getX2() - wallToPlacePortalOn.getX1())) + ((wallToPlacePortalOn.getY2() - wallToPlacePortalOn.getY1()) * (wallToPlacePortalOn.getY2() - wallToPlacePortalOn.getY1()))) >= 15) {
+               if (wallToPlacePortalOn.getX1().equals(wallToPlacePortalOn.getX2())) {
+                  if ((Math.abs(point.getY() - wallToPlacePortalOn.getY1()) > 15) && (Math.abs(point.getY() - wallToPlacePortalOn.getY2()) > 15)) {
                      for (Room room : RoomList.getInstance().list) {
                         if (room.walls.contains(wallToPlacePortalOn)) {
                            roomsToUpdate.add(room);
@@ -478,9 +490,8 @@ public abstract class MapLayer implements StateEditable, Serializable {
                   } else {
                      flagerror = 1;
                   }
-               } else if(portalWall.getY1() == portalWall.getY2()){
-                  if ((Math.abs(point.getX() - portalWall.getX1()) > 15) && (Math.abs(point.getX() - portalWall.getX2()) > 15)) {
-                     this.wallList.remove(wallToPlacePortalOn);
+               } else if (wallToPlacePortalOn.getY1().equals(wallToPlacePortalOn.getY2())) {
+                  if ((Math.abs(point.getX() - wallToPlacePortalOn.getX1()) > 15) && (Math.abs(point.getX() - wallToPlacePortalOn.getX2()) > 15)) {
                      for (Room room : RoomList.getInstance().list) {
                         if (room.walls.contains(wallToPlacePortalOn)) {
                            roomsToUpdate.add(room);
@@ -491,42 +502,56 @@ public abstract class MapLayer implements StateEditable, Serializable {
                   } else {
                      flagerror = 1;
                   }
-               }else {
+               } else {
                   flagerror = 1;
                }
             }
          }
       }
       if(flag) {
-         Point2D start = portalWall.getP1();
-         Point2D end = portalWall.getP2();
-         Wall newStartWall = new Wall(new Line2D.Double(start, point),WallType.OPAQUE);
-         //TODO: Limit number of doors on wall?
-         Point2D endDoor;
-         if(portalWall.getX1() == portalWall.getX2()) {
-            endDoor = new Point2D.Double(portalWall.getX2(), point.getY()-15);
-            if(start.getY() < end.getY()) {
-               endDoor = new Point2D.Double(portalWall.getX2(), point.getY()+15);
-            }
-         } else {
-            endDoor = new Point2D.Double(point.getX()-15, portalWall.getY2());
-            if(start.getX() < end.getX()) {
-               endDoor = new Point2D.Double(point.getX()+15, portalWall.getY2());
+         boolean canPlacePortal = true;
+         CardinalDirection directionForError = null;
+         int roomIdForError = 0;
+         for(Room room: roomsToUpdate){
+            if(room.canPlacePortalOnWall(wallToPlacePortalOn)){
+               canPlacePortal = false;
+               directionForError = room.getWallDirection(wallToPlacePortalOn);
+               roomIdForError = room.ROOMID;
+               break;
             }
          }
-         Wall newEndWall = new Wall(new Line2D.Double(endDoor, end),WallType.OPAQUE);
-         Wall portalSeg = new Wall(new Line2D.Double(point, endDoor),type);
-         this.wallList.add(newStartWall);
-         this.wallList.add(portalSeg);
-         this.wallList.add(newEndWall);
-         for(Room room:roomsToUpdate){
-            room.walls.remove(wallToPlacePortalOn);
-            ArrayList<Wall> newWallList = room.walls;
-            newWallList.add(newStartWall);
-            newWallList.add(portalSeg);
-            newWallList.add(newEndWall);
-            room.updatePath(newWallList);
-            room.setPortalDirection(portalSeg);
+         if(canPlacePortal) {
+            this.wallList.remove(wallToPlacePortalOn);
+            Point2D start = wallToPlacePortalOn.getP1();
+            Point2D end = wallToPlacePortalOn.getP2();
+            Wall newStartWall = new Wall(new Line2D.Double(start, point), WallType.OPAQUE);
+            Point2D endDoor;
+            if (wallToPlacePortalOn.getX1().equals(wallToPlacePortalOn.getX2())) {
+               endDoor = new Point2D.Double(wallToPlacePortalOn.getX2(), point.getY() - 15);
+               if (start.getY() < end.getY()) {
+                  endDoor = new Point2D.Double(wallToPlacePortalOn.getX2(), point.getY() + 15);
+               }
+            } else {
+               endDoor = new Point2D.Double(point.getX() - 15, wallToPlacePortalOn.getY2());
+               if (start.getX() < end.getX()) {
+                  endDoor = new Point2D.Double(point.getX() + 15, wallToPlacePortalOn.getY2());
+               }
+            }
+            Wall newEndWall = new Wall(new Line2D.Double(endDoor, end), WallType.OPAQUE);
+            Wall portalSeg = new Wall(new Line2D.Double(point, endDoor), type);
+            this.wallList.add(newStartWall);
+            this.wallList.add(portalSeg);
+            this.wallList.add(newEndWall);
+            for (Room room : roomsToUpdate) {
+               room.walls.remove(wallToPlacePortalOn);
+               ArrayList<Wall> newWallList = room.walls;
+               newWallList.add(newStartWall);
+               newWallList.add(portalSeg);
+               newWallList.add(newEndWall);
+               room.updatePath(newWallList);
+            }
+         }else{
+            dialog("Room #"+roomIdForError+" already has a "+directionForError.toString()+" portal");
          }
       } else {
          String portalTypeForDialog = "Portal";
