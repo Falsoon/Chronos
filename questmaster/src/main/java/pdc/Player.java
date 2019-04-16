@@ -112,49 +112,73 @@ public class Player implements Serializable {
 	public void teleportThroughNorthPortal(){
 		Room room = RoomList.getInstance().getRoom(position);
 		Wall portal = room.getPortals().get(CardinalDirection.NORTH);
-		Point2D point = portal.getP1();
-		if(portal.getP2().getX() < point.getX()){
-			point = portal.getP2();
+		Point2D portalPoint = portal.getP1();
+		if(portal.getP2().getX() < portalPoint.getX()){
+			portalPoint = portal.getP2();
 		}
-		position.move((int) Math.round(point.getX()) + XOFFSET, (int) Math.round(point.getY()) - YOFFSET - GRIDDISTANCE);
+      Point2D teleportationPoint;
+		if(portal.getWallType().equals(WallType.ARCHWAY)||portal.getWallType().equals(WallType.OPENDOOR)){
+		   teleportationPoint = new Point2D.Double(Math.round(portalPoint.getX()) + XOFFSET, Math.round(portalPoint.getY()) + YOFFSET - GRIDDISTANCE);
+      }else{
+		   teleportationPoint = new Point2D.Double(Math.round(portalPoint.getX()) + XOFFSET, Math.round(portalPoint.getY()) - YOFFSET + 2 * GRIDDISTANCE);
+      }
+		position.move((int)teleportationPoint.getX(),(int)teleportationPoint.getY());
       mapLayer.setPlayerPosition(position);
 		positionDebug();
 	}
 
 	public void teleportThroughSouthPortal(){
-		Room room = RoomList.getInstance().getRoom(position);
-		Wall portal = room.getPortals().get(CardinalDirection.SOUTH);
-		Point2D point = portal.getP1();
-		if(portal.getP2().getX() < point.getX()){
-			point = portal.getP2();
-		}
-		position.move((int) Math.round(point.getX()) + XOFFSET, (int) Math.round(point.getY()) - YOFFSET + 2 * GRIDDISTANCE);
+      Room room = RoomList.getInstance().getRoom(position);
+      Wall portal = room.getPortals().get(CardinalDirection.SOUTH);
+      Point2D portalPoint = portal.getP1();
+      if(portal.getP2().getX() < portalPoint.getX()){
+         portalPoint = portal.getP2();
+      }
+      Point2D teleportationPoint;
+      if(portal.getWallType().equals(WallType.ARCHWAY)||portal.getWallType().equals(WallType.OPENDOOR)){
+         teleportationPoint = new Point2D.Double(Math.round(portalPoint.getX()) + XOFFSET, Math.round(portalPoint.getY()) - YOFFSET + 2 * GRIDDISTANCE);
+      }else{
+         teleportationPoint = new Point2D.Double(Math.round(portalPoint.getX()) + XOFFSET, Math.round(portalPoint.getY()) + YOFFSET - GRIDDISTANCE);
+      }
+      position.move((int)teleportationPoint.getX(),(int)teleportationPoint.getY());
       mapLayer.setPlayerPosition(position);
-		positionDebug();
+      positionDebug();
 	}
 
 	public void teleportThroughEastPortal(){
-		Room room = RoomList.getInstance().getRoom(position);
-		Wall portal = room.getPortals().get(CardinalDirection.EAST);
-		Point2D point = portal.getP1();
-		if(portal.getP2().getY() > point.getY()){
-			point = portal.getP2();
-		}
-		position.move((int) Math.round(point.getX()) + XOFFSET + GRIDDISTANCE, (int) Math.round(point.getY()) - YOFFSET);
+      Room room = RoomList.getInstance().getRoom(position);
+      Wall portal = room.getPortals().get(CardinalDirection.EAST);
+      Point2D portalPoint = portal.getP1();
+      if(portal.getP2().getY() < portalPoint.getY()){
+         portalPoint = portal.getP2();
+      }
+      Point2D teleportationPoint;
+      if(portal.getWallType().equals(WallType.ARCHWAY)||portal.getWallType().equals(WallType.OPENDOOR)){
+         teleportationPoint = new Point2D.Double(Math.round(portalPoint.getX()) + XOFFSET + GRIDDISTANCE, Math.round(portalPoint.getY()) - YOFFSET + GRIDDISTANCE);
+      }else{
+         teleportationPoint = new Point2D.Double(Math.round(portalPoint.getX()) + XOFFSET - 2 * GRIDDISTANCE, Math.round(portalPoint.getY()) - YOFFSET + GRIDDISTANCE);
+      }
+      position.move((int)teleportationPoint.getX(),(int)teleportationPoint.getY());
       mapLayer.setPlayerPosition(position);
-		positionDebug();
+      positionDebug();
 	}
 
 	public void teleportThroughWestPortal(){
-		Room room = RoomList.getInstance().getRoom(position);
-		Wall portal = room.getPortals().get(CardinalDirection.WEST);
-		Point2D point = portal.getP1();
-		if(portal.getP2().getY() > point.getY()){
-			point = portal.getP2();
-		}
-		position.move((int) Math.round(point.getX()) + XOFFSET - 2 * GRIDDISTANCE, (int) Math.round(point.getY()) - YOFFSET);
+      Room room = RoomList.getInstance().getRoom(position);
+      Wall portal = room.getPortals().get(CardinalDirection.WEST);
+      Point2D portalPoint = portal.getP1();
+      if(portal.getP2().getY() < portalPoint.getY()){
+         portalPoint = portal.getP2();
+      }
+      Point2D teleportationPoint;
+      if(portal.getWallType().equals(WallType.ARCHWAY)||portal.getWallType().equals(WallType.OPENDOOR)){
+         teleportationPoint = new Point2D.Double(Math.round(portalPoint.getX()) + XOFFSET - 2 * GRIDDISTANCE, Math.round(portalPoint.getY()) - YOFFSET + GRIDDISTANCE);
+      }else{
+         teleportationPoint = new Point2D.Double(Math.round(portalPoint.getX()) + XOFFSET + GRIDDISTANCE, Math.round(portalPoint.getY()) - YOFFSET + GRIDDISTANCE);
+      }
+      position.move((int)teleportationPoint.getX(),(int)teleportationPoint.getY());
       mapLayer.setPlayerPosition(position);
-		positionDebug();
+      positionDebug();
 	}
 
 	public void teleportThroughUpPortal(){
