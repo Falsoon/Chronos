@@ -138,8 +138,7 @@ public class CIV {
         	//map.addUndoableEditListener(manager);
          in.close();
          file.close();
-         RoomList.getInstance().list = map.rooms;
-            //map.mapLayer.detectRooms();
+         map.mapLayer.detectRooms();
 
          System.out.println("Map has been restored ");
         } catch(IOException ex) {
