@@ -116,7 +116,7 @@ public class DeleteWallsTest {
         ArrayList<Wall> wallList = civ.map.mapLayer.getWallList();
         boolean hasDoor = false;
         for(Wall wall:wallList){
-            if(wall.getWallType().equals(WallType.CLOSEDDOOR)){
+            if(wall.getWallType().equals(WallType.CLOSEDDOOR)||wall.getWallType().equals(WallType.LOCKDOOR)||wall.getWallType().equals(WallType.OPENLOCKDOOR)){
                 hasDoor = true;
             }
         }

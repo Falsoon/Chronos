@@ -15,8 +15,8 @@ public class ButtonFactory {
 	public RoomDescInsert rdi;
 	public JButton btnPlay, btnPlayer, btnUndo, btnClear;
 	public JButton btnSave, btnRestore;
-	public JToggleButton btnOpaqueWalls, btnTransWalls, btnArchways, btnProp, btnDoors, btnDelete, btnStair;
-	
+	public JToggleButton btnOpaqueWalls, btnTransWalls, btnArchways, btnProp, btnDoors,btnLock, btnDelete, btnKey, btnStair;
+
 	public ButtonFactory(AuthorWindow aw) {
 		this.authorWindow = aw;
 		rdi = new RoomDescInsert(aw);
@@ -28,21 +28,34 @@ public class ButtonFactory {
 		authorWindow.authorPanel = new AuthorPanel();
 
 		btnOpaqueWalls = new JToggleButton("Opaque Walls");
+        btnOpaqueWalls.setMaximumSize(new Dimension(200, 30));
 		btnOpaqueWalls.setAlignmentX(Component.CENTER_ALIGNMENT);
 		btnTransWalls = new JToggleButton("Transparent Walls");
+        btnTransWalls.setMaximumSize(new Dimension(200, 30));
 		btnTransWalls.setAlignmentX(Component.CENTER_ALIGNMENT);
 		btnArchways = new JToggleButton("Archways");
+        btnArchways.setMaximumSize(new Dimension(200, 30));
 		btnArchways.setAlignmentX(Component.CENTER_ALIGNMENT);
 		btnDoors = new JToggleButton("Doors");
+        btnDoors.setMaximumSize(new Dimension(200, 30));
 		btnDoors.setAlignmentX(Component.CENTER_ALIGNMENT);
 		btnStair = new JToggleButton("Staircases");
 		btnStair.setAlignmentX(Component.CENTER_ALIGNMENT);
+        btnLock = new JToggleButton("Locked Door");
+        btnLock.setMaximumSize(new Dimension(200, 30));
+        btnLock.setAlignmentX(Component.CENTER_ALIGNMENT);
+		btnKey = new JToggleButton("Key");
+        btnKey.setMaximumSize(new Dimension(200, 30));
+		btnKey.setAlignmentX(Component.CENTER_ALIGNMENT);
 		btnProp = new JToggleButton("Set Properties");
+        btnProp.setMaximumSize(new Dimension(200, 30));
 		btnProp.setAlignmentX(Component.CENTER_ALIGNMENT);
 		btnDelete = new JToggleButton("Delete Walls/Passageways");
+        btnDelete.setMaximumSize(new Dimension(200, 30));
 		btnDelete.setAlignmentX(Component.CENTER_ALIGNMENT);
 
 		btnPlayer = new JButton("Set Start Point");
+        btnPlayer.setMaximumSize(new Dimension(200, 30));
 		btnPlayer.setAlignmentX(Component.CENTER_ALIGNMENT);
 
 		JSeparator line1 = new JSeparator(SwingConstants.HORIZONTAL);
@@ -50,28 +63,36 @@ public class ButtonFactory {
 		JSeparator line2 = new JSeparator(SwingConstants.HORIZONTAL);
 
 		btnUndo = new JButton("Undo");
+        btnUndo.setMaximumSize(new Dimension(200, 30));
 		btnUndo.setAlignmentX(Component.CENTER_ALIGNMENT);
 
 		btnSave = new JButton("Save Map");
+        btnSave.setMaximumSize(new Dimension(200, 30));
 		btnSave.setAlignmentX(Component.CENTER_ALIGNMENT);
 		btnRestore = new JButton("Restore Map");
+        btnRestore.setMaximumSize(new Dimension(200, 30));
 		btnRestore.setAlignmentX(Component.CENTER_ALIGNMENT);
 
 		JSeparator line3 = new JSeparator(SwingConstants.HORIZONTAL);
 
 		btnPlay = new JButton("Play");
+        btnPlay.setMaximumSize(new Dimension(200, 30));
 		btnPlay.setAlignmentX(Component.CENTER_ALIGNMENT);
 
 		JSeparator line4 = new JSeparator(SwingConstants.HORIZONTAL);
 
 		btnClear = new JButton("Clear");
+        btnClear.setMaximumSize(new Dimension(70, 30));
 		btnClear.setAlignmentX(Component.CENTER_ALIGNMENT);
+		btnClear.setBackground(Color.red);
 
 		authorWindow.authorPanel.add(btnOpaqueWalls);
 		authorWindow.authorPanel.add(btnTransWalls);
 		authorWindow.authorPanel.add(btnArchways);
 		authorWindow.authorPanel.add(btnDoors);
 		authorWindow.authorPanel.add(btnStair);
+        authorWindow.authorPanel.add(btnLock);
+        authorWindow.authorPanel.add(btnKey);
 		authorWindow.authorPanel.add(btnProp);
 		authorWindow.authorPanel.add(btnPlayer);
 		authorWindow.authorPanel.add(btnDelete);
@@ -94,6 +115,8 @@ public class ButtonFactory {
 		btnList.add(btnArchways);
 		btnList.add(btnDoors);
 		btnList.add(btnStair);
+        btnList.add(btnLock);
+		btnList.add(btnKey);
 		btnList.add(btnProp);
 		btnList.add(btnDelete);
 
@@ -136,6 +159,13 @@ public class ButtonFactory {
 				authorWindow.mapPanel.paintDoors();
 			}
 		});
+        btnLock.addItemListener(e -> {
+            if (e.getStateChange() == ItemEvent.SELECTED) {
+                //authorWindow.mapPanel.stopDrawing();
+                //authorWindow.mapPanel.stopPlacingPlayer();
+                authorWindow.mapPanel.paintLockDoors();
+            }
+        });
 
 		btnStair.addItemListener(e -> {
 			if (e.getStateChange() == ItemEvent.SELECTED) {
@@ -166,6 +196,11 @@ public class ButtonFactory {
 
 		});
 
+		btnKey.addActionListener(e -> {
+
+			authorWindow.mapPanel.paintKey();
+
+		});
 		btnUndo.addActionListener(e -> {
         	authorWindow.mapPanel.undo();
         	authorWindow.authorPanel.grabFocus();

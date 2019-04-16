@@ -87,6 +87,25 @@ public class MapPanel extends JPanel {
 		repaint();
 		civ.doorAdd();
 	}
+    public void paintLockDoors() {
+        civ.stopDrawing();
+        civ.stopPlacingPlayer();
+        civ.lockDoorAdd();
+    }
+	public void paintKey() {
+		civ.stopDrawing();
+		civ.stopPlacingPlayer();
+		civ.keyAdd();
+	}
+
+    public void dropKey() {
+        civ.dropKey();
+        repaint();
+    }
+    public void pickUpKey() {
+        civ.pickUpKey();
+        repaint();
+    }
 
    /**
     * Changes state of MapPanel to add Archway
@@ -173,6 +192,11 @@ public class MapPanel extends JPanel {
 		return civ.placedPlayer();
 	}
 
+    public void lockDoor()
+    {
+        civ.lockDoor();
+        repaint();
+    }
 	public void goUp() {
 		civ.goUp();
 		repaint();

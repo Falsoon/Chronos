@@ -196,7 +196,18 @@ public class CIV {
 	public void goUp() {
 		map.getPlayer().goUp();
 	}
+	public void pickUpKey(){
+	   map.getPlayer().pickUpKey();
+	}
 
+	public void dropKey()
+    {
+        map.getPlayer().dropKey();
+    }
+    public void keyAdd()
+    {
+        map.keyAdd();
+    }
 	public void goDown() {
 		map.getPlayer().goDown();
 	}
@@ -244,6 +255,7 @@ public class CIV {
 	public void stopDrawing() {
 		map.stopDrawing();
 	}
+	public void lockDoor(){map.getPlayer().lockDoor();}
 
 	public void archwayAdd() {
 		stopDrawing();
@@ -260,6 +272,11 @@ public class CIV {
 		stopPlacingPlayer();
 		map.dooring();
 	}
+    public void lockDoorAdd() {
+        stopDrawing();
+        stopPlacingPlayer();
+        map.lockDooring();
+    }
 	//look into creating door pointList
 	public int numOfDoors() {
 		return map.numOfDoors();
