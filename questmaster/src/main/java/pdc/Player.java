@@ -5,6 +5,10 @@ import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.io.Serializable;
 import java.util.Iterator;
+import pdc.Constants.*;
+
+import static pdc.Constants.PLAYER_X_OFFSET;
+import static pdc.Constants.PLAYER_Y_OFFSET;
 
 /*
  * encapsulates player's avatar data
@@ -18,8 +22,6 @@ public class Player implements Serializable {
 	private MapLayer mapLayer;
 	private ArrayList<Key> keysOwned;
 	private String representation;
-	private final int XOFFSET = 2;
-	private final int YOFFSET = 4;
 	private final double COLLISION_MARGIN = 13.01;
 	private Key key;
 
@@ -35,8 +37,8 @@ public class Player implements Serializable {
 	
 	public void place(Point pos) {
 		position = pos;
-		position.setLocation(Math.round(position.x / GRIDDISTANCE) * GRIDDISTANCE + XOFFSET,
-				Math.round(position.y / GRIDDISTANCE) * GRIDDISTANCE - YOFFSET);
+		position.setLocation(Math.round(position.x / GRIDDISTANCE) * GRIDDISTANCE + PLAYER_X_OFFSET,
+				Math.round(position.y / GRIDDISTANCE) * GRIDDISTANCE - PLAYER_Y_OFFSET);
 		placed = true;
 		placing = false;
 		rePlace();
@@ -121,7 +123,7 @@ public class Player implements Serializable {
       }
    }
 
-	public void goUp() {
+	public void goNorth() {
 		if (playing && !collides(new Point(position.x, position.y - GRIDDISTANCE))) {
 			position.move(position.x, position.y - GRIDDISTANCE);
 			checkStairs();
@@ -130,7 +132,7 @@ public class Player implements Serializable {
 		positionDebug();
 	}
 
-   public void goDown() {
+   public void goSouth() {
 		if (playing && !collides(new Point(position.x, position.y + GRIDDISTANCE))) {
 			position.move(position.x, position.y + GRIDDISTANCE);
 			checkStairs();
@@ -139,7 +141,7 @@ public class Player implements Serializable {
       positionDebug();
    }
 
-	public void goLeft() {
+	public void goWest() {
 		if (playing && !collides(new Point(position.x - GRIDDISTANCE, position.y))) {
 			position.move(position.x - GRIDDISTANCE, position.y);
 			checkStairs();
@@ -148,7 +150,7 @@ public class Player implements Serializable {
       positionDebug();
    }
 
-	public void goRight() {
+	public void goEast() {
 		if (playing && !collides(new Point(position.x + GRIDDISTANCE, position.y))) {
 			position.move(position.x + GRIDDISTANCE, position.y);
 			checkStairs();
@@ -202,9 +204,9 @@ public class Player implements Serializable {
 		}
       Point2D teleportationPoint;
 		if(portal.getWallType().equals(WallType.ARCHWAY)||portal.getWallType().equals(WallType.OPEN_DOOR)||portal.getWallType().equals(WallType.OPEN_LOCKED_DOOR)){
-		   teleportationPoint = new Point2D.Double(Math.round(portalPoint.getX()) + XOFFSET, Math.round(portalPoint.getY()) + YOFFSET - GRIDDISTANCE);
+		   teleportationPoint = new Point2D.Double(Math.round(portalPoint.getX()) + PLAYER_X_OFFSET, Math.round(portalPoint.getY()) + PLAYER_Y_OFFSET - GRIDDISTANCE);
       }else{
-		   teleportationPoint = new Point2D.Double(Math.round(portalPoint.getX()) + XOFFSET, Math.round(portalPoint.getY()) - YOFFSET + 2 * GRIDDISTANCE);
+		   teleportationPoint = new Point2D.Double(Math.round(portalPoint.getX()) + PLAYER_X_OFFSET, Math.round(portalPoint.getY()) - PLAYER_Y_OFFSET + 2 * GRIDDISTANCE);
       }
 		position.move((int)teleportationPoint.getX(),(int)teleportationPoint.getY());
       mapLayer.setPlayerPosition(position);
@@ -220,9 +222,9 @@ public class Player implements Serializable {
       }
       Point2D teleportationPoint;
       if(portal.getWallType().equals(WallType.ARCHWAY)||portal.getWallType().equals(WallType.OPEN_DOOR)||portal.getWallType().equals(WallType.OPEN_LOCKED_DOOR)){
-         teleportationPoint = new Point2D.Double(Math.round(portalPoint.getX()) + XOFFSET, Math.round(portalPoint.getY()) - YOFFSET + 2 * GRIDDISTANCE);
+         teleportationPoint = new Point2D.Double(Math.round(portalPoint.getX()) + PLAYER_X_OFFSET, Math.round(portalPoint.getY()) - PLAYER_Y_OFFSET + 2 * GRIDDISTANCE);
       }else{
-         teleportationPoint = new Point2D.Double(Math.round(portalPoint.getX()) + XOFFSET, Math.round(portalPoint.getY()) + YOFFSET - GRIDDISTANCE);
+         teleportationPoint = new Point2D.Double(Math.round(portalPoint.getX()) + PLAYER_X_OFFSET, Math.round(portalPoint.getY()) + PLAYER_Y_OFFSET - GRIDDISTANCE);
       }
       position.move((int)teleportationPoint.getX(),(int)teleportationPoint.getY());
       mapLayer.setPlayerPosition(position);
@@ -238,9 +240,9 @@ public class Player implements Serializable {
       }
       Point2D teleportationPoint;
       if(portal.getWallType().equals(WallType.ARCHWAY)||portal.getWallType().equals(WallType.OPEN_DOOR)||portal.getWallType().equals(WallType.OPEN_LOCKED_DOOR)){
-         teleportationPoint = new Point2D.Double(Math.round(portalPoint.getX()) + XOFFSET + GRIDDISTANCE, Math.round(portalPoint.getY()) - YOFFSET + GRIDDISTANCE);
+         teleportationPoint = new Point2D.Double(Math.round(portalPoint.getX()) + PLAYER_X_OFFSET + GRIDDISTANCE, Math.round(portalPoint.getY()) - PLAYER_Y_OFFSET + GRIDDISTANCE);
       }else{
-         teleportationPoint = new Point2D.Double(Math.round(portalPoint.getX()) + XOFFSET - 2 * GRIDDISTANCE, Math.round(portalPoint.getY()) - YOFFSET + GRIDDISTANCE);
+         teleportationPoint = new Point2D.Double(Math.round(portalPoint.getX()) + PLAYER_X_OFFSET - 2 * GRIDDISTANCE, Math.round(portalPoint.getY()) - PLAYER_Y_OFFSET + GRIDDISTANCE);
       }
       position.move((int)teleportationPoint.getX(),(int)teleportationPoint.getY());
       mapLayer.setPlayerPosition(position);
@@ -256,9 +258,9 @@ public class Player implements Serializable {
       }
       Point2D teleportationPoint;
       if(portal.getWallType().equals(WallType.ARCHWAY)||portal.getWallType().equals(WallType.OPEN_DOOR)||portal.getWallType().equals(WallType.OPEN_LOCKED_DOOR)){
-         teleportationPoint = new Point2D.Double(Math.round(portalPoint.getX()) + XOFFSET - 2 * GRIDDISTANCE, Math.round(portalPoint.getY()) - YOFFSET + GRIDDISTANCE);
+         teleportationPoint = new Point2D.Double(Math.round(portalPoint.getX()) + PLAYER_X_OFFSET - 2 * GRIDDISTANCE, Math.round(portalPoint.getY()) - PLAYER_Y_OFFSET + GRIDDISTANCE);
       }else{
-         teleportationPoint = new Point2D.Double(Math.round(portalPoint.getX()) + XOFFSET + GRIDDISTANCE, Math.round(portalPoint.getY()) - YOFFSET + GRIDDISTANCE);
+         teleportationPoint = new Point2D.Double(Math.round(portalPoint.getX()) + PLAYER_X_OFFSET + GRIDDISTANCE, Math.round(portalPoint.getY()) - PLAYER_Y_OFFSET + GRIDDISTANCE);
       }
       position.move((int)teleportationPoint.getX(),(int)teleportationPoint.getY());
       mapLayer.setPlayerPosition(position);

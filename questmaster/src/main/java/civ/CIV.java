@@ -185,9 +185,22 @@ public class CIV {
 		return map.getPlayer().isPlaced();
 	}
 
-	public void goUp() {
-		map.getPlayer().goUp();
+	public void goNorth() {
+		map.getPlayer().goNorth();
 	}
+
+   public void goSouth() {
+      map.getPlayer().goSouth();
+   }
+
+   public void goWest() {
+      map.getPlayer().goWest();
+   }
+
+   public void goEast() {
+      map.getPlayer().goEast();
+   }
+
 	public void pickUpKey(){
 	   map.getPlayer().pickUpKey();
 	}
@@ -198,18 +211,6 @@ public class CIV {
 
 	public void keyAdd() {
 	   map.keyAdd();
-	}
-
-	public void goDown() {
-		map.getPlayer().goDown();
-	}
-
-	public void goLeft() {
-		map.getPlayer().goLeft();
-	}
-
-	public void goRight() {
-		map.getPlayer().goRight();
 	}
 
 	public void teleportThroughNorthPortal(){

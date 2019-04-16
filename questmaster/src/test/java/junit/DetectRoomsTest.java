@@ -268,7 +268,6 @@ class DetectRoomsTest {
       civ.mousePressed(new Point(15, 15), false, true,false);
       civ.mousePressed(new Point(15, 45), false, true,false);
 
-      civ.mousePressed(new Point(90, 30), false, true,false);
       // stops without finishing shape
       civ.stopDrawing();
       // then continues
@@ -282,7 +281,6 @@ class DetectRoomsTest {
       assertEquals(1, civ.getRoomList().size());
       assertTrue(civ.map.mapLayer.pointList.contains(new Point(15, 15)));
       assertTrue(civ.map.mapLayer.pointList.contains(new Point(15, 45)));
-      assertTrue(civ.map.mapLayer.pointList.contains(new Point(90, 30)));
       assertTrue(civ.map.mapLayer.pointList.contains(new Point(105, 90)));
       assertTrue(civ.map.mapLayer.pointList.contains(new Point(300, 90)));
       assertTrue(civ.map.mapLayer.pointList.contains(new Point(300, 300)));

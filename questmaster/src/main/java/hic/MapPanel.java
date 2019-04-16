@@ -198,22 +198,22 @@ public class MapPanel extends JPanel {
         repaint();
     }
 	public void goUp() {
-		civ.goUp();
+		civ.goNorth();
 		repaint();
 	}
 
 	public void goDown() {
-		civ.goDown();
+		civ.goSouth();
 		repaint();
 	}
 
 	public void goLeft() {
-		civ.goLeft();
+		civ.goWest();
 		repaint();
 	}
 
 	public void goRight() {
-		civ.goRight();
+		civ.goEast();
 		repaint();
 	}
 

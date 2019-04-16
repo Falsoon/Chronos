@@ -587,7 +587,7 @@ public abstract class MapLayer implements StateEditable, Serializable {
    }
 
    public void placeKey(Point p) {
-      key = new Key(p, this);
+      key = new Key(p);
       keyList.add(key);
    }
    /**

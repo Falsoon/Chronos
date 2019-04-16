@@ -6,17 +6,18 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.io.Serializable;
 
+import static pdc.Constants.PLAYER_X_OFFSET;
+import static pdc.Constants.PLAYER_Y_OFFSET;
+
 public class Stair implements Serializable {
     private Point location;
     private String representation;
     public Stair linkedStair = null;
     private CardinalDirection direction;
-    private final int XOFFSET = 2;
-    private final int YOFFSET = 4;
 
     Stair(Point p) {
         location = p;
-        location.translate(XOFFSET, -YOFFSET);
+        location.translate(PLAYER_X_OFFSET, -PLAYER_Y_OFFSET);
     }
 
     public void linkWith(Stair s) {
