@@ -70,6 +70,7 @@ public class Player implements Serializable {
 	public void goUp() {
 		if (playing && !collides(new Point(position.x, position.y - GRIDDISTANCE))) {
 			position.move(position.x, position.y - GRIDDISTANCE);
+			checkStairs();
 		}
       positionDebug();
    }
@@ -85,6 +86,7 @@ public class Player implements Serializable {
    public void goDown() {
 		if (playing && !collides(new Point(position.x, position.y + GRIDDISTANCE))) {
 			position.move(position.x, position.y + GRIDDISTANCE);
+			checkStairs();
 		}
       positionDebug();
    }
@@ -92,6 +94,7 @@ public class Player implements Serializable {
 	public void goLeft() {
 		if (playing && !collides(new Point(position.x - GRIDDISTANCE, position.y))) {
 			position.move(position.x - GRIDDISTANCE, position.y);
+			checkStairs();
 		}
       positionDebug();
    }
@@ -99,6 +102,7 @@ public class Player implements Serializable {
 	public void goRight() {
 		if (playing && !collides(new Point(position.x + GRIDDISTANCE, position.y))) {
 			position.move(position.x + GRIDDISTANCE, position.y);
+			checkStairs();
 		}
       positionDebug();
    }
@@ -169,5 +173,19 @@ public class Player implements Serializable {
 		}
 		return RoomList.getInstance().getRoom(position).desc;
 		// return currentRoom.desc;
+	}
+
+	private void checkStairs() {
+		Stair warpTo = null;
+		for (Stair s : mapLayer.stairList) {
+			System.out.println("stairPos: " + s.getLocation().x + ", " + s.getLocation().y);
+			if (s.getLocation().x == position.x && s.getLocation().y == position.y) {
+				warpTo = s.linkedStair;
+			}
+		}
+		if (warpTo != null) {
+			position = new Point(warpTo.getLocation());
+			mapLayer.setPlayerStartingPosition(new Point(position));
+		}
 	}
 }

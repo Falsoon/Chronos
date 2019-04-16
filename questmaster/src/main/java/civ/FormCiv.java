@@ -111,4 +111,7 @@ public class FormCiv {
 	   return room.getConnectedRooms();
    }
 
+   public HashMap<CardinalDirection, Stair> getStairs() {
+	   return room.getStairs();
+   }
 }

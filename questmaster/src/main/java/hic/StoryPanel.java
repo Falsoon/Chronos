@@ -5,6 +5,7 @@ import pdc.Room;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -58,10 +59,11 @@ public class StoryPanel extends JPanel {
     }
 
     public void updateExits(Room currentRoom){
-      Set<CardinalDirection> portalDirections = currentRoom.getPortals().keySet();
+
+      Set<Map.Entry<Room, CardinalDirection>> connectedRooms = currentRoom.getConnectedRooms().entrySet();
       topBar.resetButtons();
-      for(CardinalDirection direction : portalDirections){
-         topBar.setEnabled(direction);
+      for(Map.Entry<Room,CardinalDirection> entry : connectedRooms){
+         topBar.setEnabled(entry.getValue());
       }
     }
 }

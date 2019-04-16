@@ -1,10 +1,7 @@
 package hic;
 
 import civ.FormCiv;
-import pdc.CardinalDirection;
-import pdc.Door;
-import pdc.DoorList;
-import pdc.Room;
+import pdc.*;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;

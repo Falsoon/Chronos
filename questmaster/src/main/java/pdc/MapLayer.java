@@ -43,6 +43,8 @@ public abstract class MapLayer implements StateEditable, Serializable {
    private Point lastPoint;
    private boolean wasFirstClick;
    private ArrayList<Room> candidateRoomsForTransparent;
+   public ArrayList<Stair> stairList;
+   private boolean firstStair;
 
    public MapLayer() {
 
@@ -56,7 +58,9 @@ public abstract class MapLayer implements StateEditable, Serializable {
       throwAlerts = true;
 		this.selectedRoom = null;
 		firstClick = true;
-		candidateRoomsForTransparent = new ArrayList<>();
+      candidateRoomsForTransparent = new ArrayList<>();
+      stairList = new ArrayList<>();
+      firstStair = true;
 	}
 
 	public abstract void draw(Graphics g);
@@ -644,7 +648,7 @@ public abstract class MapLayer implements StateEditable, Serializable {
    public void stopDrawing() {
 	   firstClick = true;
 	   lastPoint = null;
-	   wasFirstClick = false;
+      wasFirstClick = false;
    }
 
     /** Abstract method to set whether the MapLayer is for the player mode
@@ -659,6 +663,16 @@ public abstract class MapLayer implements StateEditable, Serializable {
    public void delete(Point p) {
       ArrayList<Wall> wallsToRemove = new ArrayList<>();
       ArrayList<Wall> portalsToRemove = new ArrayList<>();
+      //----don't mind me, just checking for staircases to remove first----
+      for (Stair s : stairList) {
+         Point stairPos = s.getLocation();
+         if(Math.abs(stairPos.x - p.x) < 8 && Math.abs(stairPos.y - p.y) < 8) {
+            stairList.remove(s.linkedStair);
+            stairList.remove(s);
+            return; // BEWARE THERE'S A RETURN HERE
+         }
+      }
+      //----sorry, i'll get out of your way now----
       for(Wall wall:wallList){
          if(wall.getDistance(p)==0){
             //TODO find a good way to do this.
@@ -707,6 +721,29 @@ public abstract class MapLayer implements StateEditable, Serializable {
 
    }
 
+   public void placeStairs(Point p) {
+      Stair newStairs = new Stair(p);
+      CardinalDirection direction;
+      if (firstStair) {
+         direction = CardinalDirection.DOWN;
+      } else {
+         direction = CardinalDirection.UP;
+      }
+      Room room = RoomList.getInstance().getRoom(p);
+      if(!room.hasPortalInDirection(direction)) {
+         newStairs.setDirection(direction);
+         stairList.add(newStairs);
+         if(!firstStair){
+            newStairs.linkWith(stairList.get(stairList.size() - 2));
+         }
+         firstStair = !firstStair;
+         room.addStair(newStairs, direction);
+      }else{
+         firstStair = true;
+         dialog("Room already has a "+direction.toString()+" Stair.");
+      }
+   }
+
    /**
     * Custom comparator used to sort points when breaking up walls.
     */
@@ -730,4 +767,5 @@ public abstract class MapLayer implements StateEditable, Serializable {
          d.setVisible(true);
       }
    }
+
 }

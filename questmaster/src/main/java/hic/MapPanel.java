@@ -66,17 +66,17 @@ public class MapPanel extends JPanel {
 	 * Changes state of MapPanel to draw Outline
 	 */
 	public void paintRooms() {
-		civ.stopDrawing();
-		civ.stopPlacingPlayer();
-		civ.outlining();
+		setSelectedRoom(null);
+		repaint();
+		civ.outlining();		
 	}
 
 	/**
 	 * Changes state of MapPanel to add walls
 	 */
 	public void paintWalls() {
-		civ.stopDrawing();
-		civ.stopPlacingPlayer();
+		setSelectedRoom(null);
+		repaint();
 		civ.walling();
 	}
 
@@ -84,8 +84,8 @@ public class MapPanel extends JPanel {
 	 * Changes state of MapPanel to add doors
 	 */
 	public void paintDoors() {
-		civ.stopDrawing();
-		civ.stopPlacingPlayer();
+		setSelectedRoom(null);
+		repaint();
 		civ.doorAdd();
 	}
 
@@ -93,9 +93,18 @@ public class MapPanel extends JPanel {
     * Changes state of MapPanel to add Archway
     */
    public void paintArchway() {
-		civ.stopDrawing();
-		civ.stopPlacingPlayer();
+		setSelectedRoom(null);
+		repaint();
 		civ.archwayAdd();
+   }
+
+      /**
+    * Changes state of MapPanel to add stairs
+    */
+	public void paintStairs() {
+		setSelectedRoom(null);
+		repaint();
+		civ.stairsAdd();
    }
 
 
@@ -152,6 +161,8 @@ public class MapPanel extends JPanel {
 	}
 
 	public void placePlayerStart() {
+		setSelectedRoom(null);
+		repaint();
 		civ.placeStart();
 	}
 
@@ -196,6 +207,8 @@ public class MapPanel extends JPanel {
    }
 
 	public void stopDrawing() {
+		setSelectedRoom(null);
+		repaint();
 		civ.stopDrawing();
 	}
 

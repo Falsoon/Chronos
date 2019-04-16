@@ -1,6 +1,5 @@
 package pdc;
 
-import javax.smartcardio.Card;
 import java.awt.*;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Point2D;
@@ -23,6 +22,7 @@ public class Room implements Serializable{
 	public static int idCount = 1;
 	public GeneralPath path;
 	private HashMap<CardinalDirection,Wall> portals = new HashMap<>();
+   private HashMap<CardinalDirection,Stair> stairs = new HashMap<>();
 
    /**
     * Create a room from a list of walls, typical case
@@ -513,11 +513,11 @@ public class Room implements Serializable{
      * @return an ArrayList\<Room\> containing all Rooms accessible from this
      */
    public ArrayList<Room> getAccessibleRooms(){
-       HashSet<Room> rooms = new HashSet<>();
-       rooms.addAll(getAccessibleAdjacentRooms());
-       rooms.addAll(getAccessibleInnerRooms());
-       rooms.addAll(getAccessibleOuterRooms());
-       return new ArrayList<>(rooms);
+      HashSet<Room> rooms = new HashSet<>();
+      rooms.addAll(getAccessibleAdjacentRooms());
+      rooms.addAll(getAccessibleInnerRooms());
+      rooms.addAll(getAccessibleOuterRooms());
+      return new ArrayList<>(rooms);
    }
 
    /**
@@ -670,7 +670,31 @@ public class Room implements Serializable{
             }
          }
       }
+      for(Map.Entry<CardinalDirection,Stair> entry: stairs.entrySet()){
+         for(Room room : RoomList.getInstance().list){
+            if(!this.equals(room)&&room.hasStair(entry.getValue().getLinkedStair())){
+               connectedRooms.put(room,entry.getKey());
+            }
+         }
+      }
       return connectedRooms;
    }
 
+   public boolean hasStairsInDirection(CardinalDirection direction){
+      return stairs.containsKey(direction);
+   }
+
+   public void addStair(Stair newStairs, CardinalDirection direction) {
+      if(!hasStairsInDirection(direction)){
+         stairs.put(direction,newStairs);
+      }else throw new IllegalArgumentException("Room already has a "+direction.toString()+" Stair.");
+   }
+
+   public HashMap<CardinalDirection, Stair> getStairs() {
+      return stairs;
+   }
+
+   public boolean hasStair(Stair stair){
+      return stairs.values().contains(stair);
+   }
 }

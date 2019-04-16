@@ -220,6 +220,11 @@ public class CIV {
 		stopPlacingPlayer();
 		map.archwayAdd();
 	}
+	public void stairsAdd() {
+		stopDrawing();
+		stopPlacingPlayer();
+		map.stairing();
+	}
     public void doorAdd() {
 		stopDrawing();
 		stopPlacingPlayer();
