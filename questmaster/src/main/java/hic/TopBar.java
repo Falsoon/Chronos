@@ -1,6 +1,7 @@
 package hic;
 
 import pdc.CardinalDirection;
+import pdc.Room;
 
 import javax.swing.*;
 import java.awt.*;
@@ -19,6 +20,7 @@ public interface TopBar{
    JButton downButton = new JButton("Down");
    JLabel panelLabel = new JLabel("Exits");
    JPanel getMainJPanel();
+   void updateExits(Room currentRoom);
    void setEnabled(CardinalDirection direction);
    void resetButtons();
 }

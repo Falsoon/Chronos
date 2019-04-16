@@ -1,7 +1,6 @@
 package hic;
 
 import civ.CIV;
-import pdc.Constants;
 import pdc.Room;
 import pdc.RoomList;
 
@@ -191,6 +190,36 @@ public class MapPanel extends JPanel {
 
 	public void goRight() {
 		civ.goRight();
+		repaint();
+	}
+
+	public void teleportThroughNorthPortal(){
+		civ.teleportThroughNorthPortal();
+		repaint();
+	}
+
+	public void teleportThroughSouthPortal(){
+		civ.teleportThroughSouthPortal();
+		repaint();
+	}
+
+	public void teleportThroughEastPortal(){
+		civ.teleportThroughEastPortal();
+		repaint();
+	}
+
+	public void teleportThroughWestPortal(){
+		civ.teleportThroughWestPortal();
+		repaint();
+	}
+
+	public void teleportThroughUpPortal(){
+		civ.teleportThroughUpPortal();
+		repaint();
+	}
+
+	public void teleportThroughDownPortal(){
+		civ.teleportThroughDownPortal();
 		repaint();
 	}
 

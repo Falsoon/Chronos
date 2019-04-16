@@ -1,6 +1,7 @@
 package pdc;
 
 import java.awt.*;
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.io.Serializable;
 import java.util.Iterator;
@@ -67,21 +68,22 @@ public class Player implements Serializable {
 		return position;
 	}
 
+	
+   private void positionDebug() {
+		System.out.println("Player position: " + position);
+      ArrayList<Room> rl = RoomList.getInstance().list;
+      for (Room room : rl) {
+			System.out.println("Room#" + room.ROOMID + "contains player: " + room.contains(position));
+      }
+   }
+	
 	public void goUp() {
 		if (playing && !collides(new Point(position.x, position.y - GRIDDISTANCE))) {
 			position.move(position.x, position.y - GRIDDISTANCE);
 			checkStairs();
 		}
-      positionDebug();
-   }
-
-   private void positionDebug() {
-      System.out.println("Player position: " + position);
-      ArrayList<Room> rl = RoomList.getInstance().list;
-      for (Room room : rl) {
-         System.out.println("Room#" + room.ROOMID + "contains player: " + room.contains(position));
-      }
-   }
+		positionDebug();
+	}
 
    public void goDown() {
 		if (playing && !collides(new Point(position.x, position.y + GRIDDISTANCE))) {
@@ -105,7 +107,59 @@ public class Player implements Serializable {
 			checkStairs();
 		}
       positionDebug();
-   }
+	}
+	
+	public void teleportThroughNorthPortal(){
+		Room room = RoomList.getInstance().getRoom(position);
+		Wall portal = room.getPortals().get(CardinalDirection.NORTH);
+		Point2D point = portal.getP1();
+		if(portal.getP2().getX() < point.getX()){
+			point = portal.getP2();
+		}
+		position.move((int) Math.round(point.getX()) + XOFFSET, (int) Math.round(point.getY()) - YOFFSET - GRIDDISTANCE);
+		positionDebug();
+	}
+
+	public void teleportThroughSouthPortal(){
+		Room room = RoomList.getInstance().getRoom(position);
+		Wall portal = room.getPortals().get(CardinalDirection.SOUTH);
+		Point2D point = portal.getP1();
+		if(portal.getP2().getX() < point.getX()){
+			point = portal.getP2();
+		}
+		position.move((int) Math.round(point.getX()) + XOFFSET, (int) Math.round(point.getY()) - YOFFSET + 2 * GRIDDISTANCE);
+		positionDebug();
+	}
+
+	public void teleportThroughEastPortal(){
+		Room room = RoomList.getInstance().getRoom(position);
+		Wall portal = room.getPortals().get(CardinalDirection.EAST);
+		Point2D point = portal.getP1();
+		if(portal.getP2().getY() > point.getY()){
+			point = portal.getP2();
+		}
+		position.move((int) Math.round(point.getX()) + XOFFSET + GRIDDISTANCE, (int) Math.round(point.getY()) - YOFFSET);
+		positionDebug();
+	}
+
+	public void teleportThroughWestPortal(){
+		Room room = RoomList.getInstance().getRoom(position);
+		Wall portal = room.getPortals().get(CardinalDirection.WEST);
+		Point2D point = portal.getP1();
+		if(portal.getP2().getY() > point.getY()){
+			point = portal.getP2();
+		}
+		position.move((int) Math.round(point.getX()) + XOFFSET - 2 * GRIDDISTANCE, (int) Math.round(point.getY()) - YOFFSET);
+		positionDebug();
+	}
+
+	public void teleportThroughUpPortal(){
+
+	}
+
+	public void teleportThroughDownPortal(){
+
+	}
 	
 	/**
 	 * Returns true if there is no collision at point p, false otherwise

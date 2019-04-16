@@ -1,13 +1,20 @@
 package hic;
 
+import hic.MapPanel;
 import pdc.CardinalDirection;
+import pdc.Room;
+
+import java.util.Set;
 
 import javax.swing.*;
 
+
 public class PlayerTopBar extends JComponent implements TopBar{
     private JPanel mainJPanel = TopBar.mainJPanel;
+    private MapPanel mapPanel;
 
-    public PlayerTopBar(){
+    public PlayerTopBar(MapPanel mapPanel){
+       this.mapPanel = mapPanel;
        mainJPanel.setLayout(new BoxLayout(mainJPanel,BoxLayout.PAGE_AXIS));
        labelJPanel.add(panelLabel);
        mainJPanel.add(labelJPanel);
@@ -45,22 +52,42 @@ public class PlayerTopBar extends JComponent implements TopBar{
     }
 
     private void goNorthRoom() {
+       mapPanel.teleportThroughNorthPortal();
+       updateExits(mapPanel.getRoom(mapPanel.civ.map.getPlayer().getPosition()));
     }
 
     private void goSouthRoom() {
+       mapPanel.teleportThroughSouthPortal();
+       updateExits(mapPanel.getRoom(mapPanel.civ.map.getPlayer().getPosition()));
     }
 
     private void goEastRoom() {
+       mapPanel.teleportThroughEastPortal();
+       updateExits(mapPanel.getRoom(mapPanel.civ.map.getPlayer().getPosition()));
     }
 
     private void goWestRoom() {
+       mapPanel.teleportThroughWestPortal();
+       updateExits(mapPanel.getRoom(mapPanel.civ.map.getPlayer().getPosition()));
     }
 
     private void goUpRoom() {
+       mapPanel.teleportThroughUpPortal();
+       updateExits(mapPanel.getRoom(mapPanel.civ.map.getPlayer().getPosition()));
     }
 
     private void goDownRoom() {
+       mapPanel.teleportThroughDownPortal();
+       updateExits(mapPanel.getRoom(mapPanel.civ.map.getPlayer().getPosition()));
     }
+
+    public void updateExits(Room currentRoom){
+      Set<CardinalDirection> portalDirections = currentRoom.getPortals().keySet();
+      resetButtons();
+      for(CardinalDirection direction : portalDirections){
+         setEnabled(direction);
+      }
+   }
 
     public void setEnabled(CardinalDirection direction){
        if(direction.equals(CardinalDirection.NORTH)){

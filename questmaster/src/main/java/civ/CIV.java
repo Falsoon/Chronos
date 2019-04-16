@@ -1,7 +1,6 @@
 package civ;
 
 import hic.AuthorWindow;
-import hic.FormWindow;
 import pdc.*;
 
 import java.awt.*;
@@ -10,7 +9,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 import javax.swing.undo.StateEdit;
@@ -209,6 +207,30 @@ public class CIV {
 
 	public void goRight() {
 		map.getPlayer().goRight();
+	}
+
+	public void teleportThroughNorthPortal(){
+		map.getPlayer().teleportThroughNorthPortal();
+	}
+
+	public void teleportThroughSouthPortal(){
+		map.getPlayer().teleportThroughSouthPortal();
+	}
+
+	public void teleportThroughEastPortal(){
+		map.getPlayer().teleportThroughEastPortal();
+	}
+
+	public void teleportThroughWestPortal(){
+		map.getPlayer().teleportThroughWestPortal();
+	}
+
+	public void teleportThroughUpPortal(){
+		map.getPlayer().teleportThroughUpPortal();
+	}
+
+	public void teleportThroughDownPortal(){
+		map.getPlayer().teleportThroughDownPortal();
 	}
 
 	public String getRoomName() {
