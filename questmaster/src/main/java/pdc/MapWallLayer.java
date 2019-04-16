@@ -14,7 +14,6 @@ import static pdc.Constants.GRIDDISTANCE;
 public class MapWallLayer extends MapLayer {
 
    private boolean playerMode;
-   private Point playerStartingPosition;
 
 	@Override
 	public void draw(Graphics g) {
@@ -24,7 +23,7 @@ public class MapWallLayer extends MapLayer {
 		wallList.forEach(wall-> drawWall(g2d,wall));
 		//black out inaccessible rooms to player
       if(playerMode) {
-         ArrayList<Room> accessibleRooms = RoomList.getInstance().getAccessibleRooms(playerStartingPosition);
+         ArrayList<Room> accessibleRooms = RoomList.getInstance().getAccessibleRooms(playerPosition);
          //black out inaccessible rooms
          ArrayList<Room> inaccessibleRooms = new ArrayList<>();
          g2d.setColor(Color.BLACK);
@@ -56,7 +55,7 @@ public class MapWallLayer extends MapLayer {
             }
          }));
          //then re-color any inaccessible rooms within current room
-         ArrayList<Room> internalRooms = RoomList.getInstance().getPlayerCurrentRoom(playerStartingPosition).getContainedRooms();
+         ArrayList<Room> internalRooms = RoomList.getInstance().getPlayerCurrentRoom(playerPosition).getContainedRooms();
          g2d.setColor(Color.BLACK);
          internalRooms.forEach(room->{
             if(inaccessibleRooms.contains(room)){
@@ -90,13 +89,13 @@ public class MapWallLayer extends MapLayer {
          Stroke arch = new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{3}, 0);
          g2d.setStroke(arch);
       }
-      else if(type.equals(WallType.CLOSEDDOOR)) {
+      else if(type.equals(WallType.CLOSED_DOOR)) {
          g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
          Stroke arch = new BasicStroke(10, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL);
          g2d.setStroke(arch);
       }
       //UPDATE COLOR
-       else if(type.equals(WallType.LOCKDOOR)) {
+       else if(type.equals(WallType.LOCKED_DOOR)) {
            g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
            Stroke arch = new BasicStroke(10, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL);
 
@@ -104,13 +103,13 @@ public class MapWallLayer extends MapLayer {
            g2d.setPaint(Color.red);
        }
        //UPDATE
-       else if(type.equals(WallType.OPENLOCKDOOR)) {
+       else if(type.equals(WallType.OPEN_LOCKED_DOOR)) {
            g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
            Stroke arch = new BasicStroke(10, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{3}, 0);
            g2d.setStroke(arch);
            g2d.setPaint(Color.blue);
        }
-      else if(type.equals(WallType.OPENDOOR)) {
+      else if(type.equals(WallType.OPEN_DOOR)) {
          g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
          Stroke arch = new BasicStroke(10, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{3}, 0);
          g2d.setStroke(arch);
@@ -120,10 +119,6 @@ public class MapWallLayer extends MapLayer {
          Stroke dashed = new BasicStroke(3, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{9}, 0);
          g2d.setStroke(dashed);
       }
-   }
-
-   public void setPlayerStartingPosition(Point p){
-	   playerStartingPosition = new Point(p);
    }
 
    private void drawWall(Graphics2D g2d, Wall wall){
@@ -169,6 +164,11 @@ public class MapWallLayer extends MapLayer {
    @Override
    public void setPlayerMode(boolean setting) {
       playerMode = setting;
+   }
+
+   @Override
+   public void setPlayerPosition(Point position) {
+      this.playerPosition = position;
    }
 
    @Override

@@ -5,6 +5,10 @@ import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.io.Serializable;
 import java.util.Iterator;
+import pdc.Constants.*;
+
+import static pdc.Constants.PLAYER_X_OFFSET;
+import static pdc.Constants.PLAYER_Y_OFFSET;
 
 /*
  * encapsulates player's avatar data
@@ -18,8 +22,6 @@ public class Player implements Serializable {
 	private MapLayer mapLayer;
 	private ArrayList<Key> keysOwned;
 	private String representation;
-	private final int XOFFSET = 2;
-	private final int YOFFSET = 4;
 	private final double COLLISION_MARGIN = 13.01;
 	private Key key;
 
@@ -35,17 +37,13 @@ public class Player implements Serializable {
 	
 	public void place(Point pos) {
 		position = pos;
-		position.setLocation(Math.round(position.x / GRIDDISTANCE) * GRIDDISTANCE + XOFFSET,
-				Math.round(position.y / GRIDDISTANCE) * GRIDDISTANCE - YOFFSET);
+		position.setLocation(Math.round(position.x / GRIDDISTANCE) * GRIDDISTANCE + PLAYER_X_OFFSET,
+				Math.round(position.y / GRIDDISTANCE) * GRIDDISTANCE - PLAYER_Y_OFFSET);
 		placed = true;
 		placing = false;
 		rePlace();
 	}
-	
-	public String getRepresentation() {
-		return representation;
-	}
-		
+
 	public boolean isPlaced() {
 		return placed;
 	}
@@ -87,20 +85,20 @@ public class Player implements Serializable {
                 for (Wall w : mapLayer.wallList) {
                     // System.out.println("Wall WallType: " + w.getWallType());
                     double distance = w.getDistance(d);
-                    if (w.getWallType() == WallType.LOCKDOOR) {
+                    if (w.getWallType() == WallType.LOCKED_DOOR) {
                         if (distance < closestCollision) {
                             closestCollision = distance;
                             if (closestCollision < closestNonCollision && closestCollision < COLLISION_MARGIN) {
-                                w.setType(WallType.OPENLOCKDOOR);
+                                w.setType(WallType.OPEN_LOCKED_DOOR);
                                 mapLayer.dialogPlayer("Door","UNLOCKED!");
                                 break;
                             }
                         }
-                    } else if (w.getWallType() == WallType.OPENLOCKDOOR) {
+                    } else if (w.getWallType() == WallType.OPEN_LOCKED_DOOR) {
                         if (distance < closestCollision) {
                             closestCollision = distance;
                             if (closestCollision < closestNonCollision && closestCollision < COLLISION_MARGIN) {
-                                w.setType(WallType.LOCKDOOR);
+                                w.setType(WallType.LOCKED_DOOR);
                                 mapLayer.dialogPlayer("Door","LOCKED!");
                                 break;
                             }
@@ -125,40 +123,43 @@ public class Player implements Serializable {
       }
    }
 
-	public void goUp() {
+	public void goNorth() {
 		if (playing && !collides(new Point(position.x, position.y - GRIDDISTANCE))) {
 			position.move(position.x, position.y - GRIDDISTANCE);
 			checkStairs();
+         mapLayer.setPlayerPosition(position);
 		}
 		positionDebug();
 	}
 
-   public void goDown() {
+   public void goSouth() {
 		if (playing && !collides(new Point(position.x, position.y + GRIDDISTANCE))) {
 			position.move(position.x, position.y + GRIDDISTANCE);
 			checkStairs();
+         mapLayer.setPlayerPosition(position);
 		}
       positionDebug();
    }
 
-	public void goLeft() {
+	public void goWest() {
 		if (playing && !collides(new Point(position.x - GRIDDISTANCE, position.y))) {
 			position.move(position.x - GRIDDISTANCE, position.y);
 			checkStairs();
+         mapLayer.setPlayerPosition(position);
 		}
       positionDebug();
    }
 
-	public void goRight() {
+	public void goEast() {
 		if (playing && !collides(new Point(position.x + GRIDDISTANCE, position.y))) {
 			position.move(position.x + GRIDDISTANCE, position.y);
 			checkStairs();
+			mapLayer.setPlayerPosition(position);
 		}
       positionDebug();
    }
 
-   public void pickUpKey()
-   {
+   public void pickUpKey() {
        boolean keyPresent = false;
        for(Key K :mapLayer.keyList)
        {
@@ -197,53 +198,91 @@ public class Player implements Serializable {
 	public void teleportThroughNorthPortal(){
 		Room room = RoomList.getInstance().getRoom(position);
 		Wall portal = room.getPortals().get(CardinalDirection.NORTH);
-		Point2D point = portal.getP1();
-		if(portal.getP2().getX() < point.getX()){
-			point = portal.getP2();
+		Point2D portalPoint = portal.getP1();
+		if(portal.getP2().getX() < portalPoint.getX()){
+			portalPoint = portal.getP2();
 		}
-		position.move((int) Math.round(point.getX()) + XOFFSET, (int) Math.round(point.getY()) - YOFFSET - GRIDDISTANCE);
+      Point2D teleportationPoint;
+		if(portal.getWallType().equals(WallType.ARCHWAY)||portal.getWallType().equals(WallType.OPEN_DOOR)||portal.getWallType().equals(WallType.OPEN_LOCKED_DOOR)){
+		   teleportationPoint = new Point2D.Double(Math.round(portalPoint.getX()) + PLAYER_X_OFFSET, Math.round(portalPoint.getY()) + PLAYER_Y_OFFSET - GRIDDISTANCE);
+      }else{
+		   teleportationPoint = new Point2D.Double(Math.round(portalPoint.getX()) + PLAYER_X_OFFSET, Math.round(portalPoint.getY()) - PLAYER_Y_OFFSET + 2 * GRIDDISTANCE);
+      }
+		position.move((int)teleportationPoint.getX(),(int)teleportationPoint.getY());
+      mapLayer.setPlayerPosition(position);
 		positionDebug();
 	}
 
 	public void teleportThroughSouthPortal(){
-		Room room = RoomList.getInstance().getRoom(position);
-		Wall portal = room.getPortals().get(CardinalDirection.SOUTH);
-		Point2D point = portal.getP1();
-		if(portal.getP2().getX() < point.getX()){
-			point = portal.getP2();
-		}
-		position.move((int) Math.round(point.getX()) + XOFFSET, (int) Math.round(point.getY()) - YOFFSET + 2 * GRIDDISTANCE);
-		positionDebug();
+      Room room = RoomList.getInstance().getRoom(position);
+      Wall portal = room.getPortals().get(CardinalDirection.SOUTH);
+      Point2D portalPoint = portal.getP1();
+      if(portal.getP2().getX() < portalPoint.getX()){
+         portalPoint = portal.getP2();
+      }
+      Point2D teleportationPoint;
+      if(portal.getWallType().equals(WallType.ARCHWAY)||portal.getWallType().equals(WallType.OPEN_DOOR)||portal.getWallType().equals(WallType.OPEN_LOCKED_DOOR)){
+         teleportationPoint = new Point2D.Double(Math.round(portalPoint.getX()) + PLAYER_X_OFFSET, Math.round(portalPoint.getY()) - PLAYER_Y_OFFSET + 2 * GRIDDISTANCE);
+      }else{
+         teleportationPoint = new Point2D.Double(Math.round(portalPoint.getX()) + PLAYER_X_OFFSET, Math.round(portalPoint.getY()) + PLAYER_Y_OFFSET - GRIDDISTANCE);
+      }
+      position.move((int)teleportationPoint.getX(),(int)teleportationPoint.getY());
+      mapLayer.setPlayerPosition(position);
+      positionDebug();
 	}
 
 	public void teleportThroughEastPortal(){
-		Room room = RoomList.getInstance().getRoom(position);
-		Wall portal = room.getPortals().get(CardinalDirection.EAST);
-		Point2D point = portal.getP1();
-		if(portal.getP2().getY() > point.getY()){
-			point = portal.getP2();
-		}
-		position.move((int) Math.round(point.getX()) + XOFFSET + GRIDDISTANCE, (int) Math.round(point.getY()) - YOFFSET);
-		positionDebug();
+      Room room = RoomList.getInstance().getRoom(position);
+      Wall portal = room.getPortals().get(CardinalDirection.EAST);
+      Point2D portalPoint = portal.getP1();
+      if(portal.getP2().getY() < portalPoint.getY()){
+         portalPoint = portal.getP2();
+      }
+      Point2D teleportationPoint;
+      if(portal.getWallType().equals(WallType.ARCHWAY)||portal.getWallType().equals(WallType.OPEN_DOOR)||portal.getWallType().equals(WallType.OPEN_LOCKED_DOOR)){
+         teleportationPoint = new Point2D.Double(Math.round(portalPoint.getX()) + PLAYER_X_OFFSET + GRIDDISTANCE, Math.round(portalPoint.getY()) - PLAYER_Y_OFFSET + GRIDDISTANCE);
+      }else{
+         teleportationPoint = new Point2D.Double(Math.round(portalPoint.getX()) + PLAYER_X_OFFSET - 2 * GRIDDISTANCE, Math.round(portalPoint.getY()) - PLAYER_Y_OFFSET + GRIDDISTANCE);
+      }
+      position.move((int)teleportationPoint.getX(),(int)teleportationPoint.getY());
+      mapLayer.setPlayerPosition(position);
+      positionDebug();
 	}
 
 	public void teleportThroughWestPortal(){
-		Room room = RoomList.getInstance().getRoom(position);
-		Wall portal = room.getPortals().get(CardinalDirection.WEST);
-		Point2D point = portal.getP1();
-		if(portal.getP2().getY() > point.getY()){
-			point = portal.getP2();
-		}
-		position.move((int) Math.round(point.getX()) + XOFFSET - 2 * GRIDDISTANCE, (int) Math.round(point.getY()) - YOFFSET);
-		positionDebug();
+      Room room = RoomList.getInstance().getRoom(position);
+      Wall portal = room.getPortals().get(CardinalDirection.WEST);
+      Point2D portalPoint = portal.getP1();
+      if(portal.getP2().getY() < portalPoint.getY()){
+         portalPoint = portal.getP2();
+      }
+      Point2D teleportationPoint;
+      if(portal.getWallType().equals(WallType.ARCHWAY)||portal.getWallType().equals(WallType.OPEN_DOOR)||portal.getWallType().equals(WallType.OPEN_LOCKED_DOOR)){
+         teleportationPoint = new Point2D.Double(Math.round(portalPoint.getX()) + PLAYER_X_OFFSET - 2 * GRIDDISTANCE, Math.round(portalPoint.getY()) - PLAYER_Y_OFFSET + GRIDDISTANCE);
+      }else{
+         teleportationPoint = new Point2D.Double(Math.round(portalPoint.getX()) + PLAYER_X_OFFSET + GRIDDISTANCE, Math.round(portalPoint.getY()) - PLAYER_Y_OFFSET + GRIDDISTANCE);
+      }
+      position.move((int)teleportationPoint.getX(),(int)teleportationPoint.getY());
+      mapLayer.setPlayerPosition(position);
+      positionDebug();
 	}
 
 	public void teleportThroughUpPortal(){
-		//TODO possible strategy is to teleport to stair location and call checkStairs()
+      Room room = RoomList.getInstance().getRoom(position);
+      Stair stair = room.getStairs().get(CardinalDirection.UP);
+      Point point = stair.getLinkedStair().getLocation();
+      position.move(point.x,point.y);
+      mapLayer.setPlayerPosition(position);
+      positionDebug();
 	}
 
 	public void teleportThroughDownPortal(){
-		//TODO possible strategy is to teleport to stair location and call checkStairs()
+      Room room = RoomList.getInstance().getRoom(position);
+      Stair stair = room.getStairs().get(CardinalDirection.DOWN);
+      Point point = stair.getLinkedStair().getLocation();
+      position.move(point.x,point.y);
+      mapLayer.setPlayerPosition(position);
+      positionDebug();
 	}
 
 	/**
@@ -256,16 +295,16 @@ public class Player implements Serializable {
 		for (Wall w : mapLayer.wallList) {
 			// System.out.println("Wall WallType: " + w.getWallType());
 			double distance = w.getDistance(p);
-			if (w.getWallType() == WallType.OPAQUE||w.getWallType() == WallType.LOCKDOOR) {
+			if (w.getWallType() == WallType.OPAQUE||w.getWallType() == WallType.LOCKED_DOOR) {
 				if (distance < closestCollision) {
 					closestCollision = distance;
 				}
 			}
-			else if (w.getWallType() == WallType.CLOSEDDOOR) {
+			else if (w.getWallType() == WallType.CLOSED_DOOR) {
             if (distance < closestCollision) {
                closestCollision = distance;
                if (closestCollision < closestNonCollision && closestCollision < COLLISION_MARGIN) {
-                  w.setType(WallType.OPENDOOR);
+                  w.setType(WallType.OPEN_DOOR);
                }
             }
          }
@@ -323,7 +362,6 @@ public class Player implements Serializable {
 		}
 		if (warpTo != null) {
 			position = new Point(warpTo.getLocation());
-			mapLayer.setPlayerStartingPosition(new Point(position));
 		}
 	}
 }

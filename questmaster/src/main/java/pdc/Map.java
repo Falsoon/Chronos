@@ -1,7 +1,6 @@
 package pdc;
 
 import javax.swing.event.UndoableEditListener;
-import javax.swing.undo.StateEdit;
 import javax.swing.undo.StateEditable;
 import java.awt.*;
 import java.io.Serializable;
@@ -21,7 +20,7 @@ public class Map implements StateEditable, Serializable {
 	public ArrayList<Key> keyList;
 	public MapLayer mapLayer;
 	public MapLayer mapLayer3;
-	private boolean transparentWallMode, opaqueWallMode, dooring, archwayAdd, deleting, keyPlace, lockDooring,  stairing;
+	private boolean transparentWallMode, opaqueWallMode, dooring, archwayAdd, deleting, keyPlace, lockedDooring,  stairing;
 	//UndoableEditSupport undoSupport = new UndoableEditSupport(this);
 	//UndoManager manager = new UndoManager();
 	private final Object MAP_KEY = "MAPKEY";
@@ -57,7 +56,7 @@ public class Map implements StateEditable, Serializable {
 	   opaqueWallMode = true;
 	   transparentWallMode = false;
 	   dooring = false;
-	   lockDooring=false;
+	   lockedDooring =false;
 	   mapLayer.start = null;
 	   mapLayer.drawingTransparent = false;
 	   archwayAdd = false;
@@ -97,9 +96,9 @@ public class Map implements StateEditable, Serializable {
             e.printStackTrace();
          }
       }
-        if (lockDooring) {
+        if (lockedDooring) {
             try {
-                mapLayer.placeLockDoor(p);
+                mapLayer.placeLockedDoor(p);
             } catch (Throwable e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
@@ -107,7 +106,7 @@ public class Map implements StateEditable, Serializable {
         }
 		if (player.isPlacing()) {
 			player.place(p);
-			mapLayer.setPlayerStartingPosition(p);
+			mapLayer.setPlayerPosition(p);
 		}
 		if (keyPlace) {
 			mapLayer.placeKey(p);
@@ -130,7 +129,7 @@ public class Map implements StateEditable, Serializable {
 		opaqueWallMode = false;
 		mapLayer.start = null;
 		dooring = false;
-        lockDooring=false;
+        lockedDooring =false;
         keyPlace = false;
 		archwayAdd = false;
       mapLayer.drawingTransparent = false;
@@ -141,7 +140,7 @@ public class Map implements StateEditable, Serializable {
 	public void dooring() {
 		dooring = true;
 		transparentWallMode = false;
-        lockDooring=false;
+        lockedDooring =false;
         keyPlace = false;
 		opaqueWallMode = false;
 		archwayAdd = false;
@@ -149,8 +148,8 @@ public class Map implements StateEditable, Serializable {
 		stairing = false;
 	}
 
-    public void lockDooring() {
-	    lockDooring = true;
+    public void lockedDooring() {
+	    lockedDooring = true;
         dooring = false;
         transparentWallMode = false;
         keyPlace = false;
@@ -162,7 +161,7 @@ public class Map implements StateEditable, Serializable {
     public void keyAdd() {
         keyPlace = true;
 	    dooring = false;
-        lockDooring=false;
+        lockedDooring =false;
         transparentWallMode = false;
         opaqueWallMode = false;
         archwayAdd = false;
@@ -171,7 +170,7 @@ public class Map implements StateEditable, Serializable {
     }
    public void archwayAdd() {
       dooring = false;
-      lockDooring=false;
+      lockedDooring =false;
       keyPlace = false;
       archwayAdd = true;
       opaqueWallMode = false;
@@ -186,7 +185,7 @@ public class Map implements StateEditable, Serializable {
 		transparentWallMode = false;
 		stairing = true;
 		deleting = false;
-      lockDooring=false;
+      lockedDooring =false;
       keyPlace = false;
    }
 	public int numOfDoors() {
@@ -215,7 +214,7 @@ public class Map implements StateEditable, Serializable {
 	} */
 
 	public boolean isCreating() {
-		return transparentWallMode || opaqueWallMode || archwayAdd || keyPlace|| dooring || lockDooring || stairing || player.isPlacing();
+		return transparentWallMode || opaqueWallMode || archwayAdd || keyPlace|| dooring || lockedDooring || stairing || player.isPlacing();
 	}
 
 	public boolean isDeleting(){
@@ -252,7 +251,7 @@ public class Map implements StateEditable, Serializable {
 		player.startPlacing();
 		opaqueWallMode = false;
 		transparentWallMode = false;
-        lockDooring=false;
+        lockedDooring =false;
         keyPlace = false;
         stairing = false;
 		dooring = false;
@@ -266,7 +265,7 @@ public class Map implements StateEditable, Serializable {
 		transparentWallMode = false;
 		dooring = false;
 		archwayAdd = false;
-        lockDooring=false;
+        lockedDooring =false;
         keyPlace = false;
 		deleting = false;
 		stairing = false;
@@ -285,7 +284,7 @@ public class Map implements StateEditable, Serializable {
 		//transparentWallMode = false;
 		dooring = false;
 		archwayAdd = false;
-        lockDooring=false;
+        lockedDooring =false;
         keyPlace = false;
 		deleting = false;
 		stairing = false;
@@ -295,7 +294,7 @@ public class Map implements StateEditable, Serializable {
 	public void drawRoom(String str) {
 		opaqueWallMode = true;
 		transparentWallMode = false;
-        lockDooring=false;
+        lockedDooring =false;
         keyPlace = false;
 		dooring = false;
 		archwayAdd = false;
@@ -320,7 +319,7 @@ public class Map implements StateEditable, Serializable {
       deleting = true;
       opaqueWallMode = false;
       transparentWallMode = false;
-       lockDooring=false;
+       lockedDooring =false;
        keyPlace = false;
       dooring = false;
       archwayAdd = false;

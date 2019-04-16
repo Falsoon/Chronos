@@ -4,9 +4,8 @@ import java.awt.*;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Point2D;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.*;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static pdc.Geometry.point2DToPoint;
@@ -21,9 +20,9 @@ public class Room implements Serializable{
 	public String desc = "", title = "";
 	public int ROOMID;
 	public static int idCount = 1;
-	private ArrayList<Door> doors;
 	public GeneralPath path;
 	private HashMap<CardinalDirection,Wall> portals = new HashMap<>();
+   private HashMap<CardinalDirection,Stair> stairs = new HashMap<>();
 
    /**
     * Create a room from a list of walls, typical case
@@ -35,7 +34,6 @@ public class Room implements Serializable{
 		idCount++;
       pointList = new ArrayList<>();
 		makePointList(walls);
-		doors = new ArrayList<>();
 		makePath();
 	}
 
@@ -61,7 +59,6 @@ public class Room implements Serializable{
       this.desc = desc;
       pointList = new ArrayList<>();
       makePointList(walls);
-      doors = new ArrayList<>();
       makePath();
    }
 
@@ -79,7 +76,6 @@ public class Room implements Serializable{
       this.desc = desc;
       pointList = new ArrayList<>();
       makePointList(walls);
-      doors = new ArrayList<>();
       makePath();
    }
 
@@ -92,7 +88,6 @@ public class Room implements Serializable{
       this.walls = walls;
       pointList = new ArrayList<>();
       makePointList(walls);
-      doors = new ArrayList<>();
       makePath();
    }
 
@@ -101,10 +96,6 @@ public class Room implements Serializable{
          pointList.add(point2DToPoint(wall.getP1()));
          pointList.add(point2DToPoint(wall.getP2()));
       });
-	}
-
-	public ArrayList<Door> getDoors() {
-		return this.doors;
 	}
 
 	private void makePath() {
@@ -307,10 +298,6 @@ public class Room implements Serializable{
          }
       }
 		return false;
-	}
-
-	public boolean isDrawn() {
-		return this.path != null;
 	}
 
 	public String getAdjacents() {
@@ -532,7 +519,7 @@ public class Room implements Serializable{
       rooms.addAll(getAccessibleOuterRooms());
       return new ArrayList<>(rooms);
    }
-   
+
    /**
     * Sets the cardinal direction of the specified Wall portal.
     * @param portal the Wall representing a portal
@@ -672,5 +659,42 @@ public class Room implements Serializable{
          }
       }
       return direction;
+   }
+
+   public HashMap<Room, CardinalDirection> getConnectedRooms(){
+      HashMap<Room, CardinalDirection> connectedRooms = new HashMap<>();
+      for(Map.Entry<CardinalDirection,Wall> entry: portals.entrySet()){
+         for(Room room : RoomList.getInstance().list){
+            if(!this.equals(room)&&room.walls.contains(entry.getValue())){
+               connectedRooms.put(room,entry.getKey());
+            }
+         }
+      }
+      for(Map.Entry<CardinalDirection,Stair> entry: stairs.entrySet()){
+         for(Room room : RoomList.getInstance().list){
+            if(!this.equals(room)&&room.hasStair(entry.getValue().getLinkedStair())){
+               connectedRooms.put(room,entry.getKey());
+            }
+         }
+      }
+      return connectedRooms;
+   }
+
+   public boolean hasStairsInDirection(CardinalDirection direction){
+      return stairs.containsKey(direction);
+   }
+
+   public void addStair(Stair newStairs, CardinalDirection direction) {
+      if(!hasStairsInDirection(direction)){
+         stairs.put(direction,newStairs);
+      }else throw new IllegalArgumentException("Room already has a "+direction.toString()+" Stair.");
+   }
+
+   public HashMap<CardinalDirection, Stair> getStairs() {
+      return stairs;
+   }
+
+   public boolean hasStair(Stair stair){
+      return stairs.values().contains(stair);
    }
 }

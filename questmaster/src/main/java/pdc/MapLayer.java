@@ -47,6 +47,7 @@ public abstract class MapLayer implements StateEditable, Serializable {
    private ArrayList<Room> candidateRoomsForTransparent;
    public ArrayList<Stair> stairList;
    private boolean firstStair;
+   protected Point playerPosition;
 
    public MapLayer() {
 
@@ -68,8 +69,6 @@ public abstract class MapLayer implements StateEditable, Serializable {
 
 	public abstract void draw(Graphics g);
 
-   public abstract void setPlayerStartingPosition(Point p);
-
    /**
     * Method called to draw opaque walls
     * @param p the point the author clicked on
@@ -86,22 +85,9 @@ public abstract class MapLayer implements StateEditable, Serializable {
          //startStateEdit();
             if(Math.abs(lastPoint.getX()-p.getX()) > Math.abs(lastPoint.getY()-p.getY())) {
                p.setLocation(p.getX(), lastPoint.getY());
-               lastWall = new Wall(new Line2D.Double(lastPoint, p), WallType.OPAQUE);
-               wallList.add(lastWall);
-               detectRooms();
-               //add lastPoint if it hasn't been added yet
-               if (wasFirstClick) {
-                  pointList.add(lastPoint);
-                  wasFirstClick = false;
-               }
-               pointList.add(p);
-               lastPoint = p;
+            } else {
+               p.setLocation(lastPoint.getX(), p.getY());
             }
-
-         else
-         {
-
-            p.setLocation(lastPoint.getX(), p.getY());
             lastWall = new Wall(new Line2D.Double(lastPoint, p), WallType.OPAQUE);
             //wallList.add(lastWall);
             addToWallList(lastWall);
@@ -113,9 +99,6 @@ public abstract class MapLayer implements StateEditable, Serializable {
             }
             pointList.add(p);
             lastPoint = p;
-
-                //endStateEdit();
-            }
          }
       }
 
@@ -486,15 +469,15 @@ public abstract class MapLayer implements StateEditable, Serializable {
     * @param point the point at which to place the door
     */
    public void placeDoor(Point point){
-      placePortal(point,WallType.CLOSEDDOOR);
+      placePortal(point,WallType.CLOSED_DOOR);
    }
 
     /**
      * Places a locked door at the specified Point
-     * @param point the point at which to place the archway
+     * @param point the point at which to place the locked door
      */
-    public void placeLockDoor(Point point){
-        placePortal(point,WallType.LOCKDOOR);
+    public void placeLockedDoor(Point point){
+        placePortal(point,WallType.LOCKED_DOOR);
     }
 
    /**
@@ -588,12 +571,11 @@ public abstract class MapLayer implements StateEditable, Serializable {
          }
       } else {
          String portalTypeForDialog = "Portal";
-         if(type.equals(WallType.CLOSEDDOOR)){
+         if(type.equals(WallType.CLOSED_DOOR)){
             portalTypeForDialog = "Door";
          }else if(type.equals(WallType.ARCHWAY)){
             portalTypeForDialog = "Archway";
-         }
-        else if(type.equals(WallType.LOCKDOOR)){
+         } else if(type.equals(WallType.LOCKED_DOOR)){
            portalTypeForDialog = "Locked Door";
          }
          if(flagerror ==1) {
@@ -603,9 +585,9 @@ public abstract class MapLayer implements StateEditable, Serializable {
          }
       }
    }
-   public void placeKey(Point p)
-   {
-      key = new Key(p, this);
+
+   public void placeKey(Point p) {
+      key = new Key(p);
       keyList.add(key);
    }
    /**
@@ -631,14 +613,11 @@ public abstract class MapLayer implements StateEditable, Serializable {
          }
       } else {
          if(candidateRoomsForTransparent.size()>0) {
-
-             if(Math.abs(lastPoint.getX()-p.getX()) > Math.abs(lastPoint.getY()-p.getY())) {
-                 p.setLocation(p.getX(), lastPoint.getY());
-             }
-             else{
-                 p.setLocation(lastPoint.getX(), p.getY());
-             }
-
+            if(Math.abs(lastPoint.getX()-p.getX()) > Math.abs(lastPoint.getY()-p.getY())) {
+               p.setLocation(p.getX(), lastPoint.getY());
+            } else{
+               p.setLocation(lastPoint.getX(), p.getY());
+            }
             boolean secondClickValid=false;
             for(int i = 0;!secondClickValid&&i<candidateRoomsForTransparent.size();i++){
                secondClickValid = candidateRoomsForTransparent.get(i).onBoundary(p);
@@ -767,15 +746,25 @@ public abstract class MapLayer implements StateEditable, Serializable {
 
    public void placeStairs(Point p) {
       Stair newStairs = new Stair(p);
-      stairList.add(newStairs);
+      CardinalDirection direction;
       if (firstStair) {
-         newStairs.isGoingUp(false);
+         direction = CardinalDirection.DOWN;
       } else {
-         newStairs.isGoingUp(true);
-         newStairs.linkWith(stairList.get(stairList.size() - 2));
+         direction = CardinalDirection.UP;
       }
-      firstStair = !firstStair;
-      System.out.println(stairList.size());
+      Room room = RoomList.getInstance().getRoom(p);
+      if(!room.hasPortalInDirection(direction)) {
+         newStairs.setDirection(direction);
+         stairList.add(newStairs);
+         if(!firstStair){
+            newStairs.linkWith(stairList.get(stairList.size() - 2));
+         }
+         firstStair = !firstStair;
+         room.addStair(newStairs, direction);
+      }else{
+         firstStair = true;
+         dialog("Room already has a "+direction.toString()+" Stair.");
+      }
    }
 
    /**
@@ -801,12 +790,15 @@ public abstract class MapLayer implements StateEditable, Serializable {
          d.setVisible(true);
       }
    }
-    protected void dialogPlayer(String type, String message) {
-        if(throwAlerts) {
-            JOptionPane jop = new JOptionPane(message);
-            final JDialog d = jop.createDialog(type);
-            d.setLocation(250, 250);
-            d.setVisible(true);
-        }
-    }
+
+   public abstract void setPlayerPosition(Point position);
+
+   protected void dialogPlayer(String type, String message) {
+      if(throwAlerts) {
+         JOptionPane jop = new JOptionPane(message);
+         final JDialog d = jop.createDialog(type);
+         d.setLocation(250, 250);
+         d.setVisible(true);
+      }
+   }
 }

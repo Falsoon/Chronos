@@ -6,17 +6,18 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.io.Serializable;
 
+import static pdc.Constants.PLAYER_X_OFFSET;
+import static pdc.Constants.PLAYER_Y_OFFSET;
+
 public class Stair implements Serializable {
     private Point location;
     private String representation;
     public Stair linkedStair = null;
-    public boolean goingUp;
-    private final int XOFFSET = 2;
-	private final int YOFFSET = 4;
+    private CardinalDirection direction;
 
     Stair(Point p) {
         location = p;
-        location.translate(XOFFSET, -YOFFSET);
+        location.translate(PLAYER_X_OFFSET, -PLAYER_Y_OFFSET);
     }
 
     public void linkWith(Stair s) {
@@ -24,12 +25,15 @@ public class Stair implements Serializable {
         s.linkedStair = this;
     }
 
-    public void isGoingUp(boolean b) {
-        goingUp = b;
-        if (b) {
-            representation = "\u2636";
-        } else {
-            representation = "\u2633";
+    public void setDirection(CardinalDirection direction) {
+        this.direction = direction;
+        switch (direction){
+           case UP:
+              representation = "\u2636";
+              break;
+           case DOWN:
+              representation = "\u2633";
+              break;
         }
     }
 
@@ -40,10 +44,14 @@ public class Stair implements Serializable {
         } else {
             g2d.setColor(Color.BLACK);
         }
-		g2d.drawString(representation, location.x, location.y);
+        g2d.drawString(representation, location.x, location.y);
     }
 
     public Point getLocation() {
         return location;
+    }
+
+    public Stair getLinkedStair(){
+       return linkedStair;
     }
 }

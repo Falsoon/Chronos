@@ -1,11 +1,8 @@
 package civ;
 
-import pdc.Door;
-import pdc.DoorList;
-import pdc.Room;
-import pdc.RoomList;
+import pdc.*;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * This class is used to be the civ component/presenter
@@ -34,13 +31,6 @@ public class FormCiv {
 			room = new Room();
 		}
 		return room.title;
-	}
-	
-	public ArrayList<Door> getRoomDoors(){
-		if(room ==null) {
-			room = new Room();
-		}
-		return room.getDoors();
 	}
 	
 	public int getRoomID() {
@@ -86,12 +76,6 @@ public class FormCiv {
 		RoomList.getInstance().add(room);
 	}
 
-	public boolean getRoomDrawn(String str) {
-		Room r = RoomList.getInstance().getRoomByStr(str);
-		if(r ==null) {return false;}
-		return r.isDrawn();
-	}
-
 	public String getDoorTitle() {
 		return door.title;
 	}
@@ -123,4 +107,7 @@ public class FormCiv {
 		
 	}
 
+	public HashMap<Room, CardinalDirection> getConnectedRooms(){
+	   return room.getConnectedRooms();
+   }
 }

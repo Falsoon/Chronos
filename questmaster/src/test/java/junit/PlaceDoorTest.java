@@ -273,46 +273,9 @@ public class PlaceDoorTest {
       assertEquals(4, civ.map.mapLayer.getWallList().size());
       // assertThrows()
    }
-
-   //E - User tries to place a door on a non-rectilinear wall
-   @Test
-   void testE2() {
-      civ.outlining();
-      Point point1 = new Point(15, 15);
-      Point point2 = new Point(25, 75);
-      Point point3 = new Point(75, 75);
-      Point point4 = new Point(75, 15);
-
-      Point point5 = new Point(20, 45);
-
-      civ.mousePressed(point1, false, true, false);
-      civ.mousePressed(point2, false, true, false);
-      civ.mousePressed(point3, false, true, false);
-      civ.mousePressed(point4, false, true, false);
-      civ.mousePressed(point1, false, true, false);
-
-      assertEquals(1, civ.getRoomList().size());
-      assertTrue(civ.map.isCreating());
-      assertTrue(civ.map.mapLayer.pointList.contains(point1));
-      assertTrue(civ.map.mapLayer.pointList.contains(point2));
-      assertTrue(civ.map.mapLayer.pointList.contains(point3));
-      assertTrue(civ.map.mapLayer.pointList.contains(point4));
-
-      civ.doorAdd();
-
-      civ.mousePressed(point5, false, true, false);
-
-      assertEquals(1, civ.getRoomList().size());
-      assertTrue(civ.map.mapLayer.pointList.contains(point1));
-      assertTrue(civ.map.mapLayer.pointList.contains(point2));
-      assertTrue(civ.map.mapLayer.pointList.contains(point3));
-      assertTrue(civ.map.mapLayer.pointList.contains(point4));
-      assertEquals(4, civ.map.mapLayer.getWallList().size());
-      // assertThrows()
-   }
    //E - User tries to place a door in a corner
    @Test
-   void testE3() {
+   void testE2() {
       civ.outlining();
       Point point1 = new Point(15, 15);
       Point point2 = new Point(15, 75);

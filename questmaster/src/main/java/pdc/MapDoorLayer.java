@@ -25,11 +25,6 @@ public class MapDoorLayer extends MapLayer {
 	}
 
    @Override
-   public void setPlayerStartingPosition(Point p) {
-
-	}
-
-   @Override
 	public MapLayer copy() {
 
 		/*
@@ -53,6 +48,11 @@ public class MapDoorLayer extends MapLayer {
    @Override
    public void setPlayerMode(boolean setting) {
       playerMode = setting;
+   }
+
+   @Override
+   public void setPlayerPosition(Point position) {
+
    }
 
 

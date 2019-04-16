@@ -10,20 +10,12 @@ import java.util.Iterator;
  */
 @SuppressWarnings("serial")
 public class Key implements Serializable {
-	private static final int GRIDDISTANCE = Constants.GRIDDISTANCE;
 	private Point position;
-	private boolean placed, playing, placing;
-	private Room currentRoom;
-	private MapLayer mapLayer;
 	private String representation;
-	private final int XOFFSET = 2;
-	private final int YOFFSET = 4;
-	private final double COLLISION_MARGIN = 13.01;
-	private boolean key;
+
 	
-	public Key(Point p, MapLayer mapLayer){
+	public Key(Point p){
 		position = p;
-		this.mapLayer = mapLayer;
 		representation = "\u266a";
 	}
 
@@ -33,9 +25,9 @@ public class Key implements Serializable {
 
     public void draw(Graphics g) {
 
-            Graphics2D g2d = (Graphics2D) g;
-            g2d.setColor(Color.BLACK);
-            g2d.drawString(representation, position.x, position.y);
+	   Graphics2D g2d = (Graphics2D) g;
+	   g2d.setColor(Color.BLACK);
+	   g2d.drawString(representation, position.x, position.y);
 
 	}
 }

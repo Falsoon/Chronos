@@ -51,7 +51,7 @@ public class MapPanel extends JPanel {
 	
 	protected void dialog(String message) {
 		JOptionPane jop = new JOptionPane(message);
-		final JDialog d = jop.createDialog((JFrame) null, "Error");
+		final JDialog d = jop.createDialog( null, "Error");
 		d.setLocation(250, 250);
 		d.setVisible(true);
 	}
@@ -87,10 +87,10 @@ public class MapPanel extends JPanel {
 		repaint();
 		civ.doorAdd();
 	}
-    public void paintLockDoors() {
+    public void paintLockedDoors() {
         civ.stopDrawing();
         civ.stopPlacingPlayer();
-        civ.lockDoorAdd();
+        civ.lockedDoorAdd();
     }
 	public void paintKey() {
 		civ.stopDrawing();
@@ -198,22 +198,22 @@ public class MapPanel extends JPanel {
         repaint();
     }
 	public void goUp() {
-		civ.goUp();
+		civ.goNorth();
 		repaint();
 	}
 
 	public void goDown() {
-		civ.goDown();
+		civ.goSouth();
 		repaint();
 	}
 
 	public void goLeft() {
-		civ.goLeft();
+		civ.goWest();
 		repaint();
 	}
 
 	public void goRight() {
-		civ.goRight();
+		civ.goEast();
 		repaint();
 	}
 
@@ -263,10 +263,6 @@ public class MapPanel extends JPanel {
 		setSelectedRoom(null);
 		repaint();
 		civ.stopDrawing();
-	}
-
-	public void drawRoom(String str) {
-		civ.drawRoom(str);
 	}
 
 	public void setSelectedRoom(String str) {

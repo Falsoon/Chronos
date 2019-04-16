@@ -114,8 +114,7 @@ public class CIV {
 		String filename = "savedMap.ser";
 		ArrayList<Room> roomsToAdd = new ArrayList<>(RoomList.getInstance().list);
 		map.rooms.addAll(roomsToAdd);
-		try
-		{
+		try {
 			FileOutputStream file = new FileOutputStream(filename);
 			ObjectOutputStream out = new ObjectOutputStream(file);
 			out.writeObject(map);
@@ -123,36 +122,29 @@ public class CIV {
 			file.close();
 
 			System.out.println("Map has been saved");
-		}
-		catch (IOException ex)
-		{
+		} catch (IOException ex) {
 			ex.printStackTrace();
 		}
 	}
 
 	public void restore() {
 
-		try
-        {
-            FileInputStream file = new FileInputStream("savedMap.ser");
-            ObjectInputStream in = new ObjectInputStream(file);
-            map = (Map)in.readObject();
+		try {
+		   FileInputStream file = new FileInputStream("savedMap.ser");
+		   ObjectInputStream in = new ObjectInputStream(file);
+		   map = (Map)in.readObject();
             //UndoableEditSupport undoSupport = new UndoableEditSupport(map);
         	//UndoManager manager = new UndoManager();
         	//map.addUndoableEditListener(manager);
-            in.close();
-            file.close();
-            RoomList.getInstance().list = map.rooms;
+         in.close();
+         file.close();
+         RoomList.getInstance().list = map.rooms;
             //map.mapLayer.detectRooms();
 
-            System.out.println("Map has been restored ");
-        }
-        catch(IOException ex)
-        {
+         System.out.println("Map has been restored ");
+        } catch(IOException ex) {
         	ex.printStackTrace();
-        }
-        catch(ClassNotFoundException ex)
-        {
+        } catch(ClassNotFoundException ex) {
             System.out.println("ClassNotFoundException is caught");
         }
 	}
@@ -193,31 +185,32 @@ public class CIV {
 		return map.getPlayer().isPlaced();
 	}
 
-	public void goUp() {
-		map.getPlayer().goUp();
+	public void goNorth() {
+		map.getPlayer().goNorth();
 	}
+
+   public void goSouth() {
+      map.getPlayer().goSouth();
+   }
+
+   public void goWest() {
+      map.getPlayer().goWest();
+   }
+
+   public void goEast() {
+      map.getPlayer().goEast();
+   }
+
 	public void pickUpKey(){
 	   map.getPlayer().pickUpKey();
 	}
 
-	public void dropKey()
-    {
-        map.getPlayer().dropKey();
-    }
-    public void keyAdd()
-    {
-        map.keyAdd();
-    }
-	public void goDown() {
-		map.getPlayer().goDown();
+	public void dropKey() {
+	   map.getPlayer().dropKey();
 	}
 
-	public void goLeft() {
-		map.getPlayer().goLeft();
-	}
-
-	public void goRight() {
-		map.getPlayer().goRight();
+	public void keyAdd() {
+	   map.keyAdd();
 	}
 
 	public void teleportThroughNorthPortal(){
@@ -255,6 +248,7 @@ public class CIV {
 	public void stopDrawing() {
 		map.stopDrawing();
 	}
+
 	public void lockDoor(){map.getPlayer().lockDoor();}
 
 	public void archwayAdd() {
@@ -272,18 +266,10 @@ public class CIV {
 		stopPlacingPlayer();
 		map.dooring();
 	}
-    public void lockDoorAdd() {
-        stopDrawing();
-        stopPlacingPlayer();
-        map.lockDooring();
-    }
-	//look into creating door pointList
-	public int numOfDoors() {
-		return map.numOfDoors();
-	}
-
-	public void drawRoom(String str) {
-		map.drawRoom(str);
+	public void lockedDoorAdd() {
+	   stopDrawing();
+	   stopPlacingPlayer();
+	   map.lockedDooring();
 	}
 
 	public void setSelectedRoom(String str) {
@@ -298,6 +284,10 @@ public class CIV {
 		return rList;
 	}
 
+	public ArrayList<Room> getRooms(){
+	   return RoomList.getInstance().list;
+   }
+
 	public Rectangle getRoomBounds(String str) {
 		Room r = RoomList.getInstance().getRoomByStr(str);
 		if (r == null || r.path == null) {
@@ -306,49 +296,7 @@ public class CIV {
 			return r.path.getBounds();
 		}
 	}
-	public boolean pathIntersection(Point p1, Point p2, Point pA, Point pB) {
-		boolean ans = false;
-		//found from page 1018 and 1017 in Intro to Algorithms book ed 3
-		int d1 = direction(pA, pB, p1);
-		int d2 = direction(pA, pB, p2);
-		int d3 = direction(p1, p2, pA);
-		int d4 = direction(p1, p2, pB);
-		
-		if( ((d1 > 0 && d2 < 0) || (d1 < 0 && d2 > 0))  && ((d3 > 0 && d4 < 0) || (d3 < 0 && d4 > 0))) {
-			ans = true;
-		}
-		else if( d1 == 0 && onSegment(pA, pB, p1) ) {
-			ans = true;
-		}
-		else if( d2 == 0 && onSegment(pA, pB, p2) ) {
-			ans = true;
-		}
-		else if( d3 == 0 && onSegment(p1, p2, pA) ) {
-			ans = true;
-		}
-		else if( d4 == 0 && onSegment(p1, p2, pB) ) {
-			ans = true;
-		}
-		
-		return ans;
-	}
-	
-	public boolean onSegment(Point pi, Point pj, Point pk) {
-		boolean ans = false;
-		
-		if( Math.min(pi.x, pj.x) <= pk.x && Math.max(pi.x, pj.x) >= pk.x ) {
-			if( Math.min(pi.y, pj.y) <= pk.y && Math.max(pi.y, pj.y) >= pk.y ) {
-				ans = true;
-			}
-		}
-		
-		return ans;
-	}
-	
-	public int direction(Point p0, Point p1, Point p2) {
-		
-		return (p1.x - p0.x)*(p2.y - p0.y) - (p2.x - p0.x)*(p1.y - p0.y);
-	}
+
 	/*
 
 	NOTE: deliberately not deleted to be left as an output hook

@@ -1,8 +1,7 @@
 package hic;
 
 import civ.FormCiv;
-import pdc.Door;
-import pdc.DoorList;
+import pdc.*;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -13,6 +12,9 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Handles UI of form window
@@ -23,6 +25,7 @@ public class RoomDescInsert extends JPanel{
     public FormCiv formCiv;
     public JTextArea titleText, descArea;
     JTextField roomIdText;
+    private AuthorTopBar topBar;
 
     public RoomDescInsert(AuthorWindow aw) {
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -35,71 +38,90 @@ public class RoomDescInsert extends JPanel{
     
     public void initialize() {
 
-        JLabel lblRoomTitle = new JLabel("Room Title");
-		lblRoomTitle.setAlignmentX(Component.CENTER_ALIGNMENT);
-        titleText.setMaximumSize(new Dimension(5000, 30));
-		JLabel lblRoomId = new JLabel("Room ID");
-		lblRoomId.setAlignmentX(Component.CENTER_ALIGNMENT);
-		roomIdText.setEditable(false);
-        roomIdText.setMaximumSize(new Dimension(5000, 30));
-		JLabel lblRoomDescription = new JLabel("Room Description");
-		lblRoomDescription.setAlignmentX(Component.CENTER_ALIGNMENT);
-		JScrollPane scrollPane = new JScrollPane();
-        descArea.setLineWrap(true);
-        descArea.setWrapStyleWord(true);
-		descArea.setRows(25);
-        scrollPane.setViewportView(descArea);
-        
-        this.add(lblRoomTitle);
-        this.add(titleText);
-        this.add(lblRoomId);
-        this.add(roomIdText);
-        this.add(lblRoomDescription);
-        this.add(scrollPane);
+       topBar = new AuthorTopBar();
+       JPanel topBarJPanel = topBar.getMainJPanel();
 
-        titleText.getDocument().addDocumentListener(new DocumentListener(){
-        
-            @Override
-            public void removeUpdate(DocumentEvent e) {
+       JLabel lblRoomTitle = new JLabel("Room Title");
+       lblRoomTitle.setAlignmentX(Component.CENTER_ALIGNMENT);
+       titleText.setMaximumSize(new Dimension(5000, 30));
+       JLabel lblRoomId = new JLabel("Room ID");
+       lblRoomId.setAlignmentX(Component.CENTER_ALIGNMENT);
+       roomIdText.setEditable(false);
+       roomIdText.setMaximumSize(new Dimension(5000, 30));
+       JLabel lblRoomDescription = new JLabel("Room Description");
+       lblRoomDescription.setAlignmentX(Component.CENTER_ALIGNMENT);
+       JScrollPane scrollPane = new JScrollPane();
+       descArea.setLineWrap(true);
+       descArea.setWrapStyleWord(true);
+       descArea.setRows(25);
+       scrollPane.setViewportView(descArea);
+
+       this.add(topBarJPanel);
+       this.add(lblRoomTitle);
+       this.add(titleText);
+       this.add(lblRoomId);
+       this.add(roomIdText);
+       this.add(lblRoomDescription);
+       this.add(scrollPane);
+
+       titleText.getDocument().addDocumentListener(new DocumentListener(){
+          @Override
+          public void removeUpdate(DocumentEvent e) {
+                formCiv.adjustRoomTitle(titleText.getText());
+            }
+
+          @Override
+          public void insertUpdate(DocumentEvent e) {
                 formCiv.adjustRoomTitle(titleText.getText());
             }
         
-            @Override
-            public void insertUpdate(DocumentEvent e) {
-                formCiv.adjustRoomTitle(titleText.getText());
-            }
-        
-            @Override
-            public void changedUpdate(DocumentEvent e) {
+          @Override
+          public void changedUpdate(DocumentEvent e) {
                 formCiv.adjustRoomTitle(titleText.getText());
             }
         });
 
-        descArea.getDocument().addDocumentListener(new DocumentListener(){
+       descArea.getDocument().addDocumentListener(new DocumentListener(){
         
-            @Override
-            public void removeUpdate(DocumentEvent e) {
+           @Override
+           public void removeUpdate(DocumentEvent e) {
                 formCiv.adjustRoomDesc(descArea.getText());
             }
         
-            @Override
-            public void insertUpdate(DocumentEvent e) {
+           @Override
+           public void insertUpdate(DocumentEvent e) {
                 formCiv.adjustRoomDesc(descArea.getText());
             }
         
-            @Override
-            public void changedUpdate(DocumentEvent e) {
+           @Override
+           public void changedUpdate(DocumentEvent e) {
                 formCiv.adjustRoomDesc(descArea.getText());
             }
-        });
+       });
 
     }
 
     public void updateRoom() {
         titleText.setText(formCiv.getRoomTitle());
         roomIdText.setText(Integer.toString(formCiv.getRoomID()));
-        //descArea.setText("");
         System.out.println(formCiv.getRoomDesc());
         descArea.setText(formCiv.getRoomDesc());
+        resetButtons();
+        Set<Map.Entry<Room, CardinalDirection>> connectedRooms = formCiv.getConnectedRooms().entrySet();
+        for(Map.Entry<Room, CardinalDirection> entry : connectedRooms){
+           topBar.setRoomIdForButton(entry.getValue(),entry.getKey().ROOMID);
+        }
+
+    }
+
+    public void clear(){
+       titleText.setText("");
+       roomIdText.setText("");
+       descArea.setText("");
+       resetButtons();
+    }
+
+    public void resetButtons(){
+       topBar.resetButtons();
     }
 }
