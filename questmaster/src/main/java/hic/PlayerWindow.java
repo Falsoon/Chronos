@@ -22,6 +22,8 @@ public class PlayerWindow {
    private static final int KEYCODE_A = 65;
    private static final int KEYCODE_S = 83;
    private static final int KEYCODE_D = 68;
+   private static final int KEYCODE_L = 76;
+   private static final int KEYCODE_K = 75;
 
    private static final int KEYCODE_LEFT_ARROW = 37;
    private static final int KEYCODE_UP_ARROW = 38;
@@ -68,13 +70,21 @@ public class PlayerWindow {
                   case KEYCODE_UP_ARROW:
                      goDirection(CardinalDirection.NORTH);
                      return true;
-                  case KEYCODE_D:
                   case KEYCODE_RIGHT_ARROW:
                      goDirection(CardinalDirection.EAST);
                      return true;
                   case KEYCODE_S:
                   case KEYCODE_DOWN_ARROW:
                      goDirection(CardinalDirection.SOUTH);
+                     return true;
+                  case KEYCODE_D:
+                     mapPanel.dropKey();
+                     return true;
+                  case KEYCODE_K:
+                     mapPanel.pickUpKey();
+                     return true;
+                  case KEYCODE_L:
+                     mapPanel.lockDoor();
                      return true;
                }
             }

@@ -16,16 +16,20 @@ public class Player implements Serializable {
 	private boolean placed, playing, placing;
 	private Room currentRoom;
 	private MapLayer mapLayer;
+	private ArrayList<Key> keysOwned;
 	private String representation;
 	private final int XOFFSET = 2;
 	private final int YOFFSET = 4;
 	private final double COLLISION_MARGIN = 13.01;
-	
+	private Key key;
+
 	public Player(MapLayer mapLayer){
 		placed = false;
 		playing = false;
 		placing = false;
+		keysOwned = new ArrayList<>();
 		this.mapLayer = mapLayer;
+
 		representation = "\u00B6";
 	}
 	
@@ -59,12 +63,56 @@ public class Player implements Serializable {
 	public void stopPlacing() {
 		placing = false;
 	}
+	public boolean hasKey(){return keysOwned.size()>0;}
 
 	public Point getPosition() {
 		return position;
 	}
 
-	
+	public void lockDoor() {
+	    if(keysOwned.size()>0) {
+            ArrayList<Point> directions = new ArrayList<>();
+            directions.add(new Point(position.x, position.y - GRIDDISTANCE));
+            directions.add(new Point(position.x, position.y + GRIDDISTANCE));
+            directions.add(new Point(position.x - GRIDDISTANCE, position.y));
+            directions.add(new Point(position.x + GRIDDISTANCE, position.y));
+            for (Point d : directions) {
+                double closestCollision = Double.MAX_VALUE;
+                double closestNonCollision = Double.MAX_VALUE;
+                //TODO would like to not iterate through all walls. CurrentRoom currently does not store archways
+                for (Wall w : mapLayer.wallList) {
+                    // System.out.println("Wall WallType: " + w.getWallType());
+                    double distance = w.getDistance(d);
+                    if (w.getWallType() == WallType.LOCKED_DOOR) {
+                        if (distance < closestCollision) {
+                            closestCollision = distance;
+                            if (closestCollision < closestNonCollision && closestCollision < COLLISION_MARGIN) {
+                                w.setType(WallType.OPEN_LOCKED_DOOR);
+                                mapLayer.dialogPlayer("Door","UNLOCKED!");
+                                break;
+                            }
+                        }
+                    } else if (w.getWallType() == WallType.OPEN_LOCKED_DOOR) {
+                        if (distance < closestCollision) {
+                            closestCollision = distance;
+                            if (closestCollision < closestNonCollision && closestCollision < COLLISION_MARGIN) {
+                                w.setType(WallType.LOCKED_DOOR);
+                                mapLayer.dialogPlayer("Door","LOCKED!");
+                                break;
+                            }
+                        }
+                    }
+
+                }
+            }
+        }
+        else
+        {
+            mapLayer.dialogPlayer("Error","You do not have any keys.");
+        }
+
+    }
+
    private void positionDebug() {
 		System.out.println("Player position: " + position);
       ArrayList<Room> rl = RoomList.getInstance().list;
@@ -72,7 +120,7 @@ public class Player implements Serializable {
 			System.out.println("Room#" + room.ROOMID + "contains player: " + room.contains(position));
       }
    }
-	
+
 	public void goUp() {
 		if (playing && !collides(new Point(position.x, position.y - GRIDDISTANCE))) {
 			position.move(position.x, position.y - GRIDDISTANCE);
@@ -107,8 +155,44 @@ public class Player implements Serializable {
 			mapLayer.setPlayerPosition(position);
 		}
       positionDebug();
+   }
+
+   public void pickUpKey() {
+       boolean keyPresent = false;
+       for(Key K :mapLayer.keyList)
+       {
+           if(Math.abs(K.getPosition().getX() - position.getX()) < 5 &&Math.abs(K.getPosition().getY() - position.getY())<5)
+           {
+               mapLayer.keyList.remove(K);
+               keysOwned.add(K);
+               mapLayer.dialogPlayer("Inventory", "Key Added.");
+               keyPresent = true;
+               break;
+           }
+       }
+       if(!keyPresent)
+       {
+           mapLayer.dialogPlayer("Inventory", "No Key Here.");
+       }
+
+   }
+
+   public void dropKey()
+   {
+        Point p  = new Point();
+        p.setLocation(position.getX(), position.getY());
+       if(keysOwned.size()>0) {
+           mapLayer.placeKey(p);
+           keysOwned.remove(0);
+           mapLayer.dialogPlayer("Inventory", "Key Dropped.");
+       }
+       else
+       {
+           mapLayer.dialogPlayer("Inventory", "No Key to Drop.");
+       }
+
 	}
-	
+
 	public void teleportThroughNorthPortal(){
 		Room room = RoomList.getInstance().getRoom(position);
 		Wall portal = room.getPortals().get(CardinalDirection.NORTH);
@@ -117,7 +201,7 @@ public class Player implements Serializable {
 			portalPoint = portal.getP2();
 		}
       Point2D teleportationPoint;
-		if(portal.getWallType().equals(WallType.ARCHWAY)||portal.getWallType().equals(WallType.OPENDOOR)){
+		if(portal.getWallType().equals(WallType.ARCHWAY)||portal.getWallType().equals(WallType.OPEN_DOOR)||portal.getWallType().equals(WallType.OPEN_LOCKED_DOOR)){
 		   teleportationPoint = new Point2D.Double(Math.round(portalPoint.getX()) + XOFFSET, Math.round(portalPoint.getY()) + YOFFSET - GRIDDISTANCE);
       }else{
 		   teleportationPoint = new Point2D.Double(Math.round(portalPoint.getX()) + XOFFSET, Math.round(portalPoint.getY()) - YOFFSET + 2 * GRIDDISTANCE);
@@ -135,7 +219,7 @@ public class Player implements Serializable {
          portalPoint = portal.getP2();
       }
       Point2D teleportationPoint;
-      if(portal.getWallType().equals(WallType.ARCHWAY)||portal.getWallType().equals(WallType.OPENDOOR)){
+      if(portal.getWallType().equals(WallType.ARCHWAY)||portal.getWallType().equals(WallType.OPEN_DOOR)||portal.getWallType().equals(WallType.OPEN_LOCKED_DOOR)){
          teleportationPoint = new Point2D.Double(Math.round(portalPoint.getX()) + XOFFSET, Math.round(portalPoint.getY()) - YOFFSET + 2 * GRIDDISTANCE);
       }else{
          teleportationPoint = new Point2D.Double(Math.round(portalPoint.getX()) + XOFFSET, Math.round(portalPoint.getY()) + YOFFSET - GRIDDISTANCE);
@@ -153,7 +237,7 @@ public class Player implements Serializable {
          portalPoint = portal.getP2();
       }
       Point2D teleportationPoint;
-      if(portal.getWallType().equals(WallType.ARCHWAY)||portal.getWallType().equals(WallType.OPENDOOR)){
+      if(portal.getWallType().equals(WallType.ARCHWAY)||portal.getWallType().equals(WallType.OPEN_DOOR)||portal.getWallType().equals(WallType.OPEN_LOCKED_DOOR)){
          teleportationPoint = new Point2D.Double(Math.round(portalPoint.getX()) + XOFFSET + GRIDDISTANCE, Math.round(portalPoint.getY()) - YOFFSET + GRIDDISTANCE);
       }else{
          teleportationPoint = new Point2D.Double(Math.round(portalPoint.getX()) + XOFFSET - 2 * GRIDDISTANCE, Math.round(portalPoint.getY()) - YOFFSET + GRIDDISTANCE);
@@ -171,7 +255,7 @@ public class Player implements Serializable {
          portalPoint = portal.getP2();
       }
       Point2D teleportationPoint;
-      if(portal.getWallType().equals(WallType.ARCHWAY)||portal.getWallType().equals(WallType.OPENDOOR)){
+      if(portal.getWallType().equals(WallType.ARCHWAY)||portal.getWallType().equals(WallType.OPEN_DOOR)||portal.getWallType().equals(WallType.OPEN_LOCKED_DOOR)){
          teleportationPoint = new Point2D.Double(Math.round(portalPoint.getX()) + XOFFSET - 2 * GRIDDISTANCE, Math.round(portalPoint.getY()) - YOFFSET + GRIDDISTANCE);
       }else{
          teleportationPoint = new Point2D.Double(Math.round(portalPoint.getX()) + XOFFSET + GRIDDISTANCE, Math.round(portalPoint.getY()) - YOFFSET + GRIDDISTANCE);
@@ -198,7 +282,7 @@ public class Player implements Serializable {
       mapLayer.setPlayerPosition(position);
       positionDebug();
 	}
-	
+
 	/**
 	 * Returns true if there is no collision at point p, false otherwise
 	 * @param p the point to move to
@@ -209,16 +293,16 @@ public class Player implements Serializable {
 		for (Wall w : mapLayer.wallList) {
 			// System.out.println("Wall WallType: " + w.getWallType());
 			double distance = w.getDistance(p);
-			if (w.getWallType() == WallType.OPAQUE) {
+			if (w.getWallType() == WallType.OPAQUE||w.getWallType() == WallType.LOCKED_DOOR) {
 				if (distance < closestCollision) {
 					closestCollision = distance;
 				}
 			}
-			else if (w.getWallType() == WallType.CLOSEDDOOR) {
+			else if (w.getWallType() == WallType.CLOSED_DOOR) {
             if (distance < closestCollision) {
                closestCollision = distance;
                if (closestCollision < closestNonCollision && closestCollision < COLLISION_MARGIN) {
-                  w.setType(WallType.OPENDOOR);
+                  w.setType(WallType.OPEN_DOOR);
                }
             }
          }

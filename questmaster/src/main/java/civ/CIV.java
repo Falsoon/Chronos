@@ -188,6 +188,17 @@ public class CIV {
 	public void goUp() {
 		map.getPlayer().goUp();
 	}
+	public void pickUpKey(){
+	   map.getPlayer().pickUpKey();
+	}
+
+	public void dropKey() {
+	   map.getPlayer().dropKey();
+	}
+
+	public void keyAdd() {
+	   map.keyAdd();
+	}
 
 	public void goDown() {
 		map.getPlayer().goDown();
@@ -237,6 +248,8 @@ public class CIV {
 		map.stopDrawing();
 	}
 
+	public void lockDoor(){map.getPlayer().lockDoor();}
+
 	public void archwayAdd() {
 		stopDrawing();
 		stopPlacingPlayer();
@@ -252,9 +265,10 @@ public class CIV {
 		stopPlacingPlayer();
 		map.dooring();
 	}
-
-	public void drawRoom(String str) {
-		map.drawRoom(str);
+	public void lockedDoorAdd() {
+	   stopDrawing();
+	   stopPlacingPlayer();
+	   map.lockedDooring();
 	}
 
 	public void setSelectedRoom(String str) {

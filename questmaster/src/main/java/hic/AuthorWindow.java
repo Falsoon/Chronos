@@ -22,7 +22,7 @@ public class AuthorWindow extends JPanel {
 	public String[] portalTypes = { "Portals", "Doors", "Archway" };
 	public String[] authorModes = { "Select Authoring Mode", "Author Room descriptions", "Draw Rooms" };
 	public JComboBox<String> wallCombo, portalCombo;
-	public JButton start, placeStart, undoButton, btnClear, addRoombtn1, addRoombtn2;
+	public JButton start, placeStart, undoButton, btnClear, addRoombtn1, addRoombtn2, placeKey;
 	public int modeSelected = 0;
 	public ButtonFactory buttonFactory;
 	private JScrollPane scrollPane;

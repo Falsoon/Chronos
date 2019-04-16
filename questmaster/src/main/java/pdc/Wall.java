@@ -105,6 +105,6 @@ public class Wall implements Serializable{
    }
 
    public boolean isPortal(){
-      return wallType.equals(WallType.ARCHWAY)||wallType.equals(WallType.CLOSEDDOOR)||wallType.equals(WallType.OPENDOOR);
+      return wallType.equals(WallType.ARCHWAY)||wallType.equals(WallType.CLOSED_DOOR)||wallType.equals(WallType.OPEN_DOOR) ||wallType.equals(WallType.LOCKED_DOOR)||wallType.equals(WallType.OPEN_LOCKED_DOOR);
    }
 }

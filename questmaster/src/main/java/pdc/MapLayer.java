@@ -26,9 +26,9 @@ import static pdc.Geometry.*;
  */
 @SuppressWarnings("serial")
 public abstract class MapLayer implements StateEditable, Serializable {
-   protected Point playerPosition;
    protected boolean drawingTransparent;
    protected Point start;
+   protected Key key;
    protected ArrayList<GeneralPath> pathList;
    public ArrayList<Point> pointList;
    public GeneralPath guiPath;
@@ -38,6 +38,7 @@ public abstract class MapLayer implements StateEditable, Serializable {
    public ArrayList<Wall> wallList;
    private boolean firstClick;
    private Wall lastWall;
+   protected ArrayList<Key> keyList;
    //private UndoableEditSupport undoSupport;
    //private UndoManager undoManager;
    //private StateEdit stateEdit;
@@ -46,6 +47,7 @@ public abstract class MapLayer implements StateEditable, Serializable {
    private ArrayList<Room> candidateRoomsForTransparent;
    public ArrayList<Stair> stairList;
    private boolean firstStair;
+   protected Point playerPosition;
 
    public MapLayer() {
 
@@ -55,6 +57,7 @@ public abstract class MapLayer implements StateEditable, Serializable {
 
 		this.pathList = new ArrayList<>();
 		this.pointList = new ArrayList<>();
+		this.keyList = new ArrayList<>();
 		wallList = new ArrayList<>();
       throwAlerts = true;
 		this.selectedRoom = null;
@@ -80,20 +83,22 @@ public abstract class MapLayer implements StateEditable, Serializable {
 	      //check that the last 2 points clicked are not the same
          if(!lastPoint.equals(p)) {
          //startStateEdit();
-
-         lastWall = new Wall(new Line2D.Double(lastPoint, p), WallType.OPAQUE);
-         //wallList.add(lastWall);
-         addToWallList(lastWall);
-         detectRooms();
-         //add lastPoint if it hasn't been added yet
-         if (wasFirstClick) {
-            pointList.add(lastPoint);
-            wasFirstClick = false;
-         }
-         pointList.add(p);
-         lastPoint = p;
-
-         //endStateEdit();
+            if(Math.abs(lastPoint.getX()-p.getX()) > Math.abs(lastPoint.getY()-p.getY())) {
+               p.setLocation(p.getX(), lastPoint.getY());
+            } else {
+               p.setLocation(lastPoint.getX(), p.getY());
+            }
+            lastWall = new Wall(new Line2D.Double(lastPoint, p), WallType.OPAQUE);
+            //wallList.add(lastWall);
+            addToWallList(lastWall);
+            detectRooms();
+            //add lastPoint if it hasn't been added yet
+            if (wasFirstClick) {
+               pointList.add(lastPoint);
+               wasFirstClick = false;
+            }
+            pointList.add(p);
+            lastPoint = p;
          }
       }
 
@@ -464,8 +469,16 @@ public abstract class MapLayer implements StateEditable, Serializable {
     * @param point the point at which to place the door
     */
    public void placeDoor(Point point){
-      placePortal(point,WallType.CLOSEDDOOR);
+      placePortal(point,WallType.CLOSED_DOOR);
    }
+
+    /**
+     * Places a locked door at the specified Point
+     * @param point the point at which to place the locked door
+     */
+    public void placeLockedDoor(Point point){
+        placePortal(point,WallType.LOCKED_DOOR);
+    }
 
    /**
     * Method to add portal to map
@@ -558,10 +571,12 @@ public abstract class MapLayer implements StateEditable, Serializable {
          }
       } else {
          String portalTypeForDialog = "Portal";
-         if(type.equals(WallType.CLOSEDDOOR)){
+         if(type.equals(WallType.CLOSED_DOOR)){
             portalTypeForDialog = "Door";
          }else if(type.equals(WallType.ARCHWAY)){
             portalTypeForDialog = "Archway";
+         } else if(type.equals(WallType.LOCKED_DOOR)){
+           portalTypeForDialog = "Locked Door";
          }
          if(flagerror ==1) {
             dialog(portalTypeForDialog+" cannot be placed here.");
@@ -571,6 +586,10 @@ public abstract class MapLayer implements StateEditable, Serializable {
       }
    }
 
+   public void placeKey(Point p) {
+      key = new Key(p, this);
+      keyList.add(key);
+   }
    /**
     * Method called when drawingTransparent transparent walls
     * @param p the point the author clicked
@@ -594,6 +613,11 @@ public abstract class MapLayer implements StateEditable, Serializable {
          }
       } else {
          if(candidateRoomsForTransparent.size()>0) {
+            if(Math.abs(lastPoint.getX()-p.getX()) > Math.abs(lastPoint.getY()-p.getY())) {
+               p.setLocation(p.getX(), lastPoint.getY());
+            } else{
+               p.setLocation(lastPoint.getX(), p.getY());
+            }
             boolean secondClickValid=false;
             for(int i = 0;!secondClickValid&&i<candidateRoomsForTransparent.size();i++){
                secondClickValid = candidateRoomsForTransparent.get(i).onBoundary(p);
@@ -769,4 +793,12 @@ public abstract class MapLayer implements StateEditable, Serializable {
 
    public abstract void setPlayerPosition(Point position);
 
+   protected void dialogPlayer(String type, String message) {
+      if(throwAlerts) {
+         JOptionPane jop = new JOptionPane(message);
+         final JDialog d = jop.createDialog(type);
+         d.setLocation(250, 250);
+         d.setVisible(true);
+      }
+   }
 }

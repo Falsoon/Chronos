@@ -89,13 +89,27 @@ public class MapWallLayer extends MapLayer {
          Stroke arch = new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{3}, 0);
          g2d.setStroke(arch);
       }
-      else if(type.equals(WallType.CLOSEDDOOR)) {
+      else if(type.equals(WallType.CLOSED_DOOR)) {
          g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
          Stroke arch = new BasicStroke(10, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL);
          g2d.setStroke(arch);
       }
+      //UPDATE COLOR
+       else if(type.equals(WallType.LOCKED_DOOR)) {
+           g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+           Stroke arch = new BasicStroke(10, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL);
 
-      else if(type.equals(WallType.OPENDOOR)) {
+           g2d.setStroke(arch);
+           g2d.setPaint(Color.red);
+       }
+       //UPDATE
+       else if(type.equals(WallType.OPEN_LOCKED_DOOR)) {
+           g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+           Stroke arch = new BasicStroke(10, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{3}, 0);
+           g2d.setStroke(arch);
+           g2d.setPaint(Color.blue);
+       }
+      else if(type.equals(WallType.OPEN_DOOR)) {
          g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
          Stroke arch = new BasicStroke(10, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{3}, 0);
          g2d.setStroke(arch);
@@ -114,6 +128,7 @@ public class MapWallLayer extends MapLayer {
          setDrawMode(g2d, wallType);
          g2d.draw(wall.getLineRepresentation());
       }
+      g2d.setPaint(Color.black);
    }
 
    @SuppressWarnings("unchecked")
