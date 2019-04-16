@@ -154,11 +154,11 @@ public class Player implements Serializable {
 	}
 
 	public void teleportThroughUpPortal(){
-
+		//TODO possible strategy is to teleport to stair location and call checkStairs()
 	}
 
 	public void teleportThroughDownPortal(){
-
+		//TODO possible strategy is to teleport to stair location and call checkStairs()
 	}
 	
 	/**
@@ -168,7 +168,6 @@ public class Player implements Serializable {
 	private boolean collides(Point p){
 		double closestCollision = Double.MAX_VALUE;
 		double closestNonCollision = Double.MAX_VALUE;
-		//TODO would like to not iterate through all walls. CurrentRoom currently does not store archways
 		for (Wall w : mapLayer.wallList) {
 			// System.out.println("Wall WallType: " + w.getWallType());
 			double distance = w.getDistance(p);
