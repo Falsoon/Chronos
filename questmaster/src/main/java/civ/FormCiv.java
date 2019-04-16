@@ -110,8 +110,4 @@ public class FormCiv {
 	public HashMap<Room, CardinalDirection> getConnectedRooms(){
 	   return room.getConnectedRooms();
    }
-
-   public HashMap<CardinalDirection, Stair> getStairs() {
-	   return room.getStairs();
-   }
 }

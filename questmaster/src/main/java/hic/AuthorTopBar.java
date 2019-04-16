@@ -1,8 +1,11 @@
 package hic;
 
 import pdc.CardinalDirection;
+import pdc.Room;
 
 import javax.swing.*;
+import java.util.Map;
+import java.util.Set;
 
 public class AuthorTopBar extends JComponent implements TopBar {
    private JPanel mainJPanel = TopBar.mainJPanel;
@@ -35,6 +38,15 @@ public class AuthorTopBar extends JComponent implements TopBar {
 
    public JPanel getMainJPanel(){
       return mainJPanel;
+   }
+
+   @Override
+   public void updateExits(Room currentRoom) {
+      Set<Map.Entry<Room, CardinalDirection>> connectedRooms = currentRoom.getConnectedRooms().entrySet();
+      resetButtons();
+      for(Map.Entry<Room,CardinalDirection> entry : connectedRooms){
+         setEnabled(entry.getValue());
+      }
    }
 
    public void setEnabled(CardinalDirection direction){

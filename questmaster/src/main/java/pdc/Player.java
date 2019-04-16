@@ -1,6 +1,7 @@
 package pdc;
 
 import java.awt.*;
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.io.Serializable;
 import java.util.Iterator;
@@ -36,11 +37,7 @@ public class Player implements Serializable {
 		placing = false;
 		rePlace();
 	}
-	
-	public String getRepresentation() {
-		return representation;
-	}
-		
+
 	public boolean isPlaced() {
 		return placed;
 	}
@@ -67,26 +64,29 @@ public class Player implements Serializable {
 		return position;
 	}
 
+	
+   private void positionDebug() {
+		System.out.println("Player position: " + position);
+      ArrayList<Room> rl = RoomList.getInstance().list;
+      for (Room room : rl) {
+			System.out.println("Room#" + room.ROOMID + "contains player: " + room.contains(position));
+      }
+   }
+	
 	public void goUp() {
 		if (playing && !collides(new Point(position.x, position.y - GRIDDISTANCE))) {
 			position.move(position.x, position.y - GRIDDISTANCE);
 			checkStairs();
+         mapLayer.setPlayerPosition(position);
 		}
-      positionDebug();
-   }
-
-   private void positionDebug() {
-      System.out.println("Player position: " + position);
-      ArrayList<Room> rl = RoomList.getInstance().list;
-      for (Room room : rl) {
-         System.out.println("Room#" + room.ROOMID + "contains player: " + room.contains(position));
-      }
-   }
+		positionDebug();
+	}
 
    public void goDown() {
 		if (playing && !collides(new Point(position.x, position.y + GRIDDISTANCE))) {
 			position.move(position.x, position.y + GRIDDISTANCE);
 			checkStairs();
+         mapLayer.setPlayerPosition(position);
 		}
       positionDebug();
    }
@@ -95,6 +95,7 @@ public class Player implements Serializable {
 		if (playing && !collides(new Point(position.x - GRIDDISTANCE, position.y))) {
 			position.move(position.x - GRIDDISTANCE, position.y);
 			checkStairs();
+         mapLayer.setPlayerPosition(position);
 		}
       positionDebug();
    }
@@ -103,9 +104,76 @@ public class Player implements Serializable {
 		if (playing && !collides(new Point(position.x + GRIDDISTANCE, position.y))) {
 			position.move(position.x + GRIDDISTANCE, position.y);
 			checkStairs();
+			mapLayer.setPlayerPosition(position);
 		}
       positionDebug();
-   }
+	}
+	
+	public void teleportThroughNorthPortal(){
+		Room room = RoomList.getInstance().getRoom(position);
+		Wall portal = room.getPortals().get(CardinalDirection.NORTH);
+		Point2D point = portal.getP1();
+		if(portal.getP2().getX() < point.getX()){
+			point = portal.getP2();
+		}
+		position.move((int) Math.round(point.getX()) + XOFFSET, (int) Math.round(point.getY()) - YOFFSET - GRIDDISTANCE);
+      mapLayer.setPlayerPosition(position);
+		positionDebug();
+	}
+
+	public void teleportThroughSouthPortal(){
+		Room room = RoomList.getInstance().getRoom(position);
+		Wall portal = room.getPortals().get(CardinalDirection.SOUTH);
+		Point2D point = portal.getP1();
+		if(portal.getP2().getX() < point.getX()){
+			point = portal.getP2();
+		}
+		position.move((int) Math.round(point.getX()) + XOFFSET, (int) Math.round(point.getY()) - YOFFSET + 2 * GRIDDISTANCE);
+      mapLayer.setPlayerPosition(position);
+		positionDebug();
+	}
+
+	public void teleportThroughEastPortal(){
+		Room room = RoomList.getInstance().getRoom(position);
+		Wall portal = room.getPortals().get(CardinalDirection.EAST);
+		Point2D point = portal.getP1();
+		if(portal.getP2().getY() > point.getY()){
+			point = portal.getP2();
+		}
+		position.move((int) Math.round(point.getX()) + XOFFSET + GRIDDISTANCE, (int) Math.round(point.getY()) - YOFFSET);
+      mapLayer.setPlayerPosition(position);
+		positionDebug();
+	}
+
+	public void teleportThroughWestPortal(){
+		Room room = RoomList.getInstance().getRoom(position);
+		Wall portal = room.getPortals().get(CardinalDirection.WEST);
+		Point2D point = portal.getP1();
+		if(portal.getP2().getY() > point.getY()){
+			point = portal.getP2();
+		}
+		position.move((int) Math.round(point.getX()) + XOFFSET - 2 * GRIDDISTANCE, (int) Math.round(point.getY()) - YOFFSET);
+      mapLayer.setPlayerPosition(position);
+		positionDebug();
+	}
+
+	public void teleportThroughUpPortal(){
+      Room room = RoomList.getInstance().getRoom(position);
+      Stair stair = room.getStairs().get(CardinalDirection.UP);
+      Point point = stair.getLinkedStair().getLocation();
+      position.move(point.x,point.y);
+      mapLayer.setPlayerPosition(position);
+      positionDebug();
+	}
+
+	public void teleportThroughDownPortal(){
+      Room room = RoomList.getInstance().getRoom(position);
+      Stair stair = room.getStairs().get(CardinalDirection.DOWN);
+      Point point = stair.getLinkedStair().getLocation();
+      position.move(point.x,point.y);
+      mapLayer.setPlayerPosition(position);
+      positionDebug();
+	}
 	
 	/**
 	 * Returns true if there is no collision at point p, false otherwise
@@ -114,7 +182,6 @@ public class Player implements Serializable {
 	private boolean collides(Point p){
 		double closestCollision = Double.MAX_VALUE;
 		double closestNonCollision = Double.MAX_VALUE;
-		//TODO would like to not iterate through all walls. CurrentRoom currently does not store archways
 		for (Wall w : mapLayer.wallList) {
 			// System.out.println("Wall WallType: " + w.getWallType());
 			double distance = w.getDistance(p);
@@ -185,7 +252,6 @@ public class Player implements Serializable {
 		}
 		if (warpTo != null) {
 			position = new Point(warpTo.getLocation());
-			mapLayer.setPlayerStartingPosition(new Point(position));
 		}
 	}
 }

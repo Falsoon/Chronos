@@ -187,7 +187,7 @@ public class ButtonFactory {
 
 		btnPlay.addActionListener(e -> {
          if (authorWindow.mapPanel.placedPlayer()) {
-            rdi.clear();
+            rdi.resetButtons();
             EventQueue.invokeLater(() -> {
                try {
                   authorWindow.mapPanel.civ.stopDrawing();

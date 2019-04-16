@@ -14,7 +14,6 @@ import static pdc.Constants.GRIDDISTANCE;
 public class MapWallLayer extends MapLayer {
 
    private boolean playerMode;
-   private Point playerStartingPosition;
 
 	@Override
 	public void draw(Graphics g) {
@@ -24,7 +23,7 @@ public class MapWallLayer extends MapLayer {
 		wallList.forEach(wall-> drawWall(g2d,wall));
 		//black out inaccessible rooms to player
       if(playerMode) {
-         ArrayList<Room> accessibleRooms = RoomList.getInstance().getAccessibleRooms(playerStartingPosition);
+         ArrayList<Room> accessibleRooms = RoomList.getInstance().getAccessibleRooms(playerPosition);
          //black out inaccessible rooms
          ArrayList<Room> inaccessibleRooms = new ArrayList<>();
          g2d.setColor(Color.BLACK);
@@ -56,7 +55,7 @@ public class MapWallLayer extends MapLayer {
             }
          }));
          //then re-color any inaccessible rooms within current room
-         ArrayList<Room> internalRooms = RoomList.getInstance().getPlayerCurrentRoom(playerStartingPosition).getContainedRooms();
+         ArrayList<Room> internalRooms = RoomList.getInstance().getPlayerCurrentRoom(playerPosition).getContainedRooms();
          g2d.setColor(Color.BLACK);
          internalRooms.forEach(room->{
             if(inaccessibleRooms.contains(room)){
@@ -108,10 +107,6 @@ public class MapWallLayer extends MapLayer {
       }
    }
 
-   public void setPlayerStartingPosition(Point p){
-	   playerStartingPosition = new Point(p);
-   }
-
    private void drawWall(Graphics2D g2d, Wall wall){
        WallType wallType = wall.getWallType();
       //only draw transparent walls in author mode
@@ -154,6 +149,11 @@ public class MapWallLayer extends MapLayer {
    @Override
    public void setPlayerMode(boolean setting) {
       playerMode = setting;
+   }
+
+   @Override
+   public void setPlayerPosition(Point position) {
+      this.playerPosition = position;
    }
 
    @Override

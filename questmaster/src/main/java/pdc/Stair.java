@@ -43,15 +43,11 @@ public class Stair implements Serializable {
         } else {
             g2d.setColor(Color.BLACK);
         }
-		g2d.drawString(representation, location.x, location.y);
+        g2d.drawString(representation, location.x, location.y);
     }
 
     public Point getLocation() {
         return location;
-    }
-
-    public CardinalDirection getDirection(){
-       return direction;
     }
 
     public Stair getLinkedStair(){

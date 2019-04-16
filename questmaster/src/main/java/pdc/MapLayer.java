@@ -26,6 +26,7 @@ import static pdc.Geometry.*;
  */
 @SuppressWarnings("serial")
 public abstract class MapLayer implements StateEditable, Serializable {
+   protected Point playerPosition;
    protected boolean drawingTransparent;
    protected Point start;
    protected ArrayList<GeneralPath> pathList;
@@ -64,8 +65,6 @@ public abstract class MapLayer implements StateEditable, Serializable {
 	}
 
 	public abstract void draw(Graphics g);
-
-   public abstract void setPlayerStartingPosition(Point p);
 
    /**
     * Method called to draw opaque walls
@@ -767,5 +766,7 @@ public abstract class MapLayer implements StateEditable, Serializable {
          d.setVisible(true);
       }
    }
+
+   public abstract void setPlayerPosition(Point position);
 
 }

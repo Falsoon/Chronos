@@ -104,7 +104,6 @@ public class RoomDescInsert extends JPanel{
     public void updateRoom() {
         titleText.setText(formCiv.getRoomTitle());
         roomIdText.setText(Integer.toString(formCiv.getRoomID()));
-        //descArea.setText("");
         System.out.println(formCiv.getRoomDesc());
         descArea.setText(formCiv.getRoomDesc());
         resetButtons();
@@ -122,7 +121,7 @@ public class RoomDescInsert extends JPanel{
        resetButtons();
     }
 
-    private void resetButtons(){
+    public void resetButtons(){
        topBar.resetButtons();
     }
 }

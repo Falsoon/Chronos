@@ -1,8 +1,7 @@
 package hic;
 
 import javax.swing.*;
-import java.awt.event.ActionListener;
-import java.util.ArrayList;
+
 /**
  * Used for encapsulating the author UI
  */
