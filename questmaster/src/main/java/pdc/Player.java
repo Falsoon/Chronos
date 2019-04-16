@@ -191,7 +191,7 @@ public class Player implements Serializable {
        {
            mapLayer.dialogPlayer("Inventory", "No Key to Drop.");
        }
-   }
+
 	}
 
 	public void teleportThroughNorthPortal(){
