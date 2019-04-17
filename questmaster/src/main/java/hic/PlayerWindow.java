@@ -17,6 +17,7 @@ public class PlayerWindow {
 	public JFrame frame;
 	private MapPanel mapPanel;
 	private StoryPanel storyPanel;
+	private KeyEventDispatcher dispatcher;
 
 	private static final int KEYCODE_W = 87;
    private static final int KEYCODE_A = 65;
@@ -56,41 +57,43 @@ public class PlayerWindow {
 		splitPane.setRightComponent(mapPanel);
 		
 		storyPanel = new StoryPanel(mapPanel);
-      storyPanel.updateExits(mapPanel.getRoom(mapPanel.civ.map.getPlayer().getPosition()));
+		storyPanel.updateExits(mapPanel.getRoom(mapPanel.civ.map.getPlayer().getPosition()));
+		
+		dispatcher = e -> {
+			if(e.getID() == KeyEvent.KEY_PRESSED) {
+				switch (e.getKeyCode()) {
+					case KEYCODE_A:
+					case KEYCODE_LEFT_ARROW:
+						goDirection(CardinalDirection.WEST);
+						return true;
+					case KEYCODE_W:
+					case KEYCODE_UP_ARROW:
+						goDirection(CardinalDirection.NORTH);
+						return true;
+					case KEYCODE_RIGHT_ARROW:
+						goDirection(CardinalDirection.EAST);
+						return true;
+					case KEYCODE_S:
+					case KEYCODE_DOWN_ARROW:
+						goDirection(CardinalDirection.SOUTH);
+						return true;
+					case KEYCODE_D:
+						mapPanel.dropKey();
+						return true;
+					case KEYCODE_K:
+						mapPanel.pickUpKey();
+						return true;
+					case KEYCODE_L:
+						mapPanel.lockDoor();
+						return true;
+				}
+			}
+			//return false if not key pressed or not one of the reserved keys so other components can grab the key
+			return false;
+		};
 
       KeyboardFocusManager.getCurrentKeyboardFocusManager()
-         .addKeyEventDispatcher(e -> {
-            if(e.getID() == KeyEvent.KEY_PRESSED) {
-               switch (e.getKeyCode()) {
-                  case KEYCODE_A:
-                  case KEYCODE_LEFT_ARROW:
-                     goDirection(CardinalDirection.WEST);
-                     return true;
-                  case KEYCODE_W:
-                  case KEYCODE_UP_ARROW:
-                     goDirection(CardinalDirection.NORTH);
-                     return true;
-                  case KEYCODE_RIGHT_ARROW:
-                     goDirection(CardinalDirection.EAST);
-                     return true;
-                  case KEYCODE_S:
-                  case KEYCODE_DOWN_ARROW:
-                     goDirection(CardinalDirection.SOUTH);
-                     return true;
-                  case KEYCODE_D:
-                     mapPanel.dropKey();
-                     return true;
-                  case KEYCODE_K:
-                     mapPanel.pickUpKey();
-                     return true;
-                  case KEYCODE_L:
-                     mapPanel.lockDoor();
-                     return true;
-               }
-            }
-            //return false if not key pressed or not one of the reserved keys so other components can grab the key
-            return false;
-         });
+         .addKeyEventDispatcher(dispatcher);
 		
 		splitPane.setLeftComponent(storyPanel);
 
@@ -98,19 +101,23 @@ public class PlayerWindow {
 
 			@Override
 			public void windowClosing(WindowEvent e) {
-
 				EventQueue.invokeLater(() -> {
 					try {
+						mapPanel.aw.nukeVariables();
 						mapPanel = null;
 						frame = null;
+						storyPanel = null;
+						KeyboardFocusManager.getCurrentKeyboardFocusManager().removeKeyEventDispatcher(dispatcher);
 						AuthorWindow window = new AuthorWindow();
 						window.frame.setTitle("QuestMaster");
 						window.frame.setVisible(true);
 						window.mapPanel.restore();
+						
 						window.mapPanel.civ.stopDrawing();
 						window.civ.setPlayerMode(false);
 						window.civ.map.player.stopPlaying();
 						window.civ.setSelectedRoom(null);
+						
 					} catch (Exception e1) {
 						e1.printStackTrace();
 					}

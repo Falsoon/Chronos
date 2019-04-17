@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Optional;
+import java.util.Map.Entry;
 
 import static pdc.Geometry.*;
 
@@ -691,12 +692,14 @@ public abstract class MapLayer implements StateEditable, Serializable {
          if(Math.abs(stairPos.x - p.x) < 8 && Math.abs(stairPos.y - p.y) < 8) {
             stairList.remove(s.linkedStair);
             stairList.remove(s);
+
+            
             return; // BEWARE THERE'S A RETURN HERE
          }
       }
       //----sorry, i'll get out of your way now----
       for(Wall wall:wallList){
-         if(wall.getDistance(p)==0){
+         if(wall.getDistance(p)<4){
             //TODO find a good way to do this.
             // Handle clicking a portal vs a wall. If the author clicks a wall that contains an archway, need to handle
             // deleting that entire wall (check if wall shares intersection with passageway, delete the wall,
@@ -728,7 +731,22 @@ public abstract class MapLayer implements StateEditable, Serializable {
                   }
                   RoomList.getInstance().list.removeAll(roomsToRemove);
                }else if(wall.isTraversable()){
+                  ArrayList<Room> roomsToAdjust = new ArrayList<>();
                   portalsToRemove.add(wall);
+                  for(Room room: RoomList.getInstance().list){
+                     if(room.walls.contains(wall)){
+                        roomsToAdjust.add(room);
+                     }
+                  }
+                  for(Room room : roomsToAdjust) {
+                     for (Wall port : portalsToRemove) {
+                        for (Entry<CardinalDirection, Wall> e : room.getPortals().entrySet()) {
+                           if (e.getValue() == port) {
+                              room.getPortals().remove(e.getKey());
+                           }
+                        }
+                     }
+                  }
                }
             }
          }

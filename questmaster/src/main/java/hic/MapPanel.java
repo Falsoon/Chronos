@@ -20,7 +20,8 @@ import static pdc.Constants.GRIDDISTANCE;
 public class MapPanel extends JPanel {
 
 	public CIV civ;
-	private AuthorWindow aw;
+	// private AuthorWindow aw;
+	public AuthorWindow aw;
 
 	/**
 	 * Constructor of MapPanel adds the appropriate action listeners
@@ -88,13 +89,13 @@ public class MapPanel extends JPanel {
 		civ.doorAdd();
 	}
     public void paintLockedDoors() {
-        civ.stopDrawing();
-        civ.stopPlacingPlayer();
+		setSelectedRoom(null);
+		repaint();
         civ.lockedDoorAdd();
     }
 	public void paintKey() {
-		civ.stopDrawing();
-		civ.stopPlacingPlayer();
+		setSelectedRoom(null);
+		repaint();
 		civ.keyAdd();
 	}
 
@@ -179,8 +180,8 @@ public class MapPanel extends JPanel {
 	}
 
 	public void placePlayerStart() {
-		setSelectedRoom(null);
-		repaint();
+		//setSelectedRoom(null);
+		//repaint();
 		civ.placeStart();
 	}
 

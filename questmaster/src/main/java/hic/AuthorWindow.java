@@ -35,7 +35,7 @@ public class AuthorWindow extends JPanel {
 			public void run() {
 				try {
 					AuthorWindow window = new AuthorWindow();
-					window.frame.setTitle("ArenaMapMaker");
+					window.frame.setTitle("Questmaster");
 					window.frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -124,5 +124,24 @@ public class AuthorWindow extends JPanel {
 			}
 		};
 		frame.addWindowListener(wl);
+	}
+
+	public void nukeVariables() {
+		civ = null;
+		frame = null;
+		authorPanel = null;
+		mapPanel = null;
+		wallCombo = null;
+		portalCombo = null;
+		start = null;
+		placeStart = null;
+		undoButton = null;
+		btnClear = null;
+		addRoombtn1 = null;
+		addRoombtn2 = null;
+		placeKey = null;
+		modeSelected = 0;
+		buttonFactory = null;
+		scrollPane = null;
 	}
 }

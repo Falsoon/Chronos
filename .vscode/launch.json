@@ -2,6 +2,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "CodeLens (Launch) - AuthorWindow",
+            "request": "launch",
+            "mainClass": "hic.AuthorWindow",
+            "projectName": "questmaster"
+        },
+        {
+            "type": "java",
             "name": "CodeLens (Launch) - App",
             "request": "launch",
             "mainClass": "explorer.App",

@@ -40,7 +40,7 @@ public class ButtonFactory {
 		btnDoors.setMaximumSize(new Dimension(200, 30));
 		btnDoors.setAlignmentX(Component.CENTER_ALIGNMENT);
 		btnStair = new JToggleButton("Staircases");
-      btnStair.setMaximumSize(new Dimension(200, 30));
+      	btnStair.setMaximumSize(new Dimension(200, 30));
 		btnStair.setAlignmentX(Component.CENTER_ALIGNMENT);
 		btnLock = new JToggleButton("Locked Door");
 		btnLock.setMaximumSize(new Dimension(200, 30));
@@ -226,9 +226,9 @@ public class ButtonFactory {
             rdi.resetButtons();
             EventQueue.invokeLater(() -> {
                try {
+				  authorWindow.mapPanel.save();
                   authorWindow.mapPanel.civ.stopDrawing();
 				  authorWindow.mapPanel.setPlayerMode(true);
-				  authorWindow.mapPanel.save();
                   PlayerWindow window = new PlayerWindow(authorWindow.mapPanel);
                   window.frame.setVisible(true);
                   authorWindow.civ.setSelectedRoom(null);
@@ -240,6 +240,7 @@ public class ButtonFactory {
             });
 			   authorWindow.mapPanel.startGame();
 			   authorWindow.frame.setVisible(false);
+			   authorWindow.frame.dispose();
          }
 		});
 

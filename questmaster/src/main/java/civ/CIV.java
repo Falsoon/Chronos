@@ -137,7 +137,7 @@ public class CIV {
         	//UndoManager manager = new UndoManager();
         	//map.addUndoableEditListener(manager);
          in.close();
-         file.close();
+		 file.close();
          map.mapLayer.detectRooms();
 
          System.out.println("Map has been restored ");
@@ -209,7 +209,9 @@ public class CIV {
 	}
 
 	public void keyAdd() {
-	   map.keyAdd();
+		stopDrawing();
+		stopPlacingPlayer();
+	    map.keyAdd();
 	}
 
 	public void teleportThroughNorthPortal(){
