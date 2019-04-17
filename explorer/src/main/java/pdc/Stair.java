@@ -10,11 +10,11 @@ import static pdc.Constants.PLAYER_X_OFFSET;
 import static pdc.Constants.PLAYER_Y_OFFSET;
 
 public class Stair implements Serializable {
-    private static final long serialVersionUID = 1L;
     private Point location;
     private String representation;
     public Stair linkedStair = null;
     private CardinalDirection direction;
+    private static final long serialVersionUID = 1L;
 
     Stair(Point p) {
         location = p;

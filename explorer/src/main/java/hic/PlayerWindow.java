@@ -48,8 +48,8 @@ public class PlayerWindow {
 		frame = new JFrame();
 		frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
 		//TODO: figure out how to not crash the map when returning to the editor
-		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		frame.setTitle("Questmaster - Playtesting");
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setTitle("Explorer");
 
 		JSplitPane splitPane = new JSplitPane();
 		frame.getContentPane().add(splitPane, BorderLayout.CENTER);
@@ -101,6 +101,7 @@ public class PlayerWindow {
 
 			@Override
 			public void windowClosing(WindowEvent e) {
+				/*
 				EventQueue.invokeLater(() -> {
 					try {
 						mapPanel.aw.nukeVariables();
@@ -122,6 +123,7 @@ public class PlayerWindow {
 						e1.printStackTrace();
 					}
 				});
+				*/
 			}
 		
 			@Override

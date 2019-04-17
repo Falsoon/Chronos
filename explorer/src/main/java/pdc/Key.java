@@ -13,7 +13,6 @@ public class Key implements Serializable {
 	private Point position;
 	private String representation;
 	private static final long serialVersionUID = 1L;
-
 	
 	public Key(Point p){
 		position = p;
