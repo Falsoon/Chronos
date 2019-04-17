@@ -692,7 +692,9 @@ public abstract class MapLayer implements StateEditable, Serializable {
          if(Math.abs(stairPos.x - p.x) < 8 && Math.abs(stairPos.y - p.y) < 8) {
             stairList.remove(s.linkedStair);
             stairList.remove(s);
-
+            
+            RoomList.getInstance().getRoom(s.linkedStair.getLocation()).removeStairInDirection(s.linkedStair.getDirection());
+            RoomList.getInstance().getRoom(s.getLocation()).removeStairInDirection(s.getDirection());
             
             return; // BEWARE THERE'S A RETURN HERE
          }
