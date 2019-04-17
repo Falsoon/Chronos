@@ -261,7 +261,7 @@ public abstract class MapLayer implements StateEditable, Serializable {
    /**
     * Method called to detect rooms from lines drawn on the map
     */
-   private void detectRooms(){
+   public void detectRooms(){
       combineWalls();
       breakUpWallsAtIntersections();
 
