@@ -261,8 +261,8 @@ public class MapPanel extends JPanel {
    }
 
 	public void stopDrawing() {
-		setSelectedRoom(null);
-		repaint();
+		//setSelectedRoom(null);
+		//repaint();
 		civ.stopDrawing();
 	}
 
@@ -288,6 +288,8 @@ public class MapPanel extends JPanel {
     * Method to delete walls and passageways
     */
    public void delete() {
+			setSelectedRoom(null);
+			repaint();
       civ.delete();
    }
 }
