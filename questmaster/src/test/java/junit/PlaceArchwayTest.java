@@ -174,7 +174,6 @@ public class PlaceArchwayTest {
       assertEquals(6, civ.map.mapLayer.getWallList().size());
    }
 
-
    // N - User draws a room and places an archway on a wall splitting two walls
    @Test
    void testN5() {

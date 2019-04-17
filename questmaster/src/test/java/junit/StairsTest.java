@@ -9,7 +9,6 @@ import pdc.RoomList;
 import java.awt.*;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static pdc.Constants.PLAYER_X_OFFSET;
 import static pdc.Constants.PLAYER_Y_OFFSET;
 
@@ -110,6 +109,40 @@ public class StairsTest {
       civ.goNorth();
 
       assertEquals(345+PLAYER_X_OFFSET, civ.map.player.getPosition().x);
+      assertEquals(45-PLAYER_Y_OFFSET, civ.map.player.getPosition().y);
+
+   }
+
+   @Test
+   void testTeleportDownStairs() {
+      civ.stairsAdd();
+      civ.mousePressed(new Point(45,45), false, true, false);
+      civ.mousePressed(new Point(345,45), false, true, false);
+
+      civ.placeStart();
+      civ.mousePressed(new Point(45,60), false, true, false);
+
+      civ.startGame();
+      civ.teleportThroughDownPortal();
+
+      assertEquals(345+PLAYER_X_OFFSET, civ.map.player.getPosition().x);
+      assertEquals(45-PLAYER_Y_OFFSET, civ.map.player.getPosition().y);
+
+   }
+
+   @Test
+   void testTeleportUpStairs() {
+      civ.stairsAdd();
+      civ.mousePressed(new Point(45,45), false, true, false);
+      civ.mousePressed(new Point(345,45), false, true, false);
+
+      civ.placeStart();
+      civ.mousePressed(new Point(345,60), false, true, false);
+
+      civ.startGame();
+      civ.teleportThroughUpPortal();
+
+      assertEquals(45+PLAYER_X_OFFSET, civ.map.player.getPosition().x);
       assertEquals(45-PLAYER_Y_OFFSET, civ.map.player.getPosition().y);
 
    }
