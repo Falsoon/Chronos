@@ -23,7 +23,8 @@ This image illustrates the relationship between the internal components of Chron
 * Have fun!
 
 ## Known Outstanding Bugs
-* Restoring the map - sometimes there are odd logical states that don't get reset correctly when restoring the map. This sometimes prevents the player from being able to move if the author presses play, closes the player window, then tries to play again. 
+* Restoring the map - sometimes there are odd logical states that don't get reset correctly when restoring the map. This sometimes prevents the player from being able to move if the author presses play, closes the player window, then tries to play again.
+* Combining Collinear Walls - Sometimes collinear walls are not combined correctly.
 
 ### Authors
 Chronos was started as ArenaMapMaker and was written by the Spring 2018 Capstone team "TTD;" Daniel Bond, Tom Burnett, and Tommy Delgado.  The project was then renamed to Chronos and worked on by the Spring 2019 Capstone team "Praise the Sun;" Danny Diesel, David Egbert, Becca Danik, Ryan Wires, and Allen Lin. The project is sponsored by Alan Cline.
