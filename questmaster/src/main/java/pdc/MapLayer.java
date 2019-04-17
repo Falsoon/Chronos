@@ -46,8 +46,8 @@ public abstract class MapLayer implements StateEditable, Serializable {
    private boolean wasFirstClick;
    private ArrayList<Room> candidateRoomsForTransparent;
    public ArrayList<Stair> stairList;
-   private boolean firstStair;
    protected Point playerPosition;
+   private Stair firstStair;
 
    public MapLayer() {
 
@@ -64,7 +64,6 @@ public abstract class MapLayer implements StateEditable, Serializable {
 		firstClick = true;
       candidateRoomsForTransparent = new ArrayList<>();
       stairList = new ArrayList<>();
-      firstStair = true;
 	}
 
 	public abstract void draw(Graphics g);
@@ -261,7 +260,7 @@ public abstract class MapLayer implements StateEditable, Serializable {
    /**
     * Method called to detect rooms from lines drawn on the map
     */
-   private void detectRooms(){
+   public void detectRooms(){
       combineWalls();
       breakUpWallsAtIntersections();
 
@@ -745,26 +744,48 @@ public abstract class MapLayer implements StateEditable, Serializable {
    }
 
    public void placeStairs(Point p) {
-      Stair newStairs = new Stair(p);
       CardinalDirection direction;
-      if (firstStair) {
+      if (firstStair == null) {
          direction = CardinalDirection.DOWN;
       } else {
          direction = CardinalDirection.UP;
       }
       Room room = RoomList.getInstance().getRoom(p);
-      if(!room.hasPortalInDirection(direction)) {
-         newStairs.setDirection(direction);
-         stairList.add(newStairs);
-         if(!firstStair){
-            newStairs.linkWith(stairList.get(stairList.size() - 2));
+      if(room != null){
+         if(!room.hasPortalInDirection(direction)) {
+            if(firstStair == null) {
+               firstStair = new Stair(p);
+               firstStair.setDirection(direction);
+               room.addStair(firstStair, direction);
+               stairList.add(firstStair);
+            }else{
+               Stair newStairs = new Stair(p);
+               newStairs.setDirection(direction);
+               stairList.add(newStairs);
+               firstStair.linkWith(newStairs);
+               newStairs.linkWith(firstStair);
+               room.addStair(newStairs, direction);
+               firstStair = null;
+            }
+         }else{
+            if(firstStair!=null){
+               room = RoomList.getInstance().getRoom(firstStair.getLocation());
+               room.removeStairInDirection(firstStair.getDirection());
+               stairList.remove(firstStair);
+               firstStair = null;
+            }
+            dialog("Room already has a "+direction.toString()+" Stair.");
          }
-         firstStair = !firstStair;
-         room.addStair(newStairs, direction);
       }else{
-         firstStair = true;
-         dialog("Room already has a "+direction.toString()+" Stair.");
+         if(firstStair!=null){
+            room = RoomList.getInstance().getRoom(firstStair.getLocation());
+            room.removeStairInDirection(firstStair.getDirection());
+            stairList.remove(firstStair);
+            firstStair = null;
+         }
+         dialog("Stairs must be placed in rooms.");
       }
+
    }
 
    /**

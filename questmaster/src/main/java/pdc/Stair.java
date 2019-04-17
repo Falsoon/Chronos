@@ -54,4 +54,8 @@ public class Stair implements Serializable {
     public Stair getLinkedStair(){
        return linkedStair;
     }
+
+    public CardinalDirection getDirection(){
+       return direction;
+    }
 }
