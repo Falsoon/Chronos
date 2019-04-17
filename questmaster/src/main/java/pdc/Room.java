@@ -697,4 +697,8 @@ public class Room implements Serializable{
    public boolean hasStair(Stair stair){
       return stairs.values().contains(stair);
    }
+
+   public void removeStairInDirection(CardinalDirection direction) {
+      stairs.remove(direction);
+   }
 }
