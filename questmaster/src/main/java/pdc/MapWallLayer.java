@@ -15,10 +15,11 @@ public class MapWallLayer extends MapLayer {
 
    private boolean playerMode;
 
-   private void fillRoomsFromPoint(Graphics g, Point startLoc, Color c) {
+   private void fillRoomsFromPoint(Graphics g, Point startLoc, Color c, ArrayList<Room> roomsForcedClear) {
       Graphics2D g2d = (Graphics2D) g;
       Stroke defaultStroke = g2d.getStroke();
       ArrayList<Room> accessibleRooms = RoomList.getInstance().getAccessibleRooms(startLoc);
+      roomsForcedClear.addAll(accessibleRooms);
       //black out inaccessible rooms
       ArrayList<Room> inaccessibleRooms = new ArrayList<>();
       g2d.setColor(c);
@@ -31,50 +32,56 @@ public class MapWallLayer extends MapLayer {
       //re-color any internal accessible rooms of inaccessible rooms
       inaccessibleRooms.forEach(ir-> accessibleRooms.forEach(room->{
          if(!ir.equals(room)&&ir.contains(room)){
-            g2d.setColor(Color.LIGHT_GRAY);
-            g2d.fill(room.path);
-            g2d.setStroke(defaultStroke);
-            g2d.setColor(Color.white);
-            //get the bounding box of the room's path to reduce the number of points to check
-            Rectangle roomBoundingBox = room.path.getBounds();
-            for (int i = roomBoundingBox.x; i <= roomBoundingBox.width+roomBoundingBox.x; i+=GRIDDISTANCE) {
-               for (int j = roomBoundingBox.y; j <= roomBoundingBox.height+roomBoundingBox.y; j+=GRIDDISTANCE) {
-                  Point p = new Point(i,j);
-                  if(room.path.contains(p)){
-                     g2d.drawLine(i, j, i, j);
-                  }
-               }
-            }
-            g2d.setColor(Color.BLACK);
-            room.walls.forEach(wall-> drawWall(g2d,wall));
+            roomsForcedClear.add(room);
          }
       }));
       //then re-color any inaccessible rooms within current room
       ArrayList<Room> internalRooms = RoomList.getInstance().getPlayerCurrentRoom(playerPosition).getContainedRooms();
-      g2d.setColor(Color.BLACK);
+      g2d.setColor(c);
       internalRooms.forEach(room->{
          if(inaccessibleRooms.contains(room)){
             g2d.fill(room.path);
          }
       });
+
+      for (Room room : roomsForcedClear) {
+         g2d.setColor(Color.LIGHT_GRAY);
+         g2d.fill(room.path);
+         g2d.setColor(Color.white);
+         //get the bounding box of the room's path to reduce the number of points to check
+         Rectangle roomBoundingBox = room.path.getBounds();
+         g2d.setStroke(new BasicStroke(1));
+         for (int i = roomBoundingBox.x; i <= roomBoundingBox.width+roomBoundingBox.x; i+=GRIDDISTANCE) {
+            for (int j = roomBoundingBox.y; j <= roomBoundingBox.height+roomBoundingBox.y; j+=GRIDDISTANCE) {
+               Point p = new Point(i,j);
+               if(room.path.contains(p)){
+                  g2d.drawLine(i, j, i, j);
+               }
+            }
+         }
+         g2d.setStroke(defaultStroke);
+         g2d.setColor(Color.BLACK);
+         //room.walls.forEach(wall-> drawWall(g2d,wall));
+      }
    }
 
 	@Override
 	public void draw(Graphics g) {
 		Graphics2D g2d = (Graphics2D) g;
-		g2d.setColor(Color.BLACK);
-		wallList.forEach(wall-> drawWall(g2d,wall));
       //black out inaccessible rooms to player
       if (RoomList.getInstance().list.size() != 0 && playerPosition != null) {
          if (playerMode) {
-            fillRoomsFromPoint(g, playerPosition, Color.black);
+            fillRoomsFromPoint(g, playerPosition, Color.black, new ArrayList<Room>());
          } else {
-            fillRoomsFromPoint(g, playerPosition, new Color(0, 0, 0, 50));
+            ArrayList<Room> rfc = new ArrayList<>();
+            fillRoomsFromPoint(g, playerPosition, new Color(127, 127, 127), rfc);
             for (Stair s : stairList) {
-               fillRoomsFromPoint(g, s.getLocation(), new Color(0, 0, 0, 50));
+               fillRoomsFromPoint(g, s.getLocation(), new Color(127, 127, 127), rfc);
             }
          }
       }
+      g2d.setColor(Color.BLACK);
+		wallList.forEach(wall-> drawWall(g2d,wall));
 
 		if (selectedRoom != null) {
 			g2d.setColor(Color.RED);

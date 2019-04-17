@@ -83,7 +83,7 @@ public class ButtonFactory {
 		JSeparator line4 = new JSeparator(SwingConstants.HORIZONTAL);
 
 		btnClear = new JButton("Clear");
-		btnClear.setMaximumSize(new Dimension(70, 30));
+		btnClear.setMaximumSize(new Dimension(200, 30));
 		btnClear.setAlignmentX(Component.CENTER_ALIGNMENT);
 		btnClear.setBackground(Color.red);
 
