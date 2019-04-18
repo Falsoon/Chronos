@@ -113,6 +113,7 @@ public class CIV {
 	public void save() {
 		String filename = "savedMap.ser";
 		ArrayList<Room> roomsToAdd = new ArrayList<>(RoomList.getInstance().list);
+		map.rooms.clear();
 		map.rooms.addAll(roomsToAdd);
 		try {
 			FileOutputStream file = new FileOutputStream(filename);
