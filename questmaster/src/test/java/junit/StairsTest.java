@@ -107,6 +107,7 @@ public class StairsTest {
 
       civ.startGame();
       civ.goNorth();
+      civ.map.getPlayer().checkStairs();
 
       assertEquals(345+PLAYER_X_OFFSET, civ.map.player.getPosition().x);
       assertEquals(45-PLAYER_Y_OFFSET, civ.map.player.getPosition().y);
