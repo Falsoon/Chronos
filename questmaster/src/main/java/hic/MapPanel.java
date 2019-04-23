@@ -99,6 +99,10 @@ public class MapPanel extends JPanel {
 		civ.keyAdd();
 	}
 
+   public void moveStair() {
+      civ.map.getPlayer().checkStairs();
+      repaint();
+   }
     public void dropKey() {
         civ.dropKey();
         repaint();

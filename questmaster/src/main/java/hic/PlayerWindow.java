@@ -74,13 +74,15 @@ public class PlayerWindow {
 						goDirection(CardinalDirection.EAST);
 						return true;
 					case KEYCODE_S:
+                  mapPanel.moveStair();
+                  return true;
 					case KEYCODE_DOWN_ARROW:
 						goDirection(CardinalDirection.SOUTH);
 						return true;
 					case KEYCODE_D:
 						mapPanel.dropKey();
 						return true;
-					case KEYCODE_K:
+               case KEYCODE_K:
 						mapPanel.pickUpKey();
 						return true;
 					case KEYCODE_L:

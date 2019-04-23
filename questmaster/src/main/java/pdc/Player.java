@@ -126,7 +126,6 @@ public class Player implements Serializable {
 	public void goNorth() {
 		if (playing && !collides(new Point(position.x, position.y - GRIDDISTANCE))) {
 			position.move(position.x, position.y - GRIDDISTANCE);
-			checkStairs();
          mapLayer.setPlayerPosition(position);
 		}
 		positionDebug();
@@ -135,7 +134,6 @@ public class Player implements Serializable {
    public void goSouth() {
 		if (playing && !collides(new Point(position.x, position.y + GRIDDISTANCE))) {
 			position.move(position.x, position.y + GRIDDISTANCE);
-			checkStairs();
          mapLayer.setPlayerPosition(position);
 		}
       positionDebug();
@@ -144,7 +142,6 @@ public class Player implements Serializable {
 	public void goWest() {
 		if (playing && !collides(new Point(position.x - GRIDDISTANCE, position.y))) {
 			position.move(position.x - GRIDDISTANCE, position.y);
-			checkStairs();
          mapLayer.setPlayerPosition(position);
 		}
       positionDebug();
@@ -153,7 +150,6 @@ public class Player implements Serializable {
 	public void goEast() {
 		if (playing && !collides(new Point(position.x + GRIDDISTANCE, position.y))) {
 			position.move(position.x + GRIDDISTANCE, position.y);
-			checkStairs();
 			mapLayer.setPlayerPosition(position);
 		}
       positionDebug();
@@ -352,7 +348,7 @@ public class Player implements Serializable {
 		// return currentRoom.desc;
 	}
 
-	private void checkStairs() {
+	public void checkStairs() {
 		Stair warpTo = null;
 		for (Stair s : mapLayer.stairList) {
 			System.out.println("stairPos: " + s.getLocation().x + ", " + s.getLocation().y);
@@ -362,6 +358,7 @@ public class Player implements Serializable {
 		}
 		if (warpTo != null) {
 			position = new Point(warpTo.getLocation());
+         mapLayer.setPlayerPosition(position);
 		}
 	}
 }
